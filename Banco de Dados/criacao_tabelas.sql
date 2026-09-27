@@ -80,3 +80,17 @@ alter table resSalaLab.Reserva
 alter table resSalaLab.Reserva
     add foreign key (idStatus)
     references resSalaLab.Status (idStatus);
+
+INSERT INTO resSalaLab.Tipo
+    (idTipo, nome)
+VALUES
+    (1, 'Sala'),
+    (2, 'Laboratório');
+
+INSERT INTO resSalaLab.Status
+    (idStatus, nome)
+VALUES
+    (1, 'Livre'),
+    (2, 'Ocupado'),
+    (3, 'Bloqueado'),
+    (4, 'Reservado');
