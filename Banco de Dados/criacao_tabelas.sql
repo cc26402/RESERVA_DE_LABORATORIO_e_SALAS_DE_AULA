@@ -66,6 +66,12 @@ create table resSalaLab.Acesso(
     primary key(idAcesso)
 );
 
+create table resSalaLab.Nivel_Acesso(
+    idNivelAcesso int identity not null,
+    nome varchar(20) NOT NULL,
+    primary key(idNivelAcesso)
+)
+
 alter table resSalaLab.Ambiente
     add foreign key (idPredio)
     references resSalaLab.Predio (idPredio);
