@@ -1,4 +1,4 @@
-create schema resSalaLab
+create schema resSalaLab;
 
 create table resSalaLab.Predio(
     idPredio tinyint not null,
@@ -7,7 +7,7 @@ create table resSalaLab.Predio(
 );
 
 create table resSalaLab.Ambiente(
-    idAmbiente int not null,
+    idAmbiente int identity not null,
     idPredio tinyint not null,
     nome varchar(40) not null,
     capacidade smallint not null,
@@ -23,7 +23,7 @@ create table resSalaLab.Tipo(
 );
 
 create table resSalaLab.Usuario(
-    CPF int not null,
+    CPF varchar(11) not null,
     prenome varchar(30) not null,
     sobrenome  varchar(50) not null,
     nascimento date not null,
@@ -35,7 +35,8 @@ create table resSalaLab.Usuario(
 create table resSalaLab.Login(
     username varchar(30) not null,
     senha varchar(30) not null,
-    CPF int not null,
+    CPF varchar(11) not null,
+    dataCadastro date not null default getdate(),
     primary key(username)
 );
 
@@ -46,7 +47,7 @@ create table resSalaLab.Status(
 );
 
 create table resSalaLab.Reserva(
-    idReserva int not null,
+    idReserva int identity not null,
     username varchar(30) not null,
     idAmbiente int not null,
     idStatus tinyint not null,
@@ -54,7 +55,15 @@ create table resSalaLab.Reserva(
     dataFinal date not null,
     horarioInicial time not null,
     horarioFinal  time not null,
-    primary  key(idReserva)
+    primary key(idReserva)
+);
+
+create table resSalaLab.Acesso(
+    idAcesso int identity not null,
+    username varchar(30) not null,
+    dataAcesso date not null,
+    horarioAcesso time not null,
+    primary key(idAcesso)
 );
 
 alter table resSalaLab.Ambiente
@@ -80,6 +89,10 @@ alter table resSalaLab.Reserva
 alter table resSalaLab.Reserva
     add foreign key (idStatus)
     references resSalaLab.Status (idStatus);
+
+alter table resSalaLab.Acesso
+    add foreign key (username)
+    references resSalaLab.Login (username);
 
 INSERT INTO resSalaLab.Tipo
     (idTipo, nome)
