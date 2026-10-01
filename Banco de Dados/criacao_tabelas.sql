@@ -1,7 +1,7 @@
 create schema resSalaLab;
 
 create table resSalaLab.Predio(
-    idPredio tinyint not null,
+    idPredio tinyint identity not null,
     nome varchar(40) not null,
     primary key(idPredio)
 );
@@ -29,6 +29,7 @@ create table resSalaLab.Usuario(
     nascimento date not null,
     celular varchar(15) not null,
     email varchar(50) not null,
+    idNivelAcesso int not null,
     primary key(CPF)
 );
 
@@ -100,6 +101,10 @@ alter table resSalaLab.Acesso
     add foreign key (username)
     references resSalaLab.Login (username);
 
+alter table resSalaLab.Usuario
+    add foreign key (idNivelAcesso)
+    references resSalaLab.Nivel_Acesso (idNivelAcesso);
+
 INSERT INTO resSalaLab.Tipo
     (idTipo, nome)
 VALUES
@@ -113,3 +118,19 @@ VALUES
     (2, 'Ocupado'),
     (3, 'Bloqueado'),
     (4, 'Reservado');
+
+INSERT INTO resSalaLab.Nivel_Acesso
+    (nome)
+VALUES
+    ('Administrador'),
+    ('Usuário');
+
+INSERT INTO resSalaLab.Predio
+    (nome)
+VALUES
+    ('Principal');
+
+INSERT INTO resSalaLab.Ambiente
+    (idPredio, nome, capacidade, andar, idTipo)
+VALUES
+    (1, 'Dinalva', 40, 1, 2);

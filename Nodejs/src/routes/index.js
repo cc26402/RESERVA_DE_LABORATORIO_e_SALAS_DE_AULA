@@ -1,11 +1,11 @@
 import express from 'express';
-import Ambiente from '../models/Ambiente';
-import Usuario from '../models/Usuario';
+import AmbienteRoutes from './AmbienteRoutes.js';
+import UsuarioRoutes from './UsuarioRoutes.js';
 
 const routes = (app) => {
     app.route("/").get((req,res) => res.status(200).json({message: "API rodando"}));
     
-    app.use(express.json(), Ambiente, Usuario);
+    app.use(express.json(), AmbienteRoutes, UsuarioRoutes);
 }
 
 export default routes;

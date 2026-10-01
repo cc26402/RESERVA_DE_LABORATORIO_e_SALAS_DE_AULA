@@ -1,14 +1,15 @@
-import conectaBD from "../config/dbConnect.js";
+import conectaBD from "../config/dbConect.js";
 
 class Usuario {
 
-    constructor(CPF, prenome, sobrenome, nascimento, celular, email) {
+    constructor(CPF, prenome, sobrenome, nascimento, celular, email, idNivelAcesso) {
         this.CPF = CPF;
         this.prenome = prenome;
         this.sobrenome = sobrenome;
         this.nascimento = nascimento;
         this.celular = celular;
         this.email = email;
+        this.idNivelAcesso = idNivelAcesso;
     }
 
     static async buscarTodos(){
@@ -22,10 +23,10 @@ class Usuario {
         }
     }
 
-    static async buscarUsuarioPorId(idUsuario) {
+    static async buscarUsuarioPorCPF(CPF) {
         try {
             const conexao = await conectaBD();
-            const result = await conexao.query(`SELECT * from resSalaLab.Usuario WHERE idUsuario=${idUsuario}`);
+            const result = await conexao.query(`SELECT * from resSalaLab.Usuario WHERE CPF='${CPF}'`);
             return result.recordset
         }
         catch (error) {
@@ -33,10 +34,10 @@ class Usuario {
         }
     }
 
-    static async removerUsuario(idUsuario) {
+    static async removerUsuario(CPF) {
         try {
             const conexao = await conectaBD();
-            const result = await conexao.query(`DELETE from resSalaLab.Usuario WHERE idUsuario=${idUsuario}`);
+            const result = await conexao.query(`DELETE from resSalaLab.Usuario WHERE CPF='${CPF}'`);
         }
         catch (error) {
             throw new Error(`Erro na remoção ao BD: ${error}`);
@@ -44,10 +45,10 @@ class Usuario {
     }
 
     static async inserirUsuario(Usuario){
-        const { prenome, sobrenome, nascimento, celular, email } = Usuario;
+        const { CPF, prenome, sobrenome, nascimento, celular, email, idNivelAcesso } = Usuario;
         try {
             const conexao = await conectaBD();
-            const result = await conexao.query(`INSERT into resSalaLab.Usuario (prenome, sobrenome, nascimento, celular, email) VALUES ('${prenome}', '${sobrenome}', '${nascimento}', '${celular}', '${email}')`);
+            const result = await conexao.query(`INSERT into resSalaLab.Usuario (CPF, prenome, sobrenome, nascimento, celular, email, idNivelAcesso) VALUES ('${CPF}', '${prenome}', '${sobrenome}', '${nascimento}', '${celular}', '${email}', '${idNivelAcesso}')`);
             return result;
         }
         catch (error) {
@@ -56,10 +57,10 @@ class Usuario {
     }
 
     static async alterarUsuario(Usuario) {
-        const { CPF, prenome, sobrenome, nascimento, celular, email } = Usuario;
+        const { CPF, prenome, sobrenome, nascimento, celular, email, idNivelAcesso } = Usuario;
         try {
             const conexao = await conectaBD();
-            const result = await conexao.query(`UPDATE resSalaLab.Usuario SET prenome='${prenome}', sobrenome=${sobrenome}, nascimento=${nascimento}, celular=${celular}, email=${email} WHERE CPF=${CPF}`);
+            const result = await conexao.query(`UPDATE resSalaLab.Usuario SET prenome='${prenome}', sobrenome='${sobrenome}', nascimento='${nascimento}', celular='${celular}', email='${email}', idNivelAcesso='${idNivelAcesso}' WHERE CPF='${CPF}'`);
             return result;
         }
         catch (error) {

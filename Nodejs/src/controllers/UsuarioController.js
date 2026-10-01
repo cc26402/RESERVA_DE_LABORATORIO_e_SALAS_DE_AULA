@@ -13,9 +13,9 @@ class UsuarioController{
     }
 
     static async listarUsuariosPorId(req, res){
-        const idProcurado = req.params.id;
+        const CPFProcurado = req.params.id;
         try{
-            const listarUsuarios = await Usuario.buscarAmbientePorId(idProcurado);
+            const listarUsuarios = await Usuario.buscarUsuarioPorCPF(CPFProcurado);
             res.status(200).json(listarUsuarios);
         }
         catch(error){
@@ -26,7 +26,7 @@ class UsuarioController{
     static async removerUsuario(req,res){
         const idProcurado = req.params.id;
         try{
-            const listarAmbientes = await Ambiente.removerUsuario(idProcurado);
+            const listarUsuarios = await Usuario.removerUsuario(idProcurado);
             res.status(200).json({message: "Removido com sucesso"});
         }
         catch(error){
@@ -37,7 +37,7 @@ class UsuarioController{
     static async inserirUsuario(req,res){
         const UsuarioNovo = req.body;
         try{
-            const result = await Usuario.inserirAmbiente(UsuarioNovo);
+            const result = await Usuario.inserirUsuario(UsuarioNovo);
             res.status(200).json({message: "Inserido com sucesso"});
         }
         catch(error){
@@ -47,9 +47,9 @@ class UsuarioController{
 
     static async alterarUsuario(req, res){
         const CPF = req.params.id;
-        const { prenome, sobrenome, nascimento, celular, email } = req.body;
+        const { prenome, sobrenome, nascimento, celular, email, idNivelAcesso } = req.body;
         try{
-            const result = await Usuario.alterarUsuario({CPF: CPF, prenome: prenome, sobrenome: sobrenome, nascimento: nascimento, celular: celular, email: email});
+            const result = await Usuario.alterarUsuario({CPF: CPF, prenome: prenome, sobrenome: sobrenome, nascimento: nascimento, celular: celular, email: email, idNivelAcesso: idNivelAcesso});
             res.status(200).json({message: "Alterado com sucesso"});
         }
         catch(error){
