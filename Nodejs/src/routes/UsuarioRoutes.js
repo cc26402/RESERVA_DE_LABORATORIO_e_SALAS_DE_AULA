@@ -1,12 +1,12 @@
 import express from 'express';
-import UsuarioControllers from '../controllers/UsuarioController.js';
+import UsuarioController from '../controllers/UsuarioController.js';
 
 const routes = express.Router();
-routes.get("/usuarios", UsuarioControllers.listarUsuarios);
+routes.get("/usuarios", UsuarioController.listarUsuarios);
 
-routes.get("/usuarios/:id", UsuarioControllers.listarUsuariosPorId);
-routes.delete("/usuarios/:id", UsuarioControllers.removerUsuario);
-routes.post("/usuarios", UsuarioControllers.inserirUsuario);
-routes.patch("/usuarios/:id", UsuarioControllers.alterarUsuario);
+routes.get("/usuarios/:id", UsuarioController.listarUsuariosPorId);
+routes.delete("/usuarios/:id", UsuarioController.removerUsuario);
+routes.post("/usuarios", UsuarioController.inserirUsuario);
+routes.patch("/usuarios/:id", UsuarioController.alterarUsuario);
 
 export default routes;
