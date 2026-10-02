@@ -1,7 +1,6 @@
 import conectaBD from "../config/dbConect.js"
 
 class Acesso{
-    static tabelaAcesso = "resSalaLab.Acesso";
 
     constructor (idAcesso, username){
         this.idAcesso = idAcesso;
@@ -12,7 +11,7 @@ class Acesso{
     static async buscarTodos(){
         try{
             const conexao = await conectaBD();
-            const result = await conexao.query(`SELECT * FROM ${tabelaAcesso}`);
+            const result = await conexao.query(`SELECT * FROM resSalaLab.Acesso`);
             return result.recordset
         }
         catch(error){
@@ -23,7 +22,7 @@ class Acesso{
     static async buscaPorId(idAcesso){
         try{
             const conexao = await conectaBD();
-            const result = await conexao.query(`SELECT * FROM ${tabelaAcesso} WHERE idAcesso = ${idAcesso}`);
+            const result = await conexao.query`SELECT * FROM resSalaLab.Acesso WHERE idAcesso = ${idAcesso}`;
             return result.recordset
         }
         catch(error){
@@ -34,9 +33,7 @@ class Acesso{
     static async buscaPorUsername(username){
         try{
             const conexao = await conectaBD();
-            const result = await conexao.request()
-            .input('username', conexao.VarChar, username)
-            .query(`SELECT * FROM ${tabelaAcesso} WHERE username = @username`);
+            const result = await conexao.query`SELECT * FROM resSalaLab.Acesso WHERE username = ${username}`;
             return result.recordset;
         }
         catch(error){
@@ -47,12 +44,30 @@ class Acesso{
     static async buscaPorUsernameNaData(username, dataAcesso){
         try{
             const conexao = await conectaBD();
-            const result = await conexao.request()
-            .input('username', conexao.VarChar, username)
-            .input('dataAcessoInicio', conexao.DateTime2, `${dataAcesso} 00:00:00`)
-            .input('dataAcessoFim', conexao.DateTime2, `${dataAcesso} 23:59:59.999`)
-            .query(`SELECT * FROM ${tabelaAcesso} WHERE username = @username AND dataHoraAcesso >= @dataAcessoInicio AND dataHoraAcesso<= @dataAcessoFim`);
+            const inicioData = `${dataAcesso} 00:00:00`;
+            const fimData = `${dataAcesso} 23:59:59.999`;
+            const result = await conexao.query`SELECT * FROM resSalaLab.Acesso WHERE username = ${username} AND dataHoraAcesso >= ${inicioData} AND dataHoraAcesso<=${fimData}`;
             return result.recordset
+        }
+        catch(error){
+            throw new Error(`Erro na consulta ao BD: ${error}`);
+        }
+    }
+    
+    static async buscaPorPeriodoDeAcessoEUsuario(dataAcessoInicio, dataAcessoFim=dataAcessoInicio, horaAcessoInicio='00:00:00', horaAcessoFim='23:59:59.999', username=null){
+        try{
+            const conexao = await conectaBD();
+            const inicioDataHora = `${dataAcessoInicio} ${horaAcessoInicio}`;
+            const fimDataHora = `${dataAcessoFim} ${horaAcessoFim}`;
+            if (username!=null){
+                const result = await conexao.query`SELECT * FROM resSalaLab.Acesso WHERE username = ${username} AND dataHoraAcesso >= ${inicioDataHora} AND dataHoraAcesso<=${fimDataHora}`
+                return result.recordset
+            }
+            else {
+                const result = await conexao.query`SELECT * FROM resSalaLab.Acesso WHERE dataHoraAcesso >= ${inicioDataHora} AND dataHoraAcesso<=${fimDataHora}`
+                return result.recordset
+
+            }
         }
         catch(error){
             throw new Error(`Erro na consulta ao BD: ${error}`);
