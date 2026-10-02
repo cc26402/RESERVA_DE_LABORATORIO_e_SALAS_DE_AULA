@@ -40,19 +40,6 @@ class Acesso{
             throw new Error(`Erro na consulta ao BD: ${error}`)
         }
     }
-
-    static async buscaPorUsernameNaData(username, dataAcesso){
-        try{
-            const conexao = await conectaBD();
-            const inicioData = `${dataAcesso} 00:00:00`;
-            const fimData = `${dataAcesso} 23:59:59.999`;
-            const result = await conexao.query`SELECT * FROM resSalaLab.Acesso WHERE username = ${username} AND dataHoraAcesso >= ${inicioData} AND dataHoraAcesso<=${fimData}`;
-            return result.recordset
-        }
-        catch(error){
-            throw new Error(`Erro na consulta ao BD: ${error}`);
-        }
-    }
     
     static async buscaPorPeriodoDeAcessoEUsuario(dataAcessoInicio, dataAcessoFim=dataAcessoInicio, horaAcessoInicio='00:00:00', horaAcessoFim='23:59:59.999', username=null){
         try{
