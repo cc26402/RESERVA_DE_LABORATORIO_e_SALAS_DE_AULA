@@ -1,6 +1,6 @@
 import Acesso from '../models/Acesso.js';
 
-class AmbienteController{
+class AcessoController{
     static async listarTodosAcessos(req, res){
         try{
             const todosAcessos = await Acesso.buscarTodos();
@@ -92,3 +92,5 @@ class AmbienteController{
         }
     }
 }
+
+export default AcessoController;
