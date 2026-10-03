@@ -36,7 +36,7 @@ class AcessoController{
     static async listarAcessosPorData(req, res){
         const data = req.params.data;
         try{
-            const acessosDaData = await Acesso.buscarPorPeriodoEUsuario(data);
+            const acessosDaData = await Acesso.buscaPorPeriodoEUsuario({dataInicio: data});
             res.status(200).json(acessosDaData);
         }
         catch(error){
