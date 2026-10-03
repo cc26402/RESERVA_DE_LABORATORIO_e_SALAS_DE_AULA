@@ -44,7 +44,7 @@ class AcessoController{
         }
     }
 
-    static async listarAcessosPorPeríodo(req, res){
+    static async listarAcessosPorPeriodo(req, res){
         const dataInicio = req.params.dataInicio;
         const dataFim = req.params.dataFim;
         try{
@@ -68,7 +68,7 @@ class AcessoController{
         }
     }
 
-    static async listarAcessosPorUsernameNoPerido(req, res){
+    static async listarAcessosPorUsernameNoPeriodo(req, res){
         const username = req.params.username;
         const dataInicio = req.params.dataInicio;
         const dataFim = req.params.dataFim;
