@@ -41,7 +41,7 @@ class Acesso{
         }
     }
     
-    static async buscaPorPeriodoDeAcessoEUsuario(dataAcessoInicio, dataAcessoFim=dataAcessoInicio, horaAcessoInicio='00:00:00', horaAcessoFim='23:59:59.999', username=null){
+    static async buscaPorPeriodoEUsuario(dataAcessoInicio, dataAcessoFim=dataAcessoInicio, horaAcessoInicio='00:00:00', horaAcessoFim='23:59:59.999', username=null){
         try{
             const conexao = await conectaBD();
             const inicioDataHora = `${dataAcessoInicio} ${horaAcessoInicio}`;
@@ -60,4 +60,7 @@ class Acesso{
             throw new Error(`Erro na consulta ao BD: ${error}`);
         }
     }
+
 }
+
+export default Acesso;
