@@ -41,11 +41,11 @@ class Acesso{
         }
     }
     
-    static async buscaPorPeriodoEUsuario(dataAcessoInicio, dataAcessoFim=dataAcessoInicio, horaAcessoInicio='00:00:00', horaAcessoFim='23:59:59.999', username=null){
+    static async buscaPorPeriodoEUsuario({dataInicio, dataFim=dataInicio, horaInicio='00:00:00', horaFim='23:59:59.999', username=null}){
         try{
             const conexao = await conectaBD();
-            const inicioDataHora = `${dataAcessoInicio} ${horaAcessoInicio}`;
-            const fimDataHora = `${dataAcessoFim} ${horaAcessoFim}`;
+            const inicioDataHora = `${dataInicio} ${horaInicio}`;
+            const fimDataHora = `${dataFim} ${horaFim}`;
             if (username!=null){
                 const result = await conexao.query`SELECT * FROM resSalaLab.Acesso WHERE username = ${username} AND dataHoraAcesso >= ${inicioDataHora} AND dataHoraAcesso<=${fimDataHora}`
                 return result.recordset
@@ -61,13 +61,15 @@ class Acesso{
         }
     }
 
-    static async inserirRegistroDeAcesso(username){
+    static async inserirRegistroDeAcesso(acesso){
+        const {username} = acesso
         try{
             const conexao = await conectaBD();
-            const result = await conexao.query`INSERT INTO resSalaLab.Acesso (username) values (${username})`
+            const result = await conexao.query`INSERT INTO resSalaLab.Acesso (username) values (${username})`;
+            return result;
         }
         catch(error){
-            throw new Error(`Erro na consulta ao BD: ${error}`);
+            throw new Error(`Erro na criação do registro de acesso no BD: ${error}`);
         }
     }
 }
