@@ -61,6 +61,15 @@ class Acesso{
         }
     }
 
+    static async inserirRegistroDeAcesso(username){
+        try{
+            const conexao = await conectaBD();
+            const result = await conexao.query`INSERT INTO resSalaLab.Acesso (username) values (${username})`
+        }
+        catch(error){
+            throw new Error(`Erro na consulta ao BD: ${error}`);
+        }
+    }
 }
 
 export default Acesso;
