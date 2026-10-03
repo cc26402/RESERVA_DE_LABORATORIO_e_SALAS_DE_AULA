@@ -46,9 +46,9 @@ class LoginController{
     }
 
     static async inserirLogin(req, res){
-        const login = req.body;
+        const loginNovo = req.body;
         try{
-            const result = await Login.criarLogin(login);
+            const result = await Login.criarLogin(loginNovo);
             res.status(200).json({message: "Login inserido com sucesso."});
         }
         catch(error){
@@ -57,10 +57,11 @@ class LoginController{
     }
 
     static async alterarLogin(req, res){
-        const username = req.params.username;
+        const CPF = req.params.CPF;
+        const senhaAtual = req.params.senhaAtual;
         const novosDados = req.body;
         try{
-            const result = await Login.editarLogin(username, novosDados);
+            const result = await Login.editarLogin(CPF, senhaAtual, novosDados);
             res.status(200).json({message: "Login alterado com sucesso."});
         }
         catch(error){
