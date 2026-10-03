@@ -24,7 +24,7 @@ class LoginController{
     }
 
     static async listarPorCpf(req, res){
-        CPF = req.params.CPF;
+        const CPF = req.params.CPF;
         try{
             const loginCpf = await Login.buscarPorCpf(CPF);
             res.status(200).json(loginCpf);
