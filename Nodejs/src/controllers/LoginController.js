@@ -68,17 +68,6 @@ class LoginController{
             res.status(500).json({message: `Erro na requisição: ${error.message}`});
         }
     }
-
-    static async removerLogin(req, res){
-        const username = req.params.username;
-        try{
-            const result = await Login.excluirLogin(username);
-            res.status(200).json({message: "Login removido com sucesso."});
-        }
-        catch(error){
-            res.status(500).json({message: `Erro na requisição: ${error.message}`});
-        }
-    }
 }
 
 export default LoginController;

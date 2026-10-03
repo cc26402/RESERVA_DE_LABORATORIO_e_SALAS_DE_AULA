@@ -8,6 +8,5 @@ routes.get('/logins/data-cad/:dataCadastro', LoginController.listarPorDataCadast
 routes.get('/logins', LoginController.listarTodos);
 routes.post('/logins', LoginController.inserirLogin);
 routes.patch('/logins/:CPF/:senhaAtual', LoginController.alterarLogin);
-routes.delete('/logins/:username', LoginController.removerLogin);
 
 export default routes;

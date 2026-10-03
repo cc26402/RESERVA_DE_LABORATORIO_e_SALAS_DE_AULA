@@ -79,17 +79,6 @@ class Login{
             throw new Error(`Falha na edição do login no BD: ${error.message}`);
         }
     }
-
-    static async excluirLogin(username){
-        try{
-            const conexao = await conectaBD();
-            const result = await conexao.query`DELETE FROM resSalaLab.Login WHERE username = ${username}`;
-            return result;
-        }
-        catch(error){
-            throw new Error(`Falha na exclusão do login do BD: ${error.message}`);
-        }
-    }
 }
 
 export default Login;
