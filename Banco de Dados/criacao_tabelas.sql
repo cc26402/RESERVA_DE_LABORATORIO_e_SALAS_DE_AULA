@@ -62,8 +62,7 @@ create table resSalaLab.Reserva(
 create table resSalaLab.Acesso(
     idAcesso int identity not null,
     username varchar(30) not null,
-    dataAcesso date not null,
-    horarioAcesso time not null,
+    dataHoraAcesso datetime2 not null default SYSDATETIME(),
     primary key(idAcesso)
 );
 
