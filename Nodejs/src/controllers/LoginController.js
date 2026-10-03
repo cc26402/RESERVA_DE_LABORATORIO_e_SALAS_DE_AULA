@@ -45,17 +45,6 @@ class LoginController{
         }
     }
 
-    static async inserirLogin(req, res){
-        const loginNovo = req.body;
-        try{
-            const result = await Login.criarLogin(loginNovo);
-            res.status(200).json({message: "Login inserido com sucesso."});
-        }
-        catch(error){
-            res.status(500).json({message: `Erro na requisição: ${error.message}`});
-        }
-    }
-
     static async alterarLogin(req, res){
         const CPF = req.params.CPF;
         const senhaAtual = req.params.senhaAtual;
