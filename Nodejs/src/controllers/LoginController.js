@@ -61,7 +61,7 @@ class LoginController{
         const senhaAtual = req.params.senhaAtual;
         const novosDados = req.body;
         try{
-            const result = await Login.editarLogin(CPF, senhaAtual, novosDados);
+            const result = await Login.editarLogin({CPF, senhaAtual, novosDados});
             res.status(200).json({message: "Login alterado com sucesso."});
         }
         catch(error){

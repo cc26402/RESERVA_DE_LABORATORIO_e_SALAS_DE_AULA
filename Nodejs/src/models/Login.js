@@ -47,14 +47,14 @@ class Login{
     }
 
     static async criarLogin(loginNovo){
-        const {username, senha, CPF} = loginNovo;
+        const {CPF, username, senha} = loginNovo;
         try{
             const conexao = await conectaBD();
             const result = await conexao.query`INSERT INTO resSalaLab.Login (username, senha, CPF) VALUES (${username}, ${senha}, ${CPF})`;
             return result;
         }
         catch(error){
-            throw new Error(`Falha na criaçãodo login no BD: ${error}`);
+            throw new Error(`Falha na criação do login no BD: ${error}`);
         }
     }
 
@@ -67,7 +67,7 @@ class Login{
                 return result;
             }
             else if (senha == undefined){
-                const result = await conexao.query`UPDATE resSalaLab.Login SET username = ${username} WHERE CPF = ${CPF} AND senha = ${senhaAtual}`;
+                const result = await conexao.query`UPDATE resSalaLab.Login SET username = ${username} WHERE CPF = ${CPF}`;
                 return result;
             }
             else {
