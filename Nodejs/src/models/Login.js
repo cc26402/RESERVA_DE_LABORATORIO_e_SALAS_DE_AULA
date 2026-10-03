@@ -9,7 +9,7 @@ class Login{
             return result.recordset;
         }
         catch(error){
-            throw new Error(`Falha na consulta ao BD: ${error}`);
+            throw new Error(`Falha na consulta ao BD: ${error.message}`);
         }
     }
 
@@ -20,7 +20,7 @@ class Login{
             return result.recordset;
         }
         catch(error){
-            throw new Error(`Falha na consulta ao BD: ${error}`);
+            throw new Error(`Falha na consulta ao BD: ${error.message}`);
         }
     }
 
@@ -31,7 +31,7 @@ class Login{
             return result.recordset;
         }
         catch(error){
-            throw new Error(`Falha na consulta ao BD: ${error}`);
+            throw new Error(`Falha na consulta ao BD: ${error.message}`);
         }
     }
 
@@ -42,7 +42,7 @@ class Login{
             return result.recordset;
         }
         catch(error){
-            throw new Error(`Falha na consulta ao BD: ${error}`);
+            throw new Error(`Falha na consulta ao BD: ${error.message}`);
         }
     }
 
@@ -54,7 +54,7 @@ class Login{
             return result;
         }
         catch(error){
-            throw new Error(`Falha na criação do login no BD: ${error}`);
+            throw new Error(`Falha na criação do login no BD: ${error.message}`);
         }
     }
 
@@ -76,7 +76,18 @@ class Login{
             }
         }
         catch(error){
-            throw new Error(`Falha na edição do login no BD: ${error}`);
+            throw new Error(`Falha na edição do login no BD: ${error.message}`);
+        }
+    }
+
+    static async excluirLogin(username){
+        try{
+            const conexao = await conectaBD();
+            const result = await conexao.query`DELETE FROM resSalaLab.Login WHERE username = ${username}`;
+            return result;
+        }
+        catch(error){
+            throw new Error(`Falha na exclusão do login do BD: ${error.message}`);
         }
     }
 }
