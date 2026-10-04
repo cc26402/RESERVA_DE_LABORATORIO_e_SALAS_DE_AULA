@@ -1,14 +1,15 @@
 interface TbodyProps {
-    dados: (string|number)[][]
+    dados: Record<string, string | number>[],
+    chavesDados: string[]
 }
 
-export function Tbody({dados}: TbodyProps){
+export function Tbody({dados, chavesDados}: TbodyProps){
     return (
         dados.map((dado, i) => (
             <tr key={i+"tr"}>
-                {dado.map((dadoInterno, i2) => {
+                {chavesDados.map((chave, i2) => {
                     return (
-                        <td key={i2+"td"}>{dadoInterno}</td>
+                        <td key={i2+"td"}>{dado[chave]}</td>
                     );
                 })}
             </tr>
