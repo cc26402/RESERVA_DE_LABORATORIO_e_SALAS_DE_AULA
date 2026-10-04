@@ -1,0 +1,22 @@
+.todosOsCards{
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    min-width: 100vw;
+}
+
+.selectPredio{
+    background-color: white;
+    color: black;
+}
+
+.cardAmbiente{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    background-color: rgb(91, 86, 86);
+    margin: 10px;
+    color: black;
+    height: 20vh;
+    width: 30vw;
+}
