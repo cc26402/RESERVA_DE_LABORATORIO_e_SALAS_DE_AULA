@@ -7,6 +7,7 @@
 }
 
 .titulo{
+    color: white;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -21,6 +22,7 @@
 }
 
 .linkMenu{
+    color: white;
     background-color: #6B1313;
     margin: 5%;
     padding: 5px;

@@ -43,7 +43,7 @@ export default function Ambiente() {
   const ambientesDoPredio = idPredioSelecionado === 0? dados.map((registro) => registro) : dados.filter((registro) => registro.idPredio === idPredioSelecionado);
 
   return (
-    <div>
+    <div className={style.body}>
       <h2>Listagem dos Ambientes cadastrados no BD</h2>
 
       <div>
@@ -59,8 +59,6 @@ export default function Ambiente() {
       </div>
 
       <br />
-      <br />
-
       <div>
         <div className={style.todosOsCards}>
           {ambientesDoPredio.map((a) => (
