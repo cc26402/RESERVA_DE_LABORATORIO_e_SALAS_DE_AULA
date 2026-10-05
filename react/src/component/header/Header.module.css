@@ -1,0 +1,15 @@
+.header{
+    background-color: #1E3A5F;
+    display: flex;
+    justify-content: space-around;
+}
+
+.titulo{
+    display: flex;
+    justify-content: center;
+}
+
+.menu{
+    display: flex;
+    justify-content: space-between;
+}
