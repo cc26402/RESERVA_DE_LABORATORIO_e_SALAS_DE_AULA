@@ -1,15 +1,39 @@
 .header{
-    background-color: #1E3A5F;
+    background-color: #991B1B;
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     justify-content: space-around;
 }
 
 .titulo{
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: larger;
+}
+
+.menu{
+    width: 50vw;
     display: flex;
     justify-content: center;
 }
 
-.menu{
-    display: flex;
-    justify-content: space-between;
+.linkMenu{
+    color: white;
+    background-color: #6B1313;
+    margin: 5%;
+    padding: 5px;
+    border-radius: 10%;
+}
+
+.logoCotuca{
+    background-color: #6B1313;
+    max-height: 50px;
+    max-width: 50px;
+    margin-right: 15px;
+    padding: 5px;
+    border-radius: 10%;
 }
