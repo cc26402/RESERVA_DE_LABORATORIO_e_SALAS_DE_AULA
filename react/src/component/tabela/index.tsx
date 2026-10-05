@@ -3,14 +3,21 @@ import { Tbody } from "./tbody";
 interface TabelaProps {
     titulos: string[],
     listaOrdemChaveDados: string[],
-    dados: Record<string, string | number>[]
+    chavePrimaria?: string | number,
+    dados: Record<string, string | number>[],
+    botoes?: DadosBotoes[]
 }
 
-export function Tabela({titulos, listaOrdemChaveDados, dados} : TabelaProps){
+interface DadosBotoes {
+    textoBotao: string,
+    onClick: (...args: (number|string)[]) => void
+}
+
+export function Tabela({titulos, listaOrdemChaveDados, chavePrimaria, dados, botoes} : TabelaProps){
     return (
         <table>
             <Thead titulos={titulos}></Thead>
-            <Tbody dados={dados} chavesDados={listaOrdemChaveDados}></Tbody>
+            <Tbody dados={dados} listaOrdemChaveDados={listaOrdemChaveDados} chavePrimaria = {chavePrimaria} botoes={botoes}></Tbody>
         </table>
     )
 }
