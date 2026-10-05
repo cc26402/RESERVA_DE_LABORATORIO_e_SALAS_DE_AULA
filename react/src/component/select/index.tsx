@@ -3,12 +3,13 @@ interface SelectProps {
     chaveValor: string,
     chaveTexto: string,
     id?: string,
-    name?: string
+    name?: string,
+    onChange?: (evento: React.ChangeEvent<HTMLSelectElement>) => void
 }
 
-export function Select({opcoes, chaveValor, chaveTexto, id, name}: SelectProps){
+export function Select({opcoes, chaveValor, chaveTexto, id, name, onChange}: SelectProps){
     return (
-        <select name={name ? name : ""} id={id ? id : ""}>
+        <select name={name ? name : ""} id={id ? id : ""} onChange={onChange}>
             {
                 opcoes.map(opcao => (
                     <option key={opcao[chaveValor]} value={opcao[chaveValor]}>{opcao[chaveTexto]}</option>
