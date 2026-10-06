@@ -55,14 +55,6 @@ const idsDosPrediosObj = idsDosPredios.map(id => ({idPredio: id}))
       <div>
         <p>Prédio:</p>
         <Select opcoes={idsDosPrediosObj} chaveValor="idPredio" chaveTexto="idPredio" textoPadrao="Predio" name="idPredio" value={idPredioSelecionado} onChange={handlePredioChange} className={style.selectPredio}></Select>
-        {/* <select name="idPredio" value={idPredioSelecionado} onChange={handlePredioChange} className={style.selectPredio}>
-          <option value={0}>Selecione...</option>
-          {idsDosPredios.map((id) => (
-            <option key={id} value={id}>
-              Prédio {id}
-            </option>
-          ))}
-        </select> */}
       </div>
 
       <br />
