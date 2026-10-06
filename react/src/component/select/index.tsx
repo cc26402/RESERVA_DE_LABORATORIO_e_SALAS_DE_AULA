@@ -12,14 +12,23 @@ interface SelectProps {
     onChange?: (evento: React.ChangeEvent<HTMLSelectElement>) => void
 }
 
-export function Select({opcoes, chaveValor, chaveTexto, textoPadrao,textoOptionPadrao , valorOptionPadrao = 0, id, name, value, className, onChange}: SelectProps){
+export function Select({opcoes, chaveValor, chaveTexto, textoPadrao, textoOptionPadrao, valorOptionPadrao = 0, id, name, value, className, onChange}: SelectProps){
+
+    const chavesUnicas = new Set();
+    const opcoesSemRepetidos = opcoes.filter(opcao => {
+        const chave = opcao[chaveValor];
+        if (chavesUnicas.has(chave)) return false;
+        chavesUnicas.add(chave);
+        return true;
+    })
+    
     return (
         <select name={name} id={id} onChange={onChange} value = {value} className={className}>
             {textoOptionPadrao && (
                 <option value={valorOptionPadrao}>{textoOptionPadrao}</option>
             )}
             {
-                opcoes.map(opcao => (
+                opcoesSemRepetidos.map(opcao => (
                     <option key={opcao[chaveValor]} value={opcao[chaveValor]}>{textoPadrao ? textoPadrao + " " + opcao[chaveTexto] : opcao[chaveTexto]}</option>
                 ))
             }
