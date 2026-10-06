@@ -2,15 +2,16 @@
 
 import { useEffect, useState } from "react";
 import style from "./page.module.css"
+import { Select } from "../component/select";
 
-interface DadosDosAmbientes {
+type DadosDosAmbientes = {
   idAmbiente: number;
   nome: string;
   capacidade: number;
   idPredio: number;
   andar: number;
   idTipo: number;
-}
+};
 
 export default function Ambiente() {
   const [dados, setDados] = useState<DadosDosAmbientes[]>([]);
@@ -38,8 +39,6 @@ export default function Ambiente() {
     setIdSelecionado(Number(event.target.value));
   }
 
-  const idsDosPredios = Array.from(new Set(dados.map((r) => r.idPredio)));
-
   const ambientesDoPredio = idPredioSelecionado === 0? dados.map((registro) => registro) : dados.filter((registro) => registro.idPredio === idPredioSelecionado);
 
   return (
@@ -48,14 +47,7 @@ export default function Ambiente() {
 
       <div>
         <p>Prédio:</p>
-        <select name="idPredio" value={idPredioSelecionado} onChange={handlePredioChange} className={style.selectPredio}>
-          <option value={0}>Selecione...</option>
-          {idsDosPredios.map((id) => (
-            <option key={id} value={id}>
-              Prédio {id}
-            </option>
-          ))}
-        </select>
+        <Select opcoes={dados} chaveValor="idPredio" chaveTexto="idPredio" textoPadrao="Predio" name="idPredio" value={idPredioSelecionado} onChange={handlePredioChange} className={style.selectPredio}></Select>
       </div>
 
       <br />
