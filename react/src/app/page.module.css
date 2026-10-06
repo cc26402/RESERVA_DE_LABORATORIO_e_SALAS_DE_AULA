@@ -1,3 +1,7 @@
+.body{
+    background-color: rgb(104, 102, 102);
+}
+
 .todosOsCards{
     display: flex;
     justify-content: center;
@@ -14,7 +18,7 @@
     display: flex;
     justify-content: center;
     flex-direction: column;
-    background-color: rgb(91, 86, 86);
+    background-color: rgb(207, 203, 203);
     margin: 10px;
     color: black;
     height: 20vh;

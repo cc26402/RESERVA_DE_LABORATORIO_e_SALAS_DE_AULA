@@ -2,12 +2,6 @@ import conectaBD from "../config/dbConect.js"
 
 class Acesso{
 
-    constructor (idAcesso, username){
-        this.idAcesso = idAcesso;
-        this.username = username;
-        this.dataHoraAcesso = new Date().toISOString()
-    }
-
     static async buscarTodos(){
         try{
             const conexao = await conectaBD();
@@ -53,7 +47,6 @@ class Acesso{
             else {
                 const result = await conexao.query`SELECT * FROM resSalaLab.Acesso WHERE dataHoraAcesso >= ${inicioDataHora} AND dataHoraAcesso<=${fimDataHora}`
                 return result.recordset
-
             }
         }
         catch(error){
