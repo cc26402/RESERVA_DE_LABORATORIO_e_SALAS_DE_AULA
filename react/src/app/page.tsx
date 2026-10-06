@@ -39,7 +39,12 @@ export default function Ambiente() {
     setIdSelecionado(Number(event.target.value));
   }
 
-  const idsDosPredios = Array.from(new Set(dados.map((r) => r.idPredio)));
+  const idsDosPredios: number[] = [];
+  dados.forEach(dado => {
+    if(!idsDosPredios.includes(dado.idPredio)) idsDosPredios.push(dado.idPredio)
+  });
+const idsDosPrediosObj = idsDosPredios.map(id => ({idPredio: id}))
+
 
   const ambientesDoPredio = idPredioSelecionado === 0? dados.map((registro) => registro) : dados.filter((registro) => registro.idPredio === idPredioSelecionado);
 
@@ -49,15 +54,15 @@ export default function Ambiente() {
 
       <div>
         <p>Prédio:</p>
-        <Select opcoes={dados} chaveValor="idPredio" chaveTexto="idPredio" textoPadrao="Selecione..." name="idPredio" value={idPredioSelecionado} onChange={handlePredioChange} className={style.selectPredio}></Select>
-        <select name="idPredio" value={idPredioSelecionado} onChange={handlePredioChange} className={style.selectPredio}>
+        <Select opcoes={idsDosPrediosObj} chaveValor="idPredio" chaveTexto="idPredio" textoPadrao="Predio" name="idPredio" value={idPredioSelecionado} onChange={handlePredioChange} className={style.selectPredio}></Select>
+        {/* <select name="idPredio" value={idPredioSelecionado} onChange={handlePredioChange} className={style.selectPredio}>
           <option value={0}>Selecione...</option>
           {idsDosPredios.map((id) => (
             <option key={id} value={id}>
               Prédio {id}
             </option>
           ))}
-        </select>
+        </select> */}
       </div>
 
       <br />
