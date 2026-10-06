@@ -2,15 +2,16 @@
 
 import { useEffect, useState } from "react";
 import style from "./page.module.css"
+import { Select } from "../component/select";
 
-interface DadosDosAmbientes {
+type DadosDosAmbientes = {
   idAmbiente: number;
   nome: string;
   capacidade: number;
   idPredio: number;
   andar: number;
   idTipo: number;
-}
+};
 
 export default function Ambiente() {
   const [dados, setDados] = useState<DadosDosAmbientes[]>([]);
@@ -48,6 +49,7 @@ export default function Ambiente() {
 
       <div>
         <p>Prédio:</p>
+        <Select opcoes={dados} chaveValor="idPredio" chaveTexto="idPredio" textoPadrao="Selecione..." name="idPredio" value={idPredioSelecionado} onChange={handlePredioChange} className={style.selectPredio}></Select>
         <select name="idPredio" value={idPredioSelecionado} onChange={handlePredioChange} className={style.selectPredio}>
           <option value={0}>Selecione...</option>
           {idsDosPredios.map((id) => (
