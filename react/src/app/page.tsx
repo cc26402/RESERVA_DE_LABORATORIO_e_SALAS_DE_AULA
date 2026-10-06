@@ -39,13 +39,6 @@ export default function Ambiente() {
     setIdSelecionado(Number(event.target.value));
   }
 
-  const idsDosPredios: number[] = [];
-  dados.forEach(dado => {
-    if(!idsDosPredios.includes(dado.idPredio)) idsDosPredios.push(dado.idPredio)
-  });
-const idsDosPrediosObj = idsDosPredios.map(id => ({idPredio: id}))
-
-
   const ambientesDoPredio = idPredioSelecionado === 0? dados.map((registro) => registro) : dados.filter((registro) => registro.idPredio === idPredioSelecionado);
 
   return (
@@ -54,7 +47,7 @@ const idsDosPrediosObj = idsDosPredios.map(id => ({idPredio: id}))
 
       <div>
         <p>Prédio:</p>
-        <Select opcoes={idsDosPrediosObj} chaveValor="idPredio" chaveTexto="idPredio" textoPadrao="Predio" name="idPredio" value={idPredioSelecionado} onChange={handlePredioChange} className={style.selectPredio}></Select>
+        <Select opcoes={dados} chaveValor="idPredio" chaveTexto="idPredio" textoPadrao="Predio" name="idPredio" value={idPredioSelecionado} onChange={handlePredioChange} className={style.selectPredio}></Select>
       </div>
 
       <br />
