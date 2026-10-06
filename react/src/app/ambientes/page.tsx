@@ -5,7 +5,7 @@ interface Predio {
 }
 
 import { useState, useEffect } from "react";
-import style from "./ambientes.module.css"
+import style from "./ambientes.module.css";
 
 export default function Ambiente(){
 
@@ -88,7 +88,60 @@ export default function Ambiente(){
                         <div>
                             <label>Prédio:</label>
                             <select value={idPredio} onChange={(e) => setIdPredio(Number(e.target.value))}>
-                                {predio.map(p => <option value={p.id} key={p.id}>{p.nome}</option>)}
+                                {predio.map(p =><option value={p.id} key={p.id}>{p.nome}</option>)}
+                            </select>
+                        </div>
+                        <button type="submit">Adicionar</button>
+                    </form>
+                )}
+                {(operacao === "Excluir") && (
+                    <form className={style.form} onSubmit={cadastrarAmbiente}>
+                        <h1>Excluir Ambiente</h1>
+                        <div>
+                            <label>id:</label>
+                            <select>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Nome:</label>
+                            <input type="text" value={nome} onChange={(e) => setNome(e.target.value)}/>
+                            <button>Buscar</button>
+                        </div>
+                        <button type="submit">Adicionar</button>
+                    </form>
+                )}
+                {(operacao === "Editar") && (
+                    <form className={style.form} onSubmit={cadastrarAmbiente}>
+                        <h1>Editar Ambiente</h1>
+                        <div>
+                            <label>id:</label>
+                            <select>
+                                
+                            </select>
+                        </div>
+                        <div>
+                            <label>Nome:</label>
+                            <input type="text" value={nome} onChange={(e) => setNome(e.target.value)} />
+                        </div>
+                        <div>
+                            <label>Capacidade:</label>
+                            <input type="number" value={capacidade} onChange={(e) => setCapacidade(Number(e.target.value))} />
+                        </div>
+                        <div>
+                            <label>Andar:</label>
+                            <input type="number" value={andar} onChange={(e) => setAndar(Number(e.target.value))} />
+                        </div>
+                        <div>
+                            <label>Tipo:</label>
+                            <select value={idTipo} onChange={(e) => setIdTipo(Number(e.target.value))}>
+                                <option value={1}>Sala</option>
+                                <option value={2}>Laboratório</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Prédio:</label>
+                            <select value={idPredio} onChange={(e) => setIdPredio(Number(e.target.value))}>
+                                {predio.map(p =><option value={p.id} key={p.id}>{p.nome}</option>)}
                             </select>
                         </div>
                         <button type="submit">Adicionar</button>
