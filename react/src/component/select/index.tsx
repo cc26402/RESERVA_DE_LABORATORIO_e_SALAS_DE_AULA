@@ -21,6 +21,7 @@ export function Select({opcoes, chaveValor, chaveTexto, textoPadrao, textoOption
         chavesUnicas.add(chave);
         return true;
     })
+    
     return (
         <select name={name} id={id} onChange={onChange} value = {value} className={className}>
             {textoOptionPadrao && (
