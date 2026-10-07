@@ -104,7 +104,7 @@ export default function FrmUsuario({cpf=""}){
                 </div>
                 <div>
                     <label htmlFor="">Nível de acesso</label>
-                    <Select opcoes={niveisAcesso} chaveValor="idNivelAcesso" chaveTexto="nome" textoOptionPadrao="Selecione..." id="selectNivelAcesso" defaultValue={Number(dadosUsuarioAtual.idNivelAcesso)}></Select>
+                    <Select opcoes={niveisAcesso} chaveValor="idNivelAcesso" chaveTexto="nome" textoOptionPadrao="Selecione..." id="selectNivelAcesso" value={Number(dadosUsuarioAtual.idNivelAcesso)}></Select>
                 </div>
                 <button>Salvar</button>
             </form>
