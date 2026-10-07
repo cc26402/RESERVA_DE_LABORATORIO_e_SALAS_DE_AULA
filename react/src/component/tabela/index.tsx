@@ -5,7 +5,8 @@ interface TabelaProps {
     listaOrdemChaveDados: string[],
     chavePrimaria?: string | number,
     dados: Record<string, string | number>[],
-    botoes?: DadosBotoes[]
+    botoes?: DadosBotoes[],
+    links?: DadosLinks[]
 }
 
 interface DadosBotoes {
@@ -13,11 +14,17 @@ interface DadosBotoes {
     onClick: (...args: (number|string)[]) => void
 }
 
-export function Tabela({titulos, listaOrdemChaveDados, chavePrimaria, dados, botoes} : TabelaProps){
+interface DadosLinks {
+    textoLink: string,
+    href: string,
+    rotaDinamica: boolean 
+}
+
+export function Tabela({titulos, listaOrdemChaveDados, chavePrimaria, dados, botoes, links} : TabelaProps){
     return (
         <table>
             <Thead titulos={titulos}></Thead>
-            <Tbody dados={dados} listaOrdemChaveDados={listaOrdemChaveDados} chavePrimaria = {chavePrimaria} botoes={botoes}></Tbody>
+            <Tbody dados={dados} listaOrdemChaveDados={listaOrdemChaveDados} chavePrimaria = {chavePrimaria} botoes={botoes} links={links}></Tbody>
         </table>
     )
 }
