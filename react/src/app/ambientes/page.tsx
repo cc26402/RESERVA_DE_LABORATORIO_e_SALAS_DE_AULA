@@ -64,6 +64,7 @@ export default function Ambientes() {
     function abrirForm(id?: number) {
         const form = document.createElement("form");
         form.id = "formEditar";
+        form.className = "formAmbiente"
 
         const titulo = document.createElement("h1");
         titulo.textContent = id ? "Alteração de Dados" : "Novo Ambiente";
@@ -144,7 +145,6 @@ export default function Ambientes() {
         divPredio.appendChild(selectPredio);
         form.appendChild(divPredio);
 
-        // INICIO ADAPTAÇAO
         const divBtn = document.createElement("div");
             
         const btnCancelar = document.createElement("button");
@@ -243,29 +243,30 @@ export default function Ambientes() {
     }
 
     return (
-        <main>
+        <main className={style.main}>
             <div id="header">
-                <button onClick={() => abrirForm()}>Novo ambiente</button>
+                <button onClick={() => abrirForm()} className={style.btnNovoAmbiente}>Novo ambiente</button>
             </div>
-            <div id="listaDeAmbientes">
+            <div id="listaDeAmbientes" className={style.listaDeAmbientes}>
                 {ambientes.map((ambiente) => (
                     <div key={ambiente.idAmbiente} className={style.cardsAmbientes}>
                         <h1>{ambiente.nome}</h1>
-                        <div>
+                        <div className={style.dadosCard}>
                             <h2>Id: {ambiente.idAmbiente}</h2>
                             <h2>Tipo: {ambiente.idTipo == 1 ? "Sala" : "Laboratório"}</h2>
                             <h2>Capacidade: {ambiente.capacidade}</h2>
                             <h2>Andar: {ambiente.andar}</h2>
                             <h2>Prédio: {predios.find(predio => predio.idPredio == ambiente.idPredio)?.nome}</h2>
-                            <div>
-                                <button onClick={() => abrirForm(ambiente.idAmbiente)}>Editar</button>
-                                <button onClick={() => excluirAmbiente(ambiente.idAmbiente)}>Excluir</button>
+                            <div className={style.divBtnCards}>
+                                <button onClick={() => abrirForm(ambiente.idAmbiente)} className={style.btnEditar}>Editar</button>
+                                <button onClick={() => excluirAmbiente(ambiente.idAmbiente)} className={style.btnExcluir}>Excluir</button>
                             </div>
                         </div>
                     </div>
                 ))}
             </div>
-            <div id="form"></div>
+            <div id="form"
+            ></div>
         </main>
     )
 }
