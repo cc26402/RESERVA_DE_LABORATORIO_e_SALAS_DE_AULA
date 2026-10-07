@@ -109,7 +109,6 @@ export default function Ambientes() {
         divTipo.appendChild(selectTipo);
         form.appendChild(divTipo);
 
-
         const divCapacidade = document.createElement("div");
         const labelCapacidade = document.createElement("label");
         labelCapacidade.textContent = "Capacidade: ";
@@ -146,29 +145,69 @@ export default function Ambientes() {
         divPredio.appendChild(selectPredio);
         form.appendChild(divPredio);
 
+        const dadosAtuais = ambientes.find(amb => amb.idAmbiente === id);
+        if (dadosAtuais) {
+            inputNome.value = dadosAtuais.nome;
+            selectTipo.value = dadosAtuais.idTipo.toString();
+            inputCapacidade.value = dadosAtuais.capacidade.toString();
+            inputAndar.value = dadosAtuais.andar.toString();
+            selectPredio.value = dadosAtuais.idPredio.toString();
+        }
+
         const divBtn = document.createElement("div");
         
         const btnCancelar = document.createElement("button");
         btnCancelar.type = "button";
         btnCancelar.textContent = "Cancelar";
-
         btnCancelar.addEventListener("click", () => form.remove()); 
 
         const btnAlterar = document.createElement("button");
         btnAlterar.type = "submit";
         btnAlterar.textContent = "Alterar";
 
+        btnAlterar.addEventListener("click", async (e) => {
+            e.preventDefault();
+
+            const ambienteAtualizado: Ambiente = { 
+                idAmbiente: id, 
+                idPredio: Number(selectPredio.value), 
+                nome: inputNome.value, 
+                capacidade: Number(inputCapacidade.value), 
+                andar: Number(inputAndar.value), 
+                idTipo: Number(selectTipo.value) 
+            };
+
+            try {
+                const response = await fetch("http://localhost:8080/ambientes/" + id, {
+                    method: "PATCH",
+                    headers: { 'Content-type': 'application/json' },
+                    body: JSON.stringify(ambienteAtualizado)
+                });
+
+                if (response.ok) {
+                    // Atualiza o estado mapeando os ambientes e trocando o que foi alterado
+                    setAmbientes(ambientes.map(amb => amb.idAmbiente === id ? ambienteAtualizado : amb));
+                    form.remove(); // Fecha o formulário após salvar com sucesso
+                    alert("Ambiente atualizado com sucesso!");
+                } else {
+                    console.error("Erro ao alterar ambiente:", response.status);
+                }
+            } catch (erro) {
+                console.error("Erro ao alterar ambiente:", erro);
+            }
+        });
+
         divBtn.appendChild(btnCancelar);
         divBtn.appendChild(btnAlterar);
         form.appendChild(divBtn);
 
         const divDeFormulario = document.getElementById("form");
-        
         if (divDeFormulario) {
             divDeFormulario.innerHTML = "";
             divDeFormulario.appendChild(form);
         }
     }
+
 
     return (
         <main>
