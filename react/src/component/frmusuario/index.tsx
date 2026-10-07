@@ -6,7 +6,6 @@ export default function FrmUsuario({cpf=""}){
 
     const [niveisAcesso, setNiveisAcesso] = useState([]);
     const [erro, setErro] = useState("");
-    const [nivelAcessoSelecionado, setNivelAcessoSelecionado] = useState(0);
     const [dadosUsuarioAtual, setDadosUsuarioAtual] = useState({CPF: "", prenome:"", sobrenome:"", nascimento: "", celular:"", email:"", idNivelAcesso:0});
 
     useEffect(() => {
@@ -37,9 +36,6 @@ export default function FrmUsuario({cpf=""}){
         }
     },[cpf])
 
-    function handleNivelAcessoChange(evento: React.ChangeEvent<HTMLSelectElement>){
-        setNivelAcessoSelecionado(Number(evento.target.value))
-    }
 
     return (
         <form>
@@ -69,7 +65,7 @@ export default function FrmUsuario({cpf=""}){
             </div>
             <div>
                 <label htmlFor="">Nível de acesso</label>
-                <Select opcoes={niveisAcesso} chaveValor="idNivelAcesso" chaveTexto="nome" textoOptionPadrao="Selecione..." id="selectNivelAcesso" onChange={handleNivelAcessoChange} value={dadosUsuarioAtual.idNivelAcesso}></Select>
+                <Select opcoes={niveisAcesso} chaveValor="idNivelAcesso" chaveTexto="nome" textoOptionPadrao="Selecione..." id="selectNivelAcesso" value={dadosUsuarioAtual.idNivelAcesso}></Select>
             </div>
             <button>Salvar</button>
         </form>
