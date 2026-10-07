@@ -1,7 +1,6 @@
 "use client"
 import { useState, useEffect } from "react";
 import style from "./ambientes.module.css";
-import { create } from "domain";
 
 type Ambiente = {
     idAmbiente: number;
@@ -62,12 +61,12 @@ export default function Ambientes() {
         }
     }
 
-    function abrirForm(id: number) {
+    function abrirForm(id?: number) {
         const form = document.createElement("form");
         form.id = "formEditar";
 
         const titulo = document.createElement("h1");
-        titulo.textContent = "Alteração de Dados";
+        titulo.textContent = id ? "Alteração de Dados" : "Novo Ambiente";
         form.appendChild(titulo);
 
         const divId = document.createElement("div");
@@ -76,7 +75,7 @@ export default function Ambientes() {
         const inputId = document.createElement("input");
         inputId.type = "number";
         inputId.readOnly = true;
-        inputId.value = id.toString();
+        inputId.value = id ? id.toString() : "";
         divId.appendChild(labelId);
         divId.appendChild(inputId);
         form.appendChild(divId);
@@ -132,7 +131,7 @@ export default function Ambientes() {
         labelPredio.textContent = "Prédio: ";
         const selectPredio = document.createElement("select");
 
-        if (typeof predios !== 'undefined' && Array.isArray(predios)) {
+        if (typeof predios !== 'undefined') {
             predios.forEach(p => {
                 const opt = document.createElement("option");
                 opt.value = p.idPredio.toString();
@@ -145,61 +144,96 @@ export default function Ambientes() {
         divPredio.appendChild(selectPredio);
         form.appendChild(divPredio);
 
-        const dadosAtuais = ambientes.find(amb => amb.idAmbiente === id);
-        if (dadosAtuais) {
-            inputNome.value = dadosAtuais.nome;
-            selectTipo.value = dadosAtuais.idTipo.toString();
-            inputCapacidade.value = dadosAtuais.capacidade.toString();
-            inputAndar.value = dadosAtuais.andar.toString();
-            selectPredio.value = dadosAtuais.idPredio.toString();
-        }
-
+        // INICIO ADAPTAÇAO
         const divBtn = document.createElement("div");
-        
+            
         const btnCancelar = document.createElement("button");
         btnCancelar.type = "button";
         btnCancelar.textContent = "Cancelar";
-        btnCancelar.addEventListener("click", () => form.remove()); 
+        btnCancelar.addEventListener("click", () => form.remove());
 
-        const btnAlterar = document.createElement("button");
-        btnAlterar.type = "submit";
-        btnAlterar.textContent = "Alterar";
-
-        btnAlterar.addEventListener("click", async (e) => {
-            e.preventDefault();
-
-            const ambienteAtualizado: Ambiente = { 
-                idAmbiente: id, 
-                idPredio: Number(selectPredio.value), 
-                nome: inputNome.value, 
-                capacidade: Number(inputCapacidade.value), 
-                andar: Number(inputAndar.value), 
-                idTipo: Number(selectTipo.value) 
-            };
-
-            try {
-                const response = await fetch("http://localhost:8080/ambientes/" + id, {
-                    method: "PATCH",
-                    headers: { 'Content-type': 'application/json' },
-                    body: JSON.stringify(ambienteAtualizado)
-                });
-
-                if (response.ok) {
-                    // Atualiza o estado mapeando os ambientes e trocando o que foi alterado
-                    setAmbientes(ambientes.map(amb => amb.idAmbiente === id ? ambienteAtualizado : amb));
-                    form.remove(); // Fecha o formulário após salvar com sucesso
-                    alert("Ambiente atualizado com sucesso!");
-                } else {
-                    console.error("Erro ao alterar ambiente:", response.status);
-                }
-            } catch (erro) {
-                console.error("Erro ao alterar ambiente:", erro);
+        if (id){
+            const dadosAtuais = ambientes.find(amb => amb.idAmbiente === id);
+            if (dadosAtuais) {
+                inputNome.value = dadosAtuais.nome;
+                selectTipo.value = dadosAtuais.idTipo.toString();
+                inputCapacidade.value = dadosAtuais.capacidade.toString();
+                inputAndar.value = dadosAtuais.andar.toString();
+                selectPredio.value = dadosAtuais.idPredio.toString();
             }
-        });
 
-        divBtn.appendChild(btnCancelar);
-        divBtn.appendChild(btnAlterar);
-        form.appendChild(divBtn);
+            const btnAlterar = document.createElement("button");
+            btnAlterar.type = "submit";
+            btnAlterar.textContent = "Alterar";
+
+            btnAlterar.addEventListener("click", async (e) => {
+                e.preventDefault();
+
+                const ambienteAtualizado: Ambiente = { 
+                    idAmbiente: id, 
+                    idPredio: Number(selectPredio.value), 
+                    nome: inputNome.value, 
+                    capacidade: Number(inputCapacidade.value), 
+                    andar: Number(inputAndar.value), 
+                    idTipo: Number(selectTipo.value) 
+                };
+
+                try {
+                    const response = await fetch("http://localhost:8080/ambientes/" + id, {
+                        method: "PATCH",
+                        headers: { 'Content-type': 'application/json' },
+                        body: JSON.stringify(ambienteAtualizado)
+                    });
+
+                    if (response.ok) {
+                        setAmbientes(ambientes.map(amb => amb.idAmbiente === id ? ambienteAtualizado : amb));
+                        form.remove();
+                        alert("Ambiente atualizado com sucesso!");
+                    } else {
+                        console.error("Erro ao alterar ambiente:", response.status);
+                    }
+                } catch (erro) {
+                    console.error("Erro ao alterar ambiente:", erro);
+                }
+            });
+            divBtn.appendChild(btnAlterar);
+            }
+            else{
+                const btnAdicionar = document.createElement("button");
+                btnAdicionar.type = "button";
+                btnAdicionar.textContent = "Adicionar";
+                btnAdicionar.addEventListener("click", async (e) => {
+                    e.preventDefault();
+                    const ambienteNovo: Ambiente = { 
+                        idAmbiente: 0, 
+                        idPredio: Number(selectPredio.value), 
+                        nome: inputNome.value, 
+                        capacidade: Number(inputCapacidade.value), 
+                        andar: Number(inputAndar.value), 
+                        idTipo: Number(selectTipo.value) 
+                    };
+                    if (ambienteNovo.idPredio == 0 || ambienteNovo.andar == 0 || ambienteNovo.nome == "" || ambienteNovo.capacidade == 0 || ambienteNovo.idTipo == 0) return alert("dados incompletos")
+                    try {
+                        const response = await fetch("http://localhost:8080/ambientes/", {
+                            method: "POST",
+                            headers: { 'Content-type': 'application/json' },
+                            body: JSON.stringify(ambienteNovo)
+                        });
+
+                        if (response.ok) {
+                            alert("Ambiente adicionado com sucesso!");
+                        } else {
+                            console.error("Erro ao alterar ambiente:", response.status);
+                        }
+                    } catch (erro) {
+                        console.error("Erro ao alterar ambiente:", erro);
+                    }
+                });
+                divBtn.appendChild(btnAdicionar);
+            }
+
+            divBtn.appendChild(btnCancelar);
+            form.appendChild(divBtn);
 
         const divDeFormulario = document.getElementById("form");
         if (divDeFormulario) {
@@ -208,11 +242,10 @@ export default function Ambientes() {
         }
     }
 
-
     return (
         <main>
             <div id="header">
-                <button>Novo ambiente</button>
+                <button onClick={() => abrirForm()}>Novo ambiente</button>
             </div>
             <div id="listaDeAmbientes">
                 {ambientes.map((ambiente) => (
@@ -233,46 +266,6 @@ export default function Ambientes() {
                 ))}
             </div>
             <div id="form"></div>
-            {/* {(
-                <form id="formEditar">
-                    <h1>Alteração de Dados</h1>
-                    <div>
-                        <label>Id: </label>
-                        <input type="number" readOnly/>
-                    </div>
-                    <div>
-                        <label>Nome: </label>
-                        <input type="text"/>
-                    </div>
-                    <div>
-                        <label>Tipo: </label>
-                        <select>
-                            <option value="1">Sala</option>
-                            <option value="2">Laboratório</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label>Capacidade: </label>
-                        <input type="number"/>
-                    </div>
-                    <div>
-                        <label>Andar: </label>
-                        <input type="number"/>
-                    </div>
-                    <div>
-                        <label>Prédio: </label>
-                        <select>
-                            {predios.map(p => (
-                                <option key={p.idPredio} value={p.idPredio}>{p.nome}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div>
-                        <button type="button">Cancelar</button>
-                        <button type="submit">Alterar</button>
-                    </div>
-                </form>
-            )} */}
         </main>
     )
 }
