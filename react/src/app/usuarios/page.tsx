@@ -1,6 +1,7 @@
 "use client";
 import { Tabela } from "@/src/component/tabela"
 import { useEffect, useState } from "react"
+import Link from "next/link";
 
 interface Usuario {
     CPF: string,
@@ -36,6 +37,10 @@ export default function Usuarios() {
         rotaDinamica: true
     }]
     return (
-        <Tabela titulos={titulos} listaOrdemChaveDados={listaOrdemChaves} dados={usuariosFormatados} links={links} chavePrimaria={"CPF"}></Tabela>
+        <main>
+            {erro && (<h1>{erro}</h1>)}
+            <Link href="/usuarios/novo">Novo usuario</Link>
+            <Tabela titulos={titulos} listaOrdemChaveDados={listaOrdemChaves} dados={usuariosFormatados} links={links} chavePrimaria={"CPF"}></Tabela>
+        </main>
     )
 }
