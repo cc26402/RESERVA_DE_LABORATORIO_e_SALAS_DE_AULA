@@ -41,13 +41,13 @@ export function Tbody({dados, listaOrdemChaveDados, chavePrimaria, botoes, links
                                     
                                 }
                                 else if (chave=="link"){
-                                    if (links == undefined) throw new Error("Foi pedido para gerar um link porém nenhuma chave primária para identificação ou dado de link foi passado")
+                                    if (links == undefined) throw new Error("Foi pedido para gerar um link porém nenhum dado de link foi passado")
                                     const link = links[linkAtual];
                                     linkAtual++
                                     if (link.rotaDinamica && chavePrimaria == undefined) throw new Error("Foi passado para gerar um Link com rota dinâmica porém chave primária está ausente")
                                     return (
                                         <td key={i2+"td"}>
-                                            <Link href={link.href + (link.rotaDinamica ? "/" + link[chavePrimaria] : "")}>{link.textoLink}</Link>
+                                            <Link href={link.href + (link.rotaDinamica ? "/" + dado[chavePrimaria] : "")}>{link.textoLink}</Link>
                                         </td>
                                     )
                                 }
