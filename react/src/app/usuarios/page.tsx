@@ -29,12 +29,13 @@ export default function Usuarios() {
     },[]);
     const titulos = ["CPF", "Nome", "Celular", "E-mail"];
     const usuariosFormatados = usuarios.map((usuario: Usuario) => ({CPF: usuario.CPF, nome_completo: `${usuario.prenome} ${usuario.sobrenome}`, celular: usuario.celular, email: usuario.email}));
-    const listaOrdemChaves = ["CPF", "nome_completo", "celular", "email", "botão"]
-    const botoes = [{
-        textoBotao: "Editar",
-        onClick: (chave: string|number) => alert(chave)
+    const listaOrdemChaves = ["CPF", "nome_completo", "celular", "email", "link"]
+    const links = [{
+        textoLink: "Editar",
+        href: "/usuarios",
+        rotaDinamica: true
     }]
     return (
-        <Tabela titulos={titulos} listaOrdemChaveDados={listaOrdemChaves} dados={usuariosFormatados} botoes={botoes} chavePrimaria={"CPF"}></Tabela>
+        <Tabela titulos={titulos} listaOrdemChaveDados={listaOrdemChaves} dados={usuariosFormatados} links={links} chavePrimaria={"CPF"}></Tabela>
     )
 }
