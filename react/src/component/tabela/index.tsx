@@ -9,7 +9,6 @@ interface TabelaProps {
     dados: Record<string, string | number>[],
     botoes?: DadosBotoes[],
     links?: DadosLinks[],
-    className?: string;
 }
 
 interface DadosBotoes {
@@ -23,7 +22,7 @@ interface DadosLinks {
     rotaDinamica: boolean
 }
 
-export function Tabela({titulos, listaOrdemChaveDados, chavePrimaria, dados, botoes, links, className} : TabelaProps){
+export function Tabela({titulos, listaOrdemChaveDados, chavePrimaria, dados, botoes, links} : TabelaProps){
     return (
         <div className={style.div_tabela}>
             <table className={style.table}>
