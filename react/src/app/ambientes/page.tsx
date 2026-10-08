@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import style from "./ambientes.module.css";
 
 type Ambiente = {
@@ -16,29 +16,35 @@ type Predio = {
     nome: string;
 };
 
+type estadoForm = {
+    modo: "adicionar" | "editar";
+    dados?: Ambiente;
+} | null;
+
 export default function Ambientes() {
 
     const [ambientes, setAmbientes] = useState<Ambiente[]>([]);
-    useEffect(() => {
-        async function listarAmbientes() {
-            try {
-                const response = await fetch("http://localhost:8080/ambientes");
-                const dados = await response.json();
-                setAmbientes(dados);
-            } catch (erro) {
-                console.error("Erro ao buscar ambientes:", erro);
-            }
+    const [predios, setPredios] = useState<Predio[]>([]);
+    const [form, setForm] = useState<estadoForm>(null);
+
+    async function listarAmbientes() {
+        try {
+            const response = await fetch("http://localhost:8080/ambientes");
+            setAmbientes(await response.json());
+        } catch (erro) {
+            console.error("Erro ao buscar ambientes:", erro);
         }
+    }
+
+    useEffect(() => {
         listarAmbientes();
     }, [])
 
-    const [predios, setPredios] = useState<Predio[]>([]);
     useEffect(() => {
         async function listarPredios() {
             try {
                 const response = await fetch("http://localhost:8080/predios");
-                const dados = await response.json();
-                setPredios(dados);
+                setPredios(await response.json());
             } catch (erro) {
                 console.error("Erro ao buscar prédios:", erro);
             }
@@ -52,7 +58,10 @@ export default function Ambientes() {
                 method: "DELETE"
             });
             if (response.ok) {
-                setAmbientes(ambientes.filter(amb => amb.idAmbiente != id));
+                if (response.ok) {
+                const ambientesMN = ambientes.filter(amb => amb.idAmbiente !== id);
+                setAmbientes(ambientesMN);
+            }
             } else {
                 console.error("Erro ao excluir ambiente:", response.status);
             }
@@ -61,195 +70,76 @@ export default function Ambientes() {
         }
     }
 
-    function abrirForm(id?: number) {
-        const form = document.createElement("form");
-        form.id = "formEditar";
-        form.className = style.formAmbiente;
+    async function cadastrarAmbiente(e: FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        const dados = new FormData(e.currentTarget);
 
-        const titulo = document.createElement("h1");
-        titulo.textContent = id ? "Alteração de Dados" : "Novo Ambiente";
-        form.appendChild(titulo);
+        const ambienteNovo = {
+            nome: String(dados.get("nome")),
+            idTipo: Number(dados.get("idTipo")),
+            capacidade: Number(dados.get("capacidade")),
+            andar: Number(dados.get("andar")),
+            idPredio: Number(dados.get("idPredio")),
+        };
 
-        const divId = document.createElement("div");
-        const labelId = document.createElement("label");
-        labelId.textContent = "Id: ";
-        const inputId = document.createElement("input");
-        inputId.type = "number";
-        inputId.readOnly = true;
-        inputId.value = id ? id.toString() : "";
-        divId.appendChild(labelId);
-        divId.appendChild(inputId);
-        form.appendChild(divId);
-
-        const divNome = document.createElement("div");
-        const labelNome = document.createElement("label");
-        labelNome.textContent = "Nome: ";
-        const inputNome = document.createElement("input");
-        inputNome.type = "text";
-        divNome.appendChild(labelNome);
-        divNome.appendChild(inputNome);
-        form.appendChild(divNome);
-
-        const divTipo = document.createElement("div");
-        const labelTipo = document.createElement("label");
-        labelTipo.textContent = "Tipo: ";
-        const selectTipo = document.createElement("select");
-        
-        const optSala = document.createElement("option");
-        optSala.value = "1";
-        optSala.textContent = "Sala";
-        
-        const optLab = document.createElement("option");
-        optLab.value = "2";
-        optLab.textContent = "Laboratório";
-        
-        selectTipo.appendChild(optSala);
-        selectTipo.appendChild(optLab);
-        divTipo.appendChild(labelTipo);
-        divTipo.appendChild(selectTipo);
-        form.appendChild(divTipo);
-
-        const divCapacidade = document.createElement("div");
-        const labelCapacidade = document.createElement("label");
-        labelCapacidade.textContent = "Capacidade: ";
-        const inputCapacidade = document.createElement("input");
-        inputCapacidade.type = "number";
-        divCapacidade.appendChild(labelCapacidade);
-        divCapacidade.appendChild(inputCapacidade);
-        form.appendChild(divCapacidade);
-
-        const divAndar = document.createElement("div");
-        const labelAndar = document.createElement("label");
-        labelAndar.textContent = "Andar: ";
-        const inputAndar = document.createElement("input");
-        inputAndar.type = "number";
-        divAndar.appendChild(labelAndar);
-        divAndar.appendChild(inputAndar);
-        form.appendChild(divAndar);
-
-        const divPredio = document.createElement("div");
-        const labelPredio = document.createElement("label");
-        labelPredio.textContent = "Prédio: ";
-        const selectPredio = document.createElement("select");
-
-        if (typeof predios !== 'undefined') {
-            predios.forEach(p => {
-                const opt = document.createElement("option");
-                opt.value = p.idPredio.toString();
-                opt.textContent = p.nome;
-                selectPredio.appendChild(opt);
+        try {
+            const response = await fetch("http://localhost:8080/ambientes", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(ambienteNovo),
             });
-        }
-        
-        divPredio.appendChild(labelPredio);
-        divPredio.appendChild(selectPredio);
-        form.appendChild(divPredio);
-
-        const divBtn = document.createElement("div");
-        divBtn.className = style.divBtn;
-            
-        const btnCancelar = document.createElement("button");
-        btnCancelar.type = "button";
-        btnCancelar.textContent = "Cancelar";
-        btnCancelar.className = style.btnCancelar;
-        btnCancelar.addEventListener("click", () => form.remove());
-
-        if (id){
-            const dadosAtuais = ambientes.find(amb => amb.idAmbiente === id);
-            if (dadosAtuais) {
-                inputNome.value = dadosAtuais.nome;
-                selectTipo.value = dadosAtuais.idTipo.toString();
-                inputCapacidade.value = dadosAtuais.capacidade.toString();
-                inputAndar.value = dadosAtuais.andar.toString();
-                selectPredio.value = dadosAtuais.idPredio.toString();
+            if (response.ok) {
+                await listarAmbientes();
+                setForm(null);
+            } else {
+                console.error("Erro ao adicionar ambiente:", response.status);
+                alert("Erro ao adicionar ambiente");
             }
+        } catch (erro) {
+            console.error("Erro ao adicionar ambiente:", erro);
+            alert("Erro ao adicionar ambiente");
+        }
+    }
 
-            const btnAlterar = document.createElement("button");
-            btnAlterar.type = "submit";
-            btnAlterar.textContent = "Alterar";
-            btnAlterar.className = style.btnAlterar;
+    async function alterarAmbiente(e: FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        const dados = new FormData(e.currentTarget);
 
-            btnAlterar.addEventListener("click", async (e) => {
-                e.preventDefault();
+        const ambienteAtualizado: Ambiente = {
+            idAmbiente: Number(dados.get("idAmbiente")),
+            nome: String(dados.get("nome")),
+            idTipo: Number(dados.get("idTipo")),
+            capacidade: Number(dados.get("capacidade")),
+            andar: Number(dados.get("andar")),
+            idPredio: Number(dados.get("idPredio")),
+        };
 
-                const ambienteAtualizado: Ambiente = { 
-                    idAmbiente: id, 
-                    idPredio: Number(selectPredio.value), 
-                    nome: inputNome.value, 
-                    capacidade: Number(inputCapacidade.value), 
-                    andar: Number(inputAndar.value), 
-                    idTipo: Number(selectTipo.value) 
-                };
-
-                try {
-                    const response = await fetch("http://localhost:8080/ambientes/" + id, {
-                        method: "PATCH",
-                        headers: { 'Content-type': 'application/json' },
-                        body: JSON.stringify(ambienteAtualizado)
-                    });
-
-                    if (response.ok) {
-                        setAmbientes(ambientes.map(amb => amb.idAmbiente === id ? ambienteAtualizado : amb));
-                        form.remove();
-                        alert("Ambiente atualizado com sucesso!");
-                    } else {
-                        console.error("Erro ao alterar ambiente:", response.status);
-                    }
-                } catch (erro) {
-                    console.error("Erro ao alterar ambiente:", erro);
-                }
+        try {
+            const response = await fetch("http://localhost:8080/ambientes/" + ambienteAtualizado.idAmbiente, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(ambienteAtualizado),
             });
-            divBtn.appendChild(btnAlterar);
+            if (response.ok) {
+                setAmbientes(ambientesMN => ambientesMN.map(amb =>
+                    amb.idAmbiente == ambienteAtualizado.idAmbiente ? ambienteAtualizado : amb
+                ));
+                setForm(null);
             }
             else{
-                const btnAdicionar = document.createElement("button");
-                btnAdicionar.type = "button";
-                btnAdicionar.textContent = "Adicionar";
-                btnAdicionar.className = style.btnAdicionar;
-                btnAdicionar.addEventListener("click", async (e) => {
-                    e.preventDefault();
-                    const ambienteNovo: Ambiente = { 
-                        idAmbiente: 0, 
-                        idPredio: Number(selectPredio.value), 
-                        nome: inputNome.value, 
-                        capacidade: Number(inputCapacidade.value), 
-                        andar: Number(inputAndar.value), 
-                        idTipo: Number(selectTipo.value) 
-                    };
-                    if (ambienteNovo.idPredio == 0 || ambienteNovo.andar == 0 || ambienteNovo.nome == "" || ambienteNovo.capacidade == 0 || ambienteNovo.idTipo == 0) return alert("dados incompletos")
-                    try {
-                        const response = await fetch("http://localhost:8080/ambientes", {
-                            method: "POST",
-                            headers: { 'Content-type': 'application/json' },
-                            body: JSON.stringify(ambienteNovo)
-                        });
-
-                        if (response.ok) {
-                            alert("Ambiente adicionado com sucesso!");
-                        } else {
-                            console.error("Erro ao alterar ambiente:", response.status);
-                        }
-                    } catch (erro) {
-                        console.error("Erro ao alterar ambiente:", erro);
-                    }
-                });
-                divBtn.appendChild(btnAdicionar);
+                console.error("Erro ao alterar ambiente");
+                alert("Erro ao alterar ambiente");
             }
-
-            divBtn.appendChild(btnCancelar);
-            form.appendChild(divBtn);
-
-        const divDeFormulario = document.getElementById("form");
-        if (divDeFormulario) {
-            divDeFormulario.innerHTML = "";
-            divDeFormulario.appendChild(form);
+        } catch (erro) {
+            console.error("Erro ao alterar ambiente:", erro);
+            alert("Erro ao alterar ambiente");
         }
     }
 
     return (
         <main className={style.main}>
             <div id="header">
-                <button onClick={() => abrirForm()} className={style.btnNovoAmbiente}>Novo ambiente</button>
+                <button onClick={() => setForm({ modo: "adicionar" })} className={style.btnNovoAmbiente}>Novo ambiente</button>
             </div>
             <div id="listaDeAmbientes" className={style.listaDeAmbientes}>
                 {ambientes.map((ambiente) => (
@@ -262,15 +152,93 @@ export default function Ambientes() {
                             <h2>Andar: {ambiente.andar}</h2>
                             <h2>Prédio: {predios.find(predio => predio.idPredio == ambiente.idPredio)?.nome}</h2>
                             <div className={style.divBtnCards}>
-                                <button onClick={() => abrirForm(ambiente.idAmbiente)} className={style.btnEditar}>Editar</button>
+                                <button onClick={() => setForm({ modo: "editar", dados: ambiente })} className={style.btnEditar}>Editar</button>
                                 <button onClick={() => excluirAmbiente(ambiente.idAmbiente)} className={style.btnExcluir}>Excluir</button>
                             </div>
                         </div>
                     </div>
                 ))}
             </div>
-            <div id="form"
-            ></div>
+            <div id="form">
+                {form?.modo === "adicionar" && (
+                    <form className={style.formAmbiente} onSubmit={cadastrarAmbiente}>
+                        <h1>Novo Ambiente</h1>
+                        <div>
+                            <label>Nome: </label>
+                            <input type="text" name="nome" required />
+                        </div>
+                        <div>
+                            <label>Tipo: </label>
+                            <select name="idTipo">
+                                <option value="1">Sala</option>
+                                <option value="2">Laboratório</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Capacidade: </label>
+                            <input type="number" name="capacidade" min="1" required />
+                        </div>
+                        <div>
+                            <label>Andar: </label>
+                            <input type="number" name="andar" required />
+                        </div>
+                        <div>
+                            <label>Prédio: </label>
+                            <select name="idPredio" required defaultValue="">
+                                <option value="">Selecione...</option>
+                                {predios.map(p => (
+                                    <option key={p.idPredio} value={p.idPredio}>{p.nome}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className={style.divBtn}>
+                            <button type="submit" className={style.btnAdicionar}>Adicionar</button>
+                            <button type="button" className={style.btnCancelar} onClick={() => setForm(null)}>Cancelar</button>
+                        </div>
+                    </form>
+                )}
+
+                {form?.modo === "editar" && form.dados && (
+                    <form key={form.dados.idAmbiente} className={style.formAmbiente} onSubmit={alterarAmbiente}>
+                        <h1>Alteração de Dados</h1>
+                        <div>
+                            <label>Id: </label>
+                            <input type="number" name="idAmbiente" readOnly defaultValue={form.dados.idAmbiente}/>
+                        </div>
+                        <div>
+                            <label>Nome: </label>
+                            <input type="text" name="nome" required defaultValue={form.dados.nome} />
+                        </div>
+                        <div>
+                            <label>Tipo: </label>
+                            <select name="idTipo" defaultValue={form.dados.idTipo}>
+                                <option value="1">Sala</option>
+                                <option value="2">Laboratório</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Capacidade: </label>
+                            <input type="number" name="capacidade" min="1" required defaultValue={form.dados.capacidade} />
+                        </div>
+                        <div>
+                            <label>Andar: </label>
+                            <input type="number" name="andar" required defaultValue={form.dados.andar} />
+                        </div>
+                        <div>
+                            <label>Prédio: </label>
+                            <select name="idPredio" defaultValue={form.dados.idPredio}>
+                                {predios.map(p => (
+                                    <option key={p.idPredio} value={p.idPredio}>{p.nome}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className={style.divBtn}>
+                            <button type="submit" className={style.btnAlterar}>Alterar</button>
+                            <button type="button" className={style.btnCancelar} onClick={() => setForm(null)}>Cancelar</button>
+                        </div>
+                    </form>
+                )}
+            </div>
         </main>
     )
 }
