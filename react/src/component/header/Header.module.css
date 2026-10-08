@@ -1,39 +1,57 @@
-.header{
-    background-color: #991B1B;
+.header {
+    background-color: #9a2020;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
+    padding: 15px;
 }
 
-.titulo{
-    color: white;
+.titulo {
     display: flex;
     align-items: center;
-    justify-content: center;
+    color: white;
+}
+
+.titulo>h1 {
+    font-size: 20px;
     font-weight: bold;
-    font-size: larger;
+    margin-left: 8px;
+    text-align: center;
 }
 
-.menu{
-    width: 50vw;
+.logoCotuca {
+    height: 48px;
+    transition: transform 0.3s ease;
+}
+
+.logoCotuca:hover {
+    transform: scale(1.05);
+}
+
+.menu {
     display: flex;
+    align-items: center;
+    max-width: 400px;
+    width: 60vw;
     justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 10px;
 }
 
-.linkMenu{
+.linkMenu>a {
+    display: inline;
     color: white;
-    background-color: #6B1313;
-    margin: 5%;
-    padding: 5px;
-    border-radius: 10%;
+    text-decoration: none;
+    background-color: rgb(112, 21, 21);
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 15px;
+    padding: 8px;
+    margin-left: 10px;
 }
 
-.logoCotuca{
-    background-color: #6B1313;
-    max-height: 50px;
-    max-width: 50px;
-    margin-right: 15px;
-    padding: 5px;
-    border-radius: 10%;
+.linkMenu a:hover {
+  background-color: #5c0d0d;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
