@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Select } from "../select";
 
-export default function FrmUsuario({cpf = undefined}){
+export default function FrmUsuario({cpf= ""}){
     const url = (cpf ? `http://localhost:8080/usuarios/${cpf}` : `http://localhost:8080/usuarios`);
     const metodo = (cpf ? "PATCH" : "POST")
     const [niveisAcesso, setNiveisAcesso] = useState([]);
@@ -29,27 +29,17 @@ export default function FrmUsuario({cpf = undefined}){
                     throw new Error("Erro ao buscar dados do usuário.");
                 }
                 console.log(dados)
-                setDadosUsuario(dados[0]);
-                fetch(`http://localhost:8080/logins/cpf/${cpf}`)
-                .then(async result => {
-                    const dados = await result.json();
-                    if (!result.ok){
-                        throw new Error("Erro ao buscar dados do usuário.");
-                    }
-                    console.log(dados)
-                    setDadosUsuario(d=> ({...d, senha:dados[0].senha}));
-                })
-                .catch(erro => setStatus(erro.message));
+                const dadosComSenha = {...dados[0], senha:""}
+                setDadosUsuario(dadosComSenha);
             })
             .catch(erro => setStatus(erro.message));
-
         }
     },[cpf, url]);
 
     function handlerChange(evento){
-        const target = evento.target;
-        console.log(target.value)
-        setDadosUsuario({...dadosUsuario, [target.id] : target.value});
+        const targetId = evento.target.id;
+        const targetValue = evento.target.value;
+        setDadosUsuario({...dadosUsuario, [targetId] : targetValue});
     }
 
     async function handlerSubmit(evento){
@@ -73,32 +63,32 @@ export default function FrmUsuario({cpf = undefined}){
         <form onSubmit={handlerSubmit}>
             <div>
                 <label htmlFor="">CPF</label>
-                <input type="text" id="CPF" value={dadosUsuario.CPF} onChange={handlerChange}/>
+                <input type="text" id="CPF" value={dadosUsuario.CPF} onChange={handlerChange} required/>
             </div>
             <div>
                 <label htmlFor="">Nome</label>
-                <input type="text" id="prenome" value={dadosUsuario.prenome} onChange={handlerChange}/>
+                <input type="text" id="prenome" value={dadosUsuario.prenome} onChange={handlerChange} required/>
             </div>
             <div>
                 <label htmlFor="">Sobrenome</label>
-                <input type="text" id="sobrenome" value={dadosUsuario.sobrenome} onChange={handlerChange}/>
+                <input type="text" id="sobrenome" value={dadosUsuario.sobrenome} onChange={handlerChange} required/>
             </div>
             <div>
                 <label htmlFor="">Data de Nascimento</label>
-                <input type="date" id="nascimento" value={(dadosUsuario.nascimento ? (dadosUsuario.nascimento.split("T"))[0] : dadosUsuario.nascimento)} onChange={handlerChange}/>
+                <input type="date" id="nascimento" value={(dadosUsuario.nascimento ? (dadosUsuario.nascimento.split("T"))[0] : dadosUsuario.nascimento)} onChange={handlerChange} required/>
             </div>
             <div>
                 <label htmlFor="">Celular</label>
-                <input type="text" id="celular" value={dadosUsuario.celular} onChange={handlerChange}/>
+                <input type="text" id="celular" value={dadosUsuario.celular} onChange={handlerChange} required/>
             </div>
             <div>
                 <label htmlFor="">E-mail</label>
-                <input type="text" id="email" value={dadosUsuario.email} onChange={handlerChange}/>
+                <input type="text" id="email" value={dadosUsuario.email} onChange={handlerChange} required/>
             </div>
-            <div>
+            {!cpf && <div>
                 <label htmlFor="">Senha</label>
-                <input type="password" id="senha" value={dadosUsuario.senha} onChange={handlerChange}/>
-            </div>
+                <input type="password" id="senha" onChange={handlerChange} required={!cpf}/>
+            </div>}
             <div>
                 <label htmlFor="">Nível de acesso</label>
                 <Select opcoes={niveisAcesso} chaveValor="idNivelAcesso" chaveTexto="nome" textoOptionPadrao="Selecione..." id="idNivelAcesso" value={dadosUsuario.idNivelAcesso} onChange={handlerChange}></Select>

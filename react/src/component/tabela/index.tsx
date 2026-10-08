@@ -1,5 +1,6 @@
 import { Thead } from "./thead";
 import { Tbody } from "./tbody";
+
 interface TabelaProps {
     titulos: string[],
     listaOrdemChaveDados: string[],
