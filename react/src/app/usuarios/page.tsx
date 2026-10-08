@@ -38,7 +38,6 @@ export default function Usuarios() {
     }]
     return (
         <main>
-            {erro && (<h1>{erro}</h1>)}
             <Link href="/usuarios/novo">Novo usuario</Link>
             <Tabela titulos={titulos} listaOrdemChaveDados={listaOrdemChaves} dados={usuariosFormatados} links={links} chavePrimaria={"CPF"}></Tabela>
         </main>

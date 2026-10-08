@@ -1,113 +1,110 @@
-"use client";
+'use client';
 import { useEffect, useState } from "react";
 import { Select } from "../select";
 
-export default function FrmUsuario({cpf=""}){
-
-    const [niveisAcesso, setNiveisAcesso] = useState([]);
-    const [status, setStatus] = useState(null);
-    const [dadosUsuarioAtual, setDadosUsuarioAtual] = useState({CPF: "", prenome:"", sobrenome:"", nascimento: "", celular:"", email:"", idNivelAcesso:0});
-
+export default function FrmUsuario({cpf = undefined}){
+    const url = (cpf ? `http://localhost:8080/usuarios/${cpf}` : `http://localhost:8080/usuarios`);
     const metodo = (cpf ? "PATCH" : "POST")
-    const url = (cpf ? `http://localhost:8080/usuarios/${cpf}` : `http://localhost:8080/usuarios`)
+    const [niveisAcesso, setNiveisAcesso] = useState([]);
+    const [dadosUsuario, setDadosUsuario] = useState({CPF:"", prenome:"", sobrenome:"", nascimento:"", celular:"", email:"", idNivelAcesso:0, senha:""});
+    const [status, setStatus] = useState(null);
 
     useEffect(() => {
         fetch("http://localhost:8080/niveis_acesso")
-        .then(async result => {
-            const niveis = await result.json();
-            if (!result.ok) {
-                const erroMsg = niveis.message;
-                throw new Error(`Erro ao buscar níveis de acesso: ${erroMsg}`);
-            }
-            setNiveisAcesso(niveis);
-        })
-        .catch(erro => setStatus(erro.message));
-    },[])
-
-
-    useEffect(() => {
-        if (cpf) {
-            fetch(`http://localhost:8080/usuarios/${cpf}`)
             .then(async result => {
-                const dadosUsuario = await result.json();
+                const niveis = await result.json();
                 if (!result.ok) {
-                    const erroMsg = dadosUsuario.message;
-                    throw new Error(`Erro ao enviar dados: ${erroMsg}`);
+                    const erroMsg = niveis.message;
+                    throw new Error(`Erro ao buscar níveis de acesso: ${erroMsg}`);
                 }
-                setDadosUsuarioAtual(dadosUsuario[0]);
-                
+                setNiveisAcesso(niveis);
             })
-        }
-    },[cpf])
+            .catch(erro => setStatus(erro.message));
 
-    async function handlerSubmit(evento){
-        console.log(evento)
-        evento.preventDefault();
-        setDadosUsuarioAtual({
-            name: document.getElementById("CPF").value,
-            prenome: document.getElementById("nome").value,
-            sobrenome: document.getElementById("sobrenome").value,
-            nascimento: document.getElementById("nascimento").value,
-            celular: document.getElementById("celular").value,
-            email: document.getElementById("email").value,
-            idNivelAcesso: document.getElementById("selectNivelAcesso").value
-        });
-
-        try{
-            const response = await fetch(url,
-                {
-                    method: metodo,
-                    header: {'Content-type' : 'application/json'},
-                    body: JSON.stringify(dadosUsuarioAtual)
+        if (cpf) {
+            fetch(url)
+            .then(async result => {
+                const dados = await result.json();
+                if (!result.ok){
+                    throw new Error("Erro ao buscar dados do usuário.");
                 }
-            );
-
-            if(!response.ok) throw new Error('Erro ao submeter dados');
-
-            setStatus('Dados enviado com sucesso');
-            setDadosUsuarioAtual({CPF: "", prenome:"", sobrenome:"", nascimento: "", celular:"", email:"", idNivelAcesso:0});
+                console.log(dados)
+                setDadosUsuario(dados[0]);
+                fetch(`http://localhost:8080/logins/cpf/${cpf}`)
+                .then(async result => {
+                    const dados = await result.json();
+                    if (!result.ok){
+                        throw new Error("Erro ao buscar dados do usuário.");
+                    }
+                    console.log(dados)
+                    setDadosUsuario(d=> ({...d, senha:dados[0].senha}));
+                })
+                .catch(erro => setStatus(erro.message));
+            })
+            .catch(erro => setStatus(erro.message));
 
         }
-        catch(erro){
-            console.error(erro);
-            setStatus("Erro ao enviar dados.")
-        }
+    },[cpf, url]);
+
+    function handlerChange(evento){
+        const target = evento.target;
+        console.log(target.value)
+        setDadosUsuario({...dadosUsuario, [target.id] : target.value});
     }
 
+    async function handlerSubmit(evento){
+        evento.preventDefault();
+        fetch(url,{
+            method: metodo,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dadosUsuario)
+        })
+        .then(result => {
+            if (!result.ok) {
+                throw new Error(metodo=="POST" ? "Erro ao cadastrar usuário" : "Erro ao atualizar dados do usuário");
+            }
+            setStatus(metodo=="POST" ? "Usuário cadastrado com sucesso" : "Usuário alterado com sucesso")
+        })
+        .catch(erro => setStatus(erro.message))
+    }
+    
 
     return (
-        <>
-            <form onSubmit={handlerSubmit}>
-                <div>
-                    <label htmlFor="">CPF</label>
-                    <input type="text" id="CPF" defaultValue={dadosUsuarioAtual.CPF}/>
-                </div>
-                <div>
-                    <label htmlFor="">Nome</label>
-                    <input type="text" id="nome" defaultValue={dadosUsuarioAtual.prenome}/>
-                </div>
-                <div>
-                    <label htmlFor="">Sobrenome</label>
-                    <input type="text" id="sobrenome" defaultValue={dadosUsuarioAtual.sobrenome}/>
-                </div>
-                <div>
-                    <label htmlFor="">Data de Nascimento</label>
-                    <input type="date" id="nascimento" defaultValue={(dadosUsuarioAtual.nascimento.split("T"))[0]}/>
-                </div>
-                <div>
-                    <label htmlFor="">Celular</label>
-                    <input type="text" id="celular" defaultValue={dadosUsuarioAtual.celular}/>
-                </div>
-                <div>
-                    <label htmlFor="">E-mail</label>
-                    <input type="text" id="email" defaultValue={dadosUsuarioAtual.email}/>
-                </div>
-                <div>
-                    <label htmlFor="">Nível de acesso</label>
-                    <Select opcoes={niveisAcesso} chaveValor="idNivelAcesso" chaveTexto="nome" textoOptionPadrao="Selecione..." id="selectNivelAcesso"></Select>
-                </div>
-                <button>Salvar</button>
-            </form>
-        </>
+        <form onSubmit={handlerSubmit}>
+            <div>
+                <label htmlFor="">CPF</label>
+                <input type="text" id="CPF" value={dadosUsuario.CPF} onChange={handlerChange}/>
+            </div>
+            <div>
+                <label htmlFor="">Nome</label>
+                <input type="text" id="prenome" value={dadosUsuario.prenome} onChange={handlerChange}/>
+            </div>
+            <div>
+                <label htmlFor="">Sobrenome</label>
+                <input type="text" id="sobrenome" value={dadosUsuario.sobrenome} onChange={handlerChange}/>
+            </div>
+            <div>
+                <label htmlFor="">Data de Nascimento</label>
+                <input type="date" id="nascimento" value={(dadosUsuario.nascimento ? (dadosUsuario.nascimento.split("T"))[0] : dadosUsuario.nascimento)} onChange={handlerChange}/>
+            </div>
+            <div>
+                <label htmlFor="">Celular</label>
+                <input type="text" id="celular" value={dadosUsuario.celular} onChange={handlerChange}/>
+            </div>
+            <div>
+                <label htmlFor="">E-mail</label>
+                <input type="text" id="email" value={dadosUsuario.email} onChange={handlerChange}/>
+            </div>
+            <div>
+                <label htmlFor="">Senha</label>
+                <input type="password" id="senha" value={dadosUsuario.senha} onChange={handlerChange}/>
+            </div>
+            <div>
+                <label htmlFor="">Nível de acesso</label>
+                <Select opcoes={niveisAcesso} chaveValor="idNivelAcesso" chaveTexto="nome" textoOptionPadrao="Selecione..." id="idNivelAcesso" value={dadosUsuario.idNivelAcesso} onChange={handlerChange}></Select>
+            </div>
+            <button>Salvar</button>
+            {status && <p>{status}</p>}
+        </form>
     );
 }
