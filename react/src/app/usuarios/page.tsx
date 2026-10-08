@@ -2,6 +2,7 @@
 import { Tabela } from "@/src/component/tabela"
 import { useEffect, useState } from "react"
 import Link from "next/link";
+import style from './page.module.css';
 
 interface Usuario {
     CPF: string,
@@ -28,7 +29,7 @@ export default function Usuarios() {
         })
         .catch(erro => setErro(erro.message))
     },[]);
-    const titulos = ["CPF", "Nome", "Celular", "E-mail"];
+    const titulos = ["CPF", "Nome", "Celular", "E-mail", ""];
     const usuariosFormatados = usuarios.map((usuario: Usuario) => ({CPF: usuario.CPF, nome_completo: `${usuario.prenome} ${usuario.sobrenome}`, celular: usuario.celular, email: usuario.email}));
     const listaOrdemChaves = ["CPF", "nome_completo", "celular", "email", "link"]
     const links = [{
@@ -37,8 +38,8 @@ export default function Usuarios() {
         rotaDinamica: true
     }]
     return (
-        <main>
-            <Link href="/usuarios/novo">Novo usuario</Link>
+        <main className={style.body}>
+            <Link href="/usuarios/novo" className={style.button}>Novo usuario</Link>
             <Tabela titulos={titulos} listaOrdemChaveDados={listaOrdemChaves} dados={usuariosFormatados} links={links} chavePrimaria={"CPF"}></Tabela>
         </main>
     )

@@ -1,0 +1,27 @@
+.tbody td {
+    text-align: center;
+}
+
+.tbody tr {
+    border-bottom: 1px solid white;
+    height: 45px;
+
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+}
+
+.button {
+    align-self: flex-end;
+    margin-top: 20px;
+    margin-right: 40px;
+    background-color: rgb(154, 32, 32);
+    padding: 7px;
+    border-radius: 7px;
+    transition: 0.2s;
+    
+    &:hover {
+        box-shadow: 0 0 3px 1px rgba(195, 26, 26, 1);
+        background-color: rgb(195, 26, 26);
+    }
+}

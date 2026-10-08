@@ -1,3 +1,5 @@
+import style from "./Select.module.css";
+
 interface SelectProps {
     opcoes: Record<string, string | number>[],
     chaveValor: string,
@@ -8,12 +10,11 @@ interface SelectProps {
     id?: string,
     name?: string,
     value?: string | number
-    className?: string,
     defaultValue?: string | number,
     onChange?: (evento: React.ChangeEvent<HTMLSelectElement>) => void
 }
 
-export function Select({opcoes, chaveValor, chaveTexto, textoPadrao, textoOptionPadrao, valorOptionPadrao = 0, id, name, value, className, onChange, defaultValue}: SelectProps){
+export function Select({opcoes, chaveValor, chaveTexto, textoPadrao, textoOptionPadrao, valorOptionPadrao = 0, id, name, value, onChange, defaultValue}: SelectProps){
 
     const chavesUnicas = new Set();
     const opcoesSemRepetidos = opcoes.filter(opcao => {
@@ -24,7 +25,7 @@ export function Select({opcoes, chaveValor, chaveTexto, textoPadrao, textoOption
     })
     
     return (
-        <select name={name} id={id} onChange={onChange} value = {value} className={className} defaultValue={defaultValue}>
+        <select name={name} id={id} onChange={onChange} value = {value} defaultValue={defaultValue} className={style.select}>
             {textoOptionPadrao && (
                 <option value={valorOptionPadrao}>{textoOptionPadrao}</option>
             )}
