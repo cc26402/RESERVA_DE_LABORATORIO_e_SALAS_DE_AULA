@@ -32,7 +32,7 @@ export default function FrmUsuario({cpf=""}){
                 const dadosUsuario = await result.json();
                 if (!result.ok) {
                     const erroMsg = dadosUsuario.message;
-                    throw new Error(`Erro ao buscar níveis de acesso: ${erroMsg}`);
+                    throw new Error(`Erro ao enviar dados: ${erroMsg}`);
                 }
                 setDadosUsuarioAtual(dadosUsuario[0]);
                 
@@ -104,7 +104,7 @@ export default function FrmUsuario({cpf=""}){
                 </div>
                 <div>
                     <label htmlFor="">Nível de acesso</label>
-                    <Select opcoes={niveisAcesso} chaveValor="idNivelAcesso" chaveTexto="nome" textoOptionPadrao="Selecione..." id="selectNivelAcesso" value={Number(dadosUsuarioAtual.idNivelAcesso)}></Select>
+                    <Select opcoes={niveisAcesso} chaveValor="idNivelAcesso" chaveTexto="nome" textoOptionPadrao="Selecione..." id="selectNivelAcesso"></Select>
                 </div>
                 <button>Salvar</button>
             </form>
