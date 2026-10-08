@@ -15,8 +15,8 @@ export default function FrmUsuario({cpf= ""}){
             .then(async result => {
                 const niveis = await result.json();
                 if (!result.ok) {
-                    const erroMsg = niveis.message;
-                    throw new Error(`Erro ao buscar níveis de acesso: ${erroMsg}`);
+                    alert('Erro ao buscar níveis de acesso.');
+                    throw new Error('Erro ao buscar níveis de acesso.');
                 }
                 setNiveisAcesso(niveis);
             })
@@ -27,6 +27,7 @@ export default function FrmUsuario({cpf= ""}){
             .then(async result => {
                 const dados = await result.json();
                 if (!result.ok){
+                    alert("Erro ao buscar dados do usuário.");
                     throw new Error("Erro ao buscar dados do usuário.");
                 }
                 console.log(dados)
@@ -55,8 +56,12 @@ export default function FrmUsuario({cpf= ""}){
                 throw new Error(metodo=="POST" ? "Erro ao cadastrar usuário" : "Erro ao atualizar dados do usuário");
             }
             setStatus(metodo=="POST" ? "Usuário cadastrado com sucesso" : "Usuário alterado com sucesso")
+            alert(status)
         })
-        .catch(erro => setStatus(erro.message))
+        .catch(erro => {
+            setStatus(erro.message);
+            alert(status);
+        })
     }
     
 
@@ -96,7 +101,6 @@ export default function FrmUsuario({cpf= ""}){
                     <Select opcoes={niveisAcesso} chaveValor="idNivelAcesso" chaveTexto="nome" textoOptionPadrao="Selecione..." id="idNivelAcesso" value={dadosUsuario.idNivelAcesso} onChange={handlerChange}></Select>
                 </div>
                 <button>Salvar</button>
-                {status && <p>{status}</p>}
             </form>
         </div>
     );

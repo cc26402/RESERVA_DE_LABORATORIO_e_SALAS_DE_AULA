@@ -1,0 +1,16 @@
+.select option {
+    background-color: rgb(10, 10, 10);
+}
+
+.select {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 3px;
+    padding-left: 6px;
+    border-radius: 5px;
+    outline: none;
+    transition: 0.2s;
+
+    &:focus {
+        box-shadow: 0 0 2px 1px rgba(255, 255, 255, 0.3);
+    }
+}
