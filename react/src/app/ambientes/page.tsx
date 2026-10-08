@@ -64,7 +64,7 @@ export default function Ambientes() {
     function abrirForm(id?: number) {
         const form = document.createElement("form");
         form.id = "formEditar";
-        form.className = "formAmbiente"
+        form.className = style.formAmbiente;
 
         const titulo = document.createElement("h1");
         titulo.textContent = id ? "Alteração de Dados" : "Novo Ambiente";
@@ -146,10 +146,12 @@ export default function Ambientes() {
         form.appendChild(divPredio);
 
         const divBtn = document.createElement("div");
+        divBtn.className = style.divBtn;
             
         const btnCancelar = document.createElement("button");
         btnCancelar.type = "button";
         btnCancelar.textContent = "Cancelar";
+        btnCancelar.className = style.btnCancelar;
         btnCancelar.addEventListener("click", () => form.remove());
 
         if (id){
@@ -165,6 +167,7 @@ export default function Ambientes() {
             const btnAlterar = document.createElement("button");
             btnAlterar.type = "submit";
             btnAlterar.textContent = "Alterar";
+            btnAlterar.className = style.btnAlterar;
 
             btnAlterar.addEventListener("click", async (e) => {
                 e.preventDefault();
@@ -202,6 +205,7 @@ export default function Ambientes() {
                 const btnAdicionar = document.createElement("button");
                 btnAdicionar.type = "button";
                 btnAdicionar.textContent = "Adicionar";
+                btnAdicionar.className = style.btnAdicionar;
                 btnAdicionar.addEventListener("click", async (e) => {
                     e.preventDefault();
                     const ambienteNovo: Ambiente = { 
@@ -214,7 +218,7 @@ export default function Ambientes() {
                     };
                     if (ambienteNovo.idPredio == 0 || ambienteNovo.andar == 0 || ambienteNovo.nome == "" || ambienteNovo.capacidade == 0 || ambienteNovo.idTipo == 0) return alert("dados incompletos")
                     try {
-                        const response = await fetch("http://localhost:8080/ambientes/", {
+                        const response = await fetch("http://localhost:8080/ambientes", {
                             method: "POST",
                             headers: { 'Content-type': 'application/json' },
                             body: JSON.stringify(ambienteNovo)

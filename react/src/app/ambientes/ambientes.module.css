@@ -20,6 +20,9 @@
     min-width: 100vw;
     background-color: rgb(0, 0, 0);
     color: white;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 }
 
 .cardsAmbientes{
@@ -78,4 +81,70 @@
     background-color: rgb(255, 222, 76);
     border: 1px solid black;
     color: rgb(0, 0, 0);
+}
+
+.formAmbiente{
+    background-color: rgb(85, 84, 84);
+    border-radius: 7px;
+    align-items: center;
+    min-height: 200px;
+    width: 320px;
+}
+
+.formAmbiente>h1{
+    text-align: center;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    background-color: rgb(209, 209, 209);
+    color: black;
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+.formAmbiente>div{
+    padding: 5px;
+}
+
+.formAmbiente>div>input{
+    background-color: white;
+    border: solid black 1px;
+    border-radius: 8px;
+    color: black;
+}
+
+.formAmbiente>div>select{
+    background-color: white;
+    color: black;
+    border: solid black 1px;
+    border-radius: 8px;
+}
+
+.divBtn{
+    display: flex;
+    justify-content: space-around;
+    width: 320px;
+}
+
+.btnCancelar{
+    background-color: rgb(180, 25, 25);
+    border: 1px solid black;
+    color: rgb(238, 238, 238);
+    padding: 3px;
+    border-radius: 8px;
+}
+
+.btnAdicionar{
+    background-color: rgb(7, 181, 30);
+    border: 1px solid black;
+    color: rgb(0, 0, 0);
+    padding: 3px;
+    border-radius: 8px;
+}
+
+.btnAlterar{
+    background-color: rgb(12, 81, 154);
+    border: 1px solid black;
+    color: rgb(0, 0, 0);
+    padding: 3px;
+    border-radius: 8px;
 }
