@@ -5,11 +5,12 @@ import ReservaRoutes from './ReservaRoutes.js';
 import PredioRoutes from './PredioRoutes.js';
 import AcessoRoutes from './AcessoRoutes.js';
 import LoginRoutes from './LoginRoutes.js';
+import NivelAcessoRoutes from './NivelAcessoRoutes.js'
 
 const routes = (app) => {
     app.route("/").get((req,res) => res.status(200).json({message: "API rodando"}));
     
-    app.use(express.json(), AmbienteRoutes, UsuarioRoutes, ReservaRoutes, PredioRoutes, AcessoRoutes, LoginRoutes);
+    app.use(express.json(), AmbienteRoutes, UsuarioRoutes, ReservaRoutes, PredioRoutes, AcessoRoutes, LoginRoutes, NivelAcessoRoutes);
 }
 
 export default routes;
