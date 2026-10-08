@@ -1,5 +1,19 @@
 .body{
-    background-color: rgb(104, 102, 102);
+    background-color: rgb(0, 0, 0);
+    padding: 10px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.submenu{
+    background-color: #171717;
+    padding: 10px;
+    border-radius: 8px;
+    border: gainsboro 1px solid;
+}
+
+.submenu>h2{
+    font-size: 18px;
+    font-weight: 800;
 }
 
 .todosOsCards{
@@ -9,18 +23,52 @@
     min-width: 100vw;
 }
 
+.divSelect{
+    display: flex;
+}
+
 .selectPredio{
-    background-color: white;
-    color: black;
+    background-color: #171717;
+    border: gainsboro 1px solid;
+    border-radius: 5px;
+    margin-left: 5px;
 }
 
 .cardAmbiente{
     display: flex;
-    justify-content: center;
+    align-items: center;
     flex-direction: column;
-    background-color: rgb(207, 203, 203);
+    background-color: #171717;
     margin: 10px;
-    color: black;
-    height: 20vh;
-    width: 30vw;
+    color: white;
+    border: #9A2020 1px solid;
+    border-radius: 8px;
+    height: 190px;
+    min-width: 300px;
+}
+
+.cardAmbiente>h1{
+    background-color: #9A2020;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    width: 300px;
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.cardAmbiente>div>hr{
+    border: none;
+    height: 1px;
+    background-color: #000000;
+    margin-bottom: 5px;
+    width: 280px;
+}
+
+.cardAmbiente>button{
+    background-color: #9A2020;
+    border-radius: 5px;
+    border: black solid 1px;
+    padding: 3px;
+    margin: 10px;
 }

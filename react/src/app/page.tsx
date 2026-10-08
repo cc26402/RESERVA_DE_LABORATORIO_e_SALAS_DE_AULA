@@ -13,8 +13,14 @@ type DadosDosAmbientes = {
   idTipo: number;
 };
 
+type DadosDosPredios = {
+  idPredio: number;
+  nome: string;
+}
+
 export default function Ambiente() {
   const [dados, setDados] = useState<DadosDosAmbientes[]>([]);
+  const [predios, setPredios] = useState<DadosDosPredios[]>([]);
   const [idPredioSelecionado, setIdSelecionado] = useState<number>(0);
 
   useEffect(() => {
@@ -35,19 +41,42 @@ export default function Ambiente() {
     carregarDadosDosAmbientes();
   }, []);
 
-  function handlePredioChange(event: React.ChangeEvent<HTMLSelectElement>) {
-    setIdSelecionado(Number(event.target.value));
-  }
+  useEffect(() => {
+    async function carregarDadosPredios() {
+      try {
+        const response = await fetch("http://localhost:8080/predios");
+        if (!response.ok) {
+          throw new Error("Erro ao trazer os dados do BD");
+        }
+        const resultados: DadosDosPredios[] = await response.json();
+        console.log("Dados vindo do JSON da API");
+        console.log(resultados);
+        setPredios(resultados);
+      }
+      catch (erro) {
+        console.error("Erro do processamento", erro);
+      }
+    }
+    carregarDadosPredios();
+  }, [])
 
   const ambientesDoPredio = idPredioSelecionado === 0? dados.map((registro) => registro) : dados.filter((registro) => registro.idPredio === idPredioSelecionado);
 
   return (
     <div className={style.body}>
-      <h2>Listagem dos Ambientes cadastrados no BD</h2>
-
-      <div>
-        <p>Prédio:</p>
-        <Select opcoes={dados} chaveValor="idPredio" chaveTexto="idPredio" textoPadrao="Predio" name="idPredio" value={idPredioSelecionado} onChange={handlePredioChange} className={style.selectPredio}></Select>
+      <div className={style.submenu}>
+        <h2>Listagem dos Ambientes cadastrados no BD</h2>
+        <div className={style.divSelect}>
+          <p>Prédio:</p>
+          <select value={idPredioSelecionado} onChange={(e) => setIdSelecionado(Number(e.target.value))} className={style.selectPredio}>
+            <option value={0}>Todos os prédios</option>
+            {predios.map((p) => (
+              <option key={p.idPredio} value={p.idPredio}>
+                {p.nome}
+              </option>
+            ))}
+        </select>
+      </div>
       </div>
 
       <br />
@@ -55,10 +84,15 @@ export default function Ambiente() {
         <div className={style.todosOsCards}>
           {ambientesDoPredio.map((a) => (
             <div key={a.idAmbiente} className={style.cardAmbiente}>
-              <h4>{a.nome}</h4>
-              <h4>{a.idTipo}</h4>
-              <h2>Andar: {a.andar}</h2>
-              <h2>capacidade: {a.capacidade}</h2>
+              <h1>{a.nome}</h1>
+              <div>
+                <h2>Tipo: {a.idTipo == 1? "Sala" : "Laboratório"}</h2>
+                <hr></hr>
+                <h2>Andar: {a.andar}</h2>
+                <hr></hr>
+                <h2>capacidade: {a.capacidade}</h2>
+                <hr></hr>
+              </div>
               <button>RESERVAR</button>
             </div>
           ))}
