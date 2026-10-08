@@ -21,7 +21,7 @@
     transition: 0.2s;
     
     &:hover {
-        box-shadow: 0 0 3px 3px rgba(195, 26, 26, 1);
+        box-shadow: 0 0 3px 1px rgba(195, 26, 26, 1);
         background-color: rgb(195, 26, 26);
     }
 }
