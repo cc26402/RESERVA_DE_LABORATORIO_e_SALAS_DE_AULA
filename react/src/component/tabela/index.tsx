@@ -1,5 +1,6 @@
 import { Thead } from "./thead";
 import { Tbody } from "./tbody";
+import style from "./Tabela.module.css";
 
 interface TabelaProps {
     titulos: string[],
@@ -7,7 +8,8 @@ interface TabelaProps {
     chavePrimaria?: string | number,
     dados: Record<string, string | number>[],
     botoes?: DadosBotoes[],
-    links?: DadosLinks[]
+    links?: DadosLinks[],
+    className?: string;
 }
 
 interface DadosBotoes {
@@ -21,9 +23,9 @@ interface DadosLinks {
     rotaDinamica: boolean 
 }
 
-export function Tabela({titulos, listaOrdemChaveDados, chavePrimaria, dados, botoes, links} : TabelaProps){
+export function Tabela({titulos, listaOrdemChaveDados, chavePrimaria, dados, botoes, links, className} : TabelaProps){
     return (
-        <table>
+        <table className={className}>
             <Thead titulos={titulos}></Thead>
             <Tbody dados={dados} listaOrdemChaveDados={listaOrdemChaveDados} chavePrimaria = {chavePrimaria} botoes={botoes} links={links}></Tbody>
         </table>

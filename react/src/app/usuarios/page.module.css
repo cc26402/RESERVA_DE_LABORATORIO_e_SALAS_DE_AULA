@@ -1,0 +1,22 @@
+.body{
+    display: flex;
+    width: 100vw;
+    height: 80vh;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column
+}
+
+.tabela {
+    border: 1px solid white;
+    height: 500px;
+    width: 70%;
+}
+
+.button {
+    align-self: flex-end;
+    margin-right: 40px;
+    background-color: red;
+    padding: 15px;
+    border-radius: 10px;
+}

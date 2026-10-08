@@ -2,6 +2,7 @@
 import { Tabela } from "@/src/component/tabela"
 import { useEffect, useState } from "react"
 import Link from "next/link";
+import style from './page.module.css';
 
 interface Usuario {
     CPF: string,
@@ -37,9 +38,9 @@ export default function Usuarios() {
         rotaDinamica: true
     }]
     return (
-        <main>
-            <Link href="/usuarios/novo">Novo usuario</Link>
-            <Tabela titulos={titulos} listaOrdemChaveDados={listaOrdemChaves} dados={usuariosFormatados} links={links} chavePrimaria={"CPF"}></Tabela>
+        <main className={style.body}>
+            <Link href="/usuarios/novo" className={style.button}>Novo usuario</Link>
+            <Tabela titulos={titulos} listaOrdemChaveDados={listaOrdemChaves} dados={usuariosFormatados} links={links} chavePrimaria={"CPF"} className={style.tabela}></Tabela>
         </main>
     )
 }
