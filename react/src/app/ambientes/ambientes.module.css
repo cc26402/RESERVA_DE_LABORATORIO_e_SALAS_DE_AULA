@@ -1,0 +1,168 @@
+.selectOperacao{
+    color: black;
+}
+
+.divHeader{
+    display: flex;
+    justify-content: end;
+    width: 97vw;
+}
+
+.selectOperacao>select{
+    background-color: white;
+}
+
+.listaDeAmbientes{
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.dadosCard>hr{
+    border: none;
+    height: 1px;
+    background-color: #000000;
+    width: 100%;  
+}
+.main{
+    min-height: 100vh;
+    min-width: 100vw;
+    background-color: rgb(0, 0, 0);
+    color: white;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.cardsAmbientes{
+    margin: 10px;
+    border-radius: 10px;
+    background-color: #171717;
+    border: #9A2020 1px solid;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.cardsAmbientes>h1{
+    font-size: 22px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    color: rgb(0, 0, 0);
+    background-color: #9A2020;
+    width: 200;
+    text-align: center;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.dadosCard{
+    display: flex;
+    flex-direction: column;
+    font-size: 18px;
+}
+
+.btnNovoAmbiente{
+    background-color: black;
+    border-radius: 7px;
+    border: solid 1px gainsboro;
+    padding: 5px;
+    margin: 10px;
+}
+
+.divBtnCards{
+    display: flex;
+    justify-content: space-around;
+    color: black;
+}
+
+.divBtnCards>button{
+    border-radius: 5px;
+    padding: 3px;
+    margin: 15px;
+}
+
+.btnExcluir{
+    background-color: #171717;
+    border: 1px solid gray;
+    color: rgb(238, 238, 238);
+}
+
+.btnEditar{
+    background-color: #171717;
+    border: 1px solid gray;
+    color: rgb(255, 255, 255);
+}
+
+.formAmbiente{
+    background-color: #171717;
+    border-radius: 7px;
+    align-items: center;
+    min-height: 200px;
+    width: 320px;
+    border: #9A2020 solid 1px;
+}
+
+.formAmbiente>h1{
+    text-align: center;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    background-color: #9A2020;
+    color: white;
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+.formAmbiente>div{
+    padding: 5px;
+}
+
+.formAmbiente>div>input{
+    background-color: rgb(0, 0, 0);
+    border: solid #9A2020 1px;
+    border-radius: 8px;
+    color: white;
+    text-align: center;
+}
+
+.formAmbiente>div>select{
+    background-color: rgb(0, 0, 0);;
+    color: white;
+    border: solid #9A2020 1px;
+    border-radius: 8px;
+}
+
+.divBtn{
+    display: flex;
+    justify-content: space-around;
+    width: 320px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.btnCancelar{
+    background-color: #171717;
+    border: 1px solid gainsboro;
+    color: rgb(238, 238, 238);
+    padding: 5px;
+    border-radius: 8px;
+}
+
+.btnAdicionar{
+    background-color: #171717;
+    border: 1px solid gainsboro;
+    color: white;
+    padding: 5px;
+    border-radius: 8px;
+}
+
+.btnAlterar{
+    background-color: #171717;
+    border: 1px solid gainsboro;
+    color: white;
+    padding: 5px;
+    border-radius: 8px;
+}
