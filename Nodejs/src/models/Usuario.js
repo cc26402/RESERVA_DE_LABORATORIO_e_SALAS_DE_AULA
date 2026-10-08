@@ -51,7 +51,7 @@ class Usuario {
         try {
             const conexao = await conectaBD();
             const result = await conexao.query(`INSERT into resSalaLab.Usuario (CPF, prenome, sobrenome, nascimento, celular, email, idNivelAcesso) VALUES ('${CPF}', '${prenome}', '${sobrenome}', '${nascimento}', '${celular}', '${email}', '${idNivelAcesso}')`);
-            const resultLogin = Login.criarLogin(LoginNovo);
+            Login.criarLogin(LoginNovo);
             return result;
         }
         catch (error) {
@@ -64,7 +64,7 @@ class Usuario {
         try {
             const conexao = await conectaBD();
             const result = await conexao.query(`UPDATE resSalaLab.Usuario SET prenome='${prenome}', sobrenome='${sobrenome}', nascimento='${nascimento}', celular='${celular}', email='${email}', idNivelAcesso='${idNivelAcesso}' WHERE CPF='${CPF}'`);
-            const resultLogin = Login.editarLogin({CPF, novosDados: {username: email}});
+            Login.editarLogin({CPF, novosDados: {username: email}});
             return result;
         }
         catch (error) {

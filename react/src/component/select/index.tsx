@@ -9,10 +9,11 @@ interface SelectProps {
     name?: string,
     value?: string | number
     className?: string,
+    defaultValue?: string | number,
     onChange?: (evento: React.ChangeEvent<HTMLSelectElement>) => void
 }
 
-export function Select({opcoes, chaveValor, chaveTexto, textoPadrao, textoOptionPadrao, valorOptionPadrao = 0, id, name, value, className, onChange}: SelectProps){
+export function Select({opcoes, chaveValor, chaveTexto, textoPadrao, textoOptionPadrao, valorOptionPadrao = 0, id, name, value, className, onChange, defaultValue}: SelectProps){
 
     const chavesUnicas = new Set();
     const opcoesSemRepetidos = opcoes.filter(opcao => {
@@ -23,7 +24,7 @@ export function Select({opcoes, chaveValor, chaveTexto, textoPadrao, textoOption
     })
     
     return (
-        <select name={name} id={id} onChange={onChange} value = {value} className={className}>
+        <select name={name} id={id} onChange={onChange} value = {value} className={className} defaultValue={defaultValue}>
             {textoOptionPadrao && (
                 <option value={valorOptionPadrao}>{textoOptionPadrao}</option>
             )}
