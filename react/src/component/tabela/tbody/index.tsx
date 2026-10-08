@@ -1,4 +1,5 @@
 import Link from "next/link";
+import style from './Tbody.module.css'
 
 interface TbodyProps {
     dados: Record<string, string | number>[],
@@ -21,20 +22,20 @@ interface DadosLinks {
 
 export function Tbody({dados, listaOrdemChaveDados, chavePrimaria, botoes, links}: TbodyProps){
     return (
-        <tbody>
+        <tbody className={style.tbody}>
             {
                 dados.map((dado, i) => {
                     let botaoAtual = 0;
                     let linkAtual = 0;
                     return (
-                        <tr key={chavePrimaria!=undefined ? dado[chavePrimaria] : i+"tr"}>
+                        <tr key={chavePrimaria!=undefined ? dado[chavePrimaria] : i+"tr"} className={style.tr}>
                             {listaOrdemChaveDados.map((chave, i2) => {
                                 if (chave=="botão" || chave=="botao"){
                                     if (botoes == undefined || chavePrimaria==undefined) throw new Error("Foi pedido para gerar um botão porém nenhuma chave primária para identificação ou dado de botão foi passado")
                                     const botao = botoes[botaoAtual];
                                     botaoAtual++
                                     return (
-                                        <td key={i2+"td"}>
+                                        <td key={i2+"td"} className={style.td}>
                                             <button onClick={() => botao.onClick(dado[chavePrimaria])}>{botao.textoBotao}</button>
                                         </td>
                                     )
@@ -46,13 +47,13 @@ export function Tbody({dados, listaOrdemChaveDados, chavePrimaria, botoes, links
                                     linkAtual++
                                     if (link.rotaDinamica && chavePrimaria == undefined) throw new Error("Foi passado para gerar um Link com rota dinâmica porém chave primária está ausente")
                                     return (
-                                        <td key={i2+"td"}>
-                                            <Link href={link.href + (link.rotaDinamica ? "/" + dado[chavePrimaria] : "")}>{link.textoLink}</Link>
+                                        <td key={i2+"td"} className={style.td}>
+                                            <Link href={link.href + (link.rotaDinamica ? "/" + dado[chavePrimaria] : "")} className={style.button}>{link.textoLink}</Link>
                                         </td>
                                     )
                                 }
                                 return (
-                                    <td key={i2+"td"}>{dado[chave]}</td>
+                                    <td key={i2+"td"} className={style.td}>{dado[chave]}</td>
                                 );
                             })}
                         </tr>
