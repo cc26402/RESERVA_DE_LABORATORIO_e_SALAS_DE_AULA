@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect } from "react";
 import style from "./ambientes.module.css";
 
 type Ambiente = {
@@ -27,14 +27,12 @@ export default function Ambientes() {
     const [predios, setPredios] = useState<Predio[]>([]);
     const [form, setForm] = useState<estadoForm>(null);
 
-    async function listarAmbientes() {
-        try {
-            const response = await fetch("http://localhost:8080/ambientes");
-            setAmbientes(await response.json());
-        } catch (erro) {
-            console.error("Erro ao buscar ambientes:", erro);
-        }
-    }
+    const [idAmbiente, setIdAmbiente] = useState(0)
+    const [nome, setNome] = useState("");
+    const [idTipo, setIdTipo] = useState(1);
+    const [capacidade, setCapacidade] = useState(1);
+    const [andar, setAndar] = useState(0);
+    const [idPredio, setIdPredio] = useState(0);
 
     useEffect(() => {
         listarAmbientes();
@@ -51,6 +49,33 @@ export default function Ambientes() {
         }
         listarPredios()
     }, [])
+
+    useEffect(() => {
+        if (form?.modo == "editar" && form.dados) {
+            setIdAmbiente(form.dados.idAmbiente);
+            setNome(form.dados.nome);
+            setIdTipo(form.dados.idTipo);
+            setCapacidade(form.dados.capacidade);
+            setAndar(form.dados.andar);
+            setIdPredio(form.dados.idPredio);
+        } else if (form?.modo == "adicionar") {
+            setIdAmbiente(0);
+            setNome("");
+            setIdTipo(1);
+            setCapacidade(1);
+            setAndar(0);
+            setIdPredio(predios[0]?.idPredio || 0);
+        }
+    }, [form, predios]);
+
+    async function listarAmbientes() {
+        try {
+            const response = await fetch("http://localhost:8080/ambientes");
+            setAmbientes(await response.json());
+        } catch (erro) {
+            console.error("Erro ao buscar ambientes:", erro);
+        }
+    }
 
     async function excluirAmbiente(id: number) {
         try {
@@ -70,23 +95,21 @@ export default function Ambientes() {
         }
     }
 
-    async function cadastrarAmbiente(e: FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        const dados = new FormData(e.currentTarget);
-
-        const ambienteNovo = {
-            nome: String(dados.get("nome")),
-            idTipo: Number(dados.get("idTipo")),
-            capacidade: Number(dados.get("capacidade")),
-            andar: Number(dados.get("andar")),
-            idPredio: Number(dados.get("idPredio")),
+    async function cadastrarAmbiente() {
+        const dados: Ambiente = {
+            idAmbiente: 0,
+            idPredio: idPredio,
+            nome: nome,
+            capacidade: capacidade,
+            andar: andar,
+            idTipo: idTipo,
         };
 
         try {
             const response = await fetch("http://localhost:8080/ambientes", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(ambienteNovo),
+                body: JSON.stringify(dados),
             });
             if (response.ok) {
                 await listarAmbientes();
@@ -101,28 +124,25 @@ export default function Ambientes() {
         }
     }
 
-    async function alterarAmbiente(e: FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        const dados = new FormData(e.currentTarget);
-
-        const ambienteAtualizado: Ambiente = {
-            idAmbiente: Number(dados.get("idAmbiente")),
-            nome: String(dados.get("nome")),
-            idTipo: Number(dados.get("idTipo")),
-            capacidade: Number(dados.get("capacidade")),
-            andar: Number(dados.get("andar")),
-            idPredio: Number(dados.get("idPredio")),
+    async function alterarAmbiente() {
+        const dados: Ambiente = {
+            idAmbiente: idAmbiente,
+            idPredio: idPredio,
+            nome: nome,
+            capacidade: capacidade,
+            andar: andar,
+            idTipo: idTipo,
         };
 
         try {
-            const response = await fetch("http://localhost:8080/ambientes/" + ambienteAtualizado.idAmbiente, {
+            const response = await fetch("http://localhost:8080/ambientes/" + dados.idAmbiente, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(ambienteAtualizado),
+                body: JSON.stringify(dados),
             });
             if (response.ok) {
                 setAmbientes(ambientesMN => ambientesMN.map(amb =>
-                    amb.idAmbiente == ambienteAtualizado.idAmbiente ? ambienteAtualizado : amb
+                    amb.idAmbiente == dados.idAmbiente ? dados : amb
                 ));
                 setForm(null);
             }
@@ -138,7 +158,7 @@ export default function Ambientes() {
 
     return (
         <main className={style.main}>
-            <div id="header">
+            <div id="header" className={style.divHeader}>
                 <button onClick={() => setForm({ modo: "adicionar" })} className={style.btnNovoAmbiente}>Novo ambiente</button>
             </div>
             <div id="listaDeAmbientes" className={style.listaDeAmbientes}>
@@ -147,10 +167,15 @@ export default function Ambientes() {
                         <h1>{ambiente.nome}</h1>
                         <div className={style.dadosCard}>
                             <h2>Id: {ambiente.idAmbiente}</h2>
+                            <hr></hr>
                             <h2>Tipo: {ambiente.idTipo == 1 ? "Sala" : "Laboratório"}</h2>
+                            <hr></hr>
                             <h2>Capacidade: {ambiente.capacidade}</h2>
+                            <hr></hr>
                             <h2>Andar: {ambiente.andar}</h2>
+                            <hr></hr>
                             <h2>Prédio: {predios.find(predio => predio.idPredio == ambiente.idPredio)?.nome}</h2>
+                            <hr></hr>
                             <div className={style.divBtnCards}>
                                 <button onClick={() => setForm({ modo: "editar", dados: ambiente })} className={style.btnEditar}>Editar</button>
                                 <button onClick={() => excluirAmbiente(ambiente.idAmbiente)} className={style.btnExcluir}>Excluir</button>
@@ -161,84 +186,84 @@ export default function Ambientes() {
             </div>
             <div id="form">
                 {form?.modo === "adicionar" && (
-                    <form className={style.formAmbiente} onSubmit={cadastrarAmbiente}>
+                    <form className={style.formAmbiente} onSubmit={e => e.preventDefault()}>
                         <h1>Novo Ambiente</h1>
                         <div>
                             <label>Nome: </label>
-                            <input type="text" name="nome" required />
+                            <input type="text" name="nome" value={nome} required onChange={e => setNome(e.target.value)}/>
                         </div>
                         <div>
                             <label>Tipo: </label>
-                            <select name="idTipo">
+                            <select name="idTipo" value={idTipo} onChange={e => setIdTipo(Number(e.target.value))}>
                                 <option value="1">Sala</option>
                                 <option value="2">Laboratório</option>
                             </select>
                         </div>
                         <div>
                             <label>Capacidade: </label>
-                            <input type="number" name="capacidade" min="1" required />
+                            <input type="number" min="1" value={capacidade} onChange={e => setCapacidade(Number(e.target.value))} required />
                         </div>
                         <div>
                             <label>Andar: </label>
-                            <input type="number" name="andar" required />
+                            <input type="number" value={andar} onChange={e => setAndar(Number(e.target.value))} required />
                         </div>
                         <div>
                             <label>Prédio: </label>
-                            <select name="idPredio" required defaultValue="">
-                                <option value="">Selecione...</option>
+                            <select value={idPredio} onChange={e => setIdPredio(Number(e.target.value))} required>
+                                <option value={0} disabled>Selecione...</option>
                                 {predios.map(p => (
                                     <option key={p.idPredio} value={p.idPredio}>{p.nome}</option>
                                 ))}
                             </select>
                         </div>
                         <div className={style.divBtn}>
-                            <button type="submit" className={style.btnAdicionar}>Adicionar</button>
+                            <button type="button" className={style.btnAdicionar} onClick={() => cadastrarAmbiente()}>Adicionar</button>
                             <button type="button" className={style.btnCancelar} onClick={() => setForm(null)}>Cancelar</button>
                         </div>
                     </form>
                 )}
-
                 {form?.modo === "editar" && form.dados && (
-                    <form key={form.dados.idAmbiente} className={style.formAmbiente} onSubmit={alterarAmbiente}>
+                    <form className={style.formAmbiente} onSubmit={e => e.preventDefault()}>
                         <h1>Alteração de Dados</h1>
                         <div>
                             <label>Id: </label>
-                            <input type="number" name="idAmbiente" readOnly defaultValue={form.dados.idAmbiente}/>
+                            {/* Inputs controlados agora usam 'value' diretamente conectado ao useState atualizado */}
+                            <input type="number" value={idAmbiente} readOnly />
                         </div>
                         <div>
                             <label>Nome: </label>
-                            <input type="text" name="nome" required defaultValue={form.dados.nome} />
+                            <input type="text" value={nome} onChange={e => setNome(e.target.value)} required />
                         </div>
                         <div>
                             <label>Tipo: </label>
-                            <select name="idTipo" defaultValue={form.dados.idTipo}>
+                            <select value={idTipo} onChange={e => setIdTipo(Number(e.target.value))}>
                                 <option value="1">Sala</option>
                                 <option value="2">Laboratório</option>
                             </select>
                         </div>
                         <div>
                             <label>Capacidade: </label>
-                            <input type="number" name="capacidade" min="1" required defaultValue={form.dados.capacidade} />
+                            <input type="number" min="1" value={capacidade} onChange={e => setCapacidade(Number(e.target.value))} required />
                         </div>
                         <div>
                             <label>Andar: </label>
-                            <input type="number" name="andar" required defaultValue={form.dados.andar} />
+                            <input type="number" value={andar} onChange={e => setAndar(Number(e.target.value))} required />
                         </div>
                         <div>
                             <label>Prédio: </label>
-                            <select name="idPredio" defaultValue={form.dados.idPredio}>
+                            <select value={idPredio} onChange={e => setIdPredio(Number(e.target.value))}>
                                 {predios.map(p => (
                                     <option key={p.idPredio} value={p.idPredio}>{p.nome}</option>
                                 ))}
                             </select>
                         </div>
                         <div className={style.divBtn}>
-                            <button type="submit" className={style.btnAlterar}>Alterar</button>
+                            <button type="button" className={style.btnAlterar} onClick={() => alterarAmbiente()}>Alterar</button>
                             <button type="button" className={style.btnCancelar} onClick={() => setForm(null)}>Cancelar</button>
                         </div>
                     </form>
                 )}
             </div>
         </main>
-    )
+    );
 }
