@@ -217,8 +217,8 @@ export default function Ambientes() {
                             </select>
                         </div>
                         <div className={style.divBtn}>
-                            <button type="button" className={style.btnAdicionar} onClick={() => cadastrarAmbiente()}>Adicionar</button>
-                            <button type="button" className={style.btnCancelar} onClick={() => setForm(null)}>Cancelar</button>
+                            <button type="submit" className={style.btnAdicionar} onClick={() => cadastrarAmbiente()}>Adicionar</button>
+                            <button type="submit" className={style.btnCancelar} onClick={() => setForm(null)}>Cancelar</button>
                         </div>
                     </form>
                 )}
@@ -227,7 +227,6 @@ export default function Ambientes() {
                         <h1>Alteração de Dados</h1>
                         <div>
                             <label>Id: </label>
-                            {/* Inputs controlados agora usam 'value' diretamente conectado ao useState atualizado */}
                             <input type="number" value={idAmbiente} readOnly />
                         </div>
                         <div>
@@ -251,15 +250,15 @@ export default function Ambientes() {
                         </div>
                         <div>
                             <label>Prédio: </label>
-                            <select value={idPredio} onChange={e => setIdPredio(Number(e.target.value))}>
+                            <select value={idPredio} onChange={e => setIdPredio(Number(e.target.value))} required>
                                 {predios.map(p => (
                                     <option key={p.idPredio} value={p.idPredio}>{p.nome}</option>
                                 ))}
                             </select>
                         </div>
                         <div className={style.divBtn}>
-                            <button type="button" className={style.btnAlterar} onClick={() => alterarAmbiente()}>Alterar</button>
-                            <button type="button" className={style.btnCancelar} onClick={() => setForm(null)}>Cancelar</button>
+                            <button type="submit" className={style.btnAlterar} onClick={() => alterarAmbiente()}>Alterar</button>
+                            <button type="submit" className={style.btnCancelar} onClick={() => setForm(null)}>Cancelar</button>
                         </div>
                     </form>
                 )}
