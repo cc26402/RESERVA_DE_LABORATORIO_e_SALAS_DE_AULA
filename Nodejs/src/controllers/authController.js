@@ -6,8 +6,8 @@ class AuthController {
     static async login(req, res) {
         const  { email, senha } = req.body;
 
-         if (!email || !senha) {
+        if (!email || !senha) {
             return res.status()
-         }
+        }
     }
 }
