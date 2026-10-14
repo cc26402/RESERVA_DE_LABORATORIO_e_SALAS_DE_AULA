@@ -16,7 +16,7 @@ class Reserva {
     static async buscarTodos(){
         try {
             const conexao = await conectaBD();
-            const result = await conexao.query("SELECT * from resSalaLab.Reserva");
+            const result = await conexao.query`SELECT * from resSalaLab.Reserva`;
             return result.recordset
         }
         catch (error) {
@@ -27,7 +27,7 @@ class Reserva {
     static async buscarReservaPorId(idReserva) {
         try {
             const conexao = await conectaBD();
-            const result = await conexao.query(`SELECT * from resSalaLab.Reserva WHERE idReserva='${idReserva}'`);
+            const result = await conexao.query`SELECT * from resSalaLab.Reserva WHERE idReserva=${idReserva}`;
             return result.recordset
         }
         catch (error) {
@@ -49,7 +49,7 @@ class Reserva {
     static async buscarReservaPorIdAmbiente(idAmbiente){
         try {
             const conexao = await conectaBD();
-            const result = await conexao.query(`SELECT * from resSalaLab.Reserva WHERE idAmbiente='${idAmbiente}'`);
+            const result = await conexao.query`SELECT * from resSalaLab.Reserva WHERE idAmbiente=${idAmbiente}`;
             return result.recordset
         }
         catch (error) {
@@ -60,7 +60,7 @@ class Reserva {
     static async buscarReservaPorIdStatus(idStatus){
         try {
             const conexao = await conectaBD();
-            const result = await conexao.query(`SELECT * from resSalaLab.Reserva WHERE idStatus='${idStatus}'`);
+            const result = await conexao.query`SELECT * from resSalaLab.Reserva WHERE idStatus=${idStatus}`;
             return result.recordset
         }
         catch (error) {
@@ -68,16 +68,16 @@ class Reserva {
         }
     }
 
-    static async buscarReservaPorPeriodo({dataInicio, dataFinal=dataInicio, horarioInicial='00:00:00', horarioFinal='23:59:59.999', username=null}){
+    static async buscarReservaPorPeriodo({dataInicial, dataFinal=dataInicial, horarioInicial='00:00:00', horarioFinal='23:59:59.999', username=null, idAmbiente=null}){
         try{
             const conexao = await conectaBD();
-            if (username!=null){
-                const result = await conexao.query`SELECT * FROM resSalaLab.Reserva WHERE username = ${username} AND dataInicial >= ${dataInicial} AND dataFinal<=${dataFinal} AND horarioInicial >= ${horarioInicial} AND horarioFinal <= ${horarioFinal}`
-                return result.recordset
+            if (username != null){
+                const result = await conexao.query`SELECT * FROM resSalaLab.ReservaWHERE username = ${username} AND dataInicial <= ${dataFinal} AND dataFinal >= ${dataInicial} AND horarioInicial < ${horarioFinal} AND horarioFinal > ${horarioInicial}`;
+                return result.recordset;
             }
             else {
-                const result = await conexao.query`SELECT * FROM resSalaLab.Reserva WHERE dataInicial >= ${dataInicial} AND dataFinal<=${dataFinal} AND horarioInicial >= ${horarioInicial} AND horarioFinal <= ${horarioFinal}`
-                return result.recordset
+                const result = await conexao.query`SELECT * FROM resSalaLab.Reserva WHERE dataInicial <= ${dataFinal} AND dataFinal >= ${dataInicial} AND horarioInicial < ${horarioFinal} AND horarioFinal > ${horarioInicial} AND (${idAmbiente} IS NULL OR idAmbiente = ${idAmbiente})`;
+                return result.recordset;
             }
         }
         catch(error){
@@ -88,7 +88,7 @@ class Reserva {
     static async removerReserva(idReserva) {
         try {
             const conexao = await conectaBD();
-            const result = await conexao.query(`DELETE from resSalaLab.Reserva WHERE idReserva='${idReserva}'`);
+            const result = await conexao.query`DELETE from resSalaLab.Reserva WHERE idReserva=${idReserva}`;
         }
         catch (error) {
             throw new Error(`Erro na remoção ao BD: ${error}`);
@@ -96,10 +96,12 @@ class Reserva {
     }
 
     static async inserirReserva(Reserva){
-        const { idReserva, username, idAmbiente, idStatus, dataInicial, dataFinal, horarioInicial, horarioFinal } = Reserva;
+        const { username, idAmbiente, idStatus, dataInicial, dataFinal, horarioInicial, horarioFinal } = Reserva;
         try {
             const conexao = await conectaBD();
-            const result = await conexao.query(`INSERT into resSalaLab.Reserva (idReserva, username, idAmbiente, idStatus, dataInicial, dataFinal, horarioInicial, horarioFinal) VALUES ('${idReserva}', '${username}', '${idAmbiente}', '${idStatus}', '${dataInicial}', '${dataFinal}', '${horarioInicial}', '${horarioFinal}')`);
+            const result = await conexao.query`
+                INSERT INTO resSalaLab.Reserva (username, idAmbiente, idStatus, dataInicial, dataFinal, horarioInicial, horarioFinal)
+                VALUES (${username}, ${idAmbiente}, ${idStatus}, ${dataInicial}, ${dataFinal}, ${horarioInicial}, ${horarioFinal})`;
             return result;
         }
         catch (error) {
@@ -111,7 +113,7 @@ class Reserva {
         const { idReserva, username, idAmbiente, idStatus, dataInicial, dataFinal, horarioInicial, horarioFinal } = Reserva;
         try {
             const conexao = await conectaBD();
-            const result = await conexao.query(`UPDATE resSalaLab.Reserva SET username='${username}', idAmbiente='${idAmbiente}', idStatus='${idStatus}', dataInicial='${dataInicial}', dataFinal='${dataFinal}', horarioInicial='${horarioInicial}', horarioFinal='${horarioFinal}' WHERE idReserva='${idReserva}'`);
+            const result = await conexao.query`UPDATE resSalaLab.Reserva SET username=${username}, idAmbiente=${idAmbiente}, idStatus=${idStatus}, dataInicial=${dataInicial}, dataFinal=${dataFinal}, horarioInicial=${horarioInicial}, horarioFinal=${horarioFinal} WHERE idReserva=${idReserva}`;
             return result;
         }
         catch (error) {

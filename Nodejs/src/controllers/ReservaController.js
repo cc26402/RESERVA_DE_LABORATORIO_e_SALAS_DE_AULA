@@ -35,7 +35,7 @@ class ReservaController{
     }
 
     static async listarReservasPorIdAmbiente(req, res){
-        const idProcurado = req.params.id;
+        const idProcurado = req.params.idAmbiente;
         try{
             const listarReservas = await Reserva.buscarReservaPorIdAmbiente(idProcurado);
             res.status(200).json(listarReservas);
@@ -46,7 +46,7 @@ class ReservaController{
     }
 
     static async listarReservasPorIdStatus(req, res){
-        const idProcurado = req.params.id;
+        const idProcurado = req.params.idStatus;
         try{
             const listarReservas = await Reserva.buscarReservaPorIdStatus(idProcurado);
             res.status(200).json(listarReservas);
@@ -62,7 +62,7 @@ class ReservaController{
         const horarioInicial = req.params.horarioInicial;
         const horarioFinal = req.params.horarioFinal;
         try{
-            const reservaPeriodo = await Reserva.buscarReservaPorPeriodo(dataInicial, dataFinal, horarioInicial, horarioFinal);
+            const reservaPeriodo = await Reserva.buscarReservaPorPeriodo({dataInicial, dataFinal, horarioInicial, horarioFinal});
             res.status(200).json(reservaPeriodo);
         }
         catch(error){
@@ -73,7 +73,7 @@ class ReservaController{
     static async listarReservasPorData(req, res){
         const dataInicial = req.params.dataInicial;
         try{
-            const reservaData = await Reserva.buscarReservaPorPeriodo(dataInicial);
+            const reservaData = await Reserva.buscarReservaPorPeriodo({dataInicial});
             res.status(200).json(reservaData);
         }
         catch(error){
