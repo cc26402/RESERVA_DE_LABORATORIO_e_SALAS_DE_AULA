@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import style from "./reservas.module.css";
 import { Tabela } from "../../component/tabela";
+import Link from "next/link";
 
 type Reserva = {
     idReserva: number;
@@ -74,8 +75,13 @@ export default function Reservas(){
     return(
         <div>
             <header>
-                <button onClick={() => setTabela({modo: "Todas"})}>Mostrar Todas</button>
-                <button onClick={() => setTabela({modo: "User"})}>Minhas Reservas</button>
+                <div>
+                    <button onClick={() => setTabela({modo: "Todas"})}>Mostrar Todas</button>
+                    <button onClick={() => setTabela({modo: "User"})}>Minhas Reservas</button>
+                </div>
+                <div>
+                    <Link href="/reservas/novaReserva">Nova Reserva</Link>
+                </div>
             </header>
             <main>
                 {tabela?.modo == "User" && (
