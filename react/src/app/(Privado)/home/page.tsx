@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import style from "./page.module.css";
+import { useRouter } from "next/navigation";
 
 type DadosDosAmbientes = {
   idAmbiente: number;
@@ -21,6 +22,30 @@ export default function Ambiente() {
   const [dados, setDados] = useState<DadosDosAmbientes[]>([]);
   const [predios, setPredios] = useState<DadosDosPredios[]>([]);
   const [idPredioSelecionado, setIdSelecionado] = useState<number>(0);
+
+  const router = useRouter();
+  
+  useEffect(() => {
+      const loginToken = localStorage.getItem("loginToken");
+      if (loginToken) {
+      fetch("http://localhost:8080/auth/valida", {
+          method: 'POST',
+          headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${loginToken}`
+          }
+      })
+      .then(async result => {
+          if (!result.ok) {
+          localStorage.removeItem('loginToken');
+          router.replace("/")
+          }
+      })
+      }
+      else {
+          router.replace("/");
+      }
+  }, [router]);
 
   useEffect(() => {
     async function carregarDadosDosAmbientes() {

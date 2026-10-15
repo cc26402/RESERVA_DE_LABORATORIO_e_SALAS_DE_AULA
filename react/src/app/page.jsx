@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import style from './page.module.css';
 
 export default function Login() {
 
@@ -80,19 +81,21 @@ export default function Login() {
   }
 
   return (
-    <form onSubmit={submitHandler}>
-      <h1>Login</h1>
-      <div>
-        <label htmlFor="">E-mail</label>
-        <input type="text" name="email" id="email" onBlur={onBlurHandler}/>
-      </div>
-      <div>
-        <label htmlFor="">Senha</label>
-        <input type="text" name="senha" id="senha" onBlur={onBlurHandler}/>
-      </div>
-      <button>Entrar</button>
-      <Link href="/usuarios/novo">Cadastre-se</Link>
+    <div className={style.div_form}>
+      <form onSubmit={submitHandler}>
+        <h1>Login</h1>
+        <div>
+          <label htmlFor="">E-mail</label>
+          <input type="text" name="email" id="email" onBlur={onBlurHandler}/>
+        </div>
+        <div>
+          <label htmlFor="">Senha</label>
+          <input type="text" name="senha" id="senha" onBlur={onBlurHandler}/>
+        </div>
+        <button>Entrar</button>
+        <Link href="/usuarios/novo">Cadastre-se</Link>
 
-    </form>
+      </form>
+    </div>
   );
 }
