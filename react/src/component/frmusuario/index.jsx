@@ -7,7 +7,7 @@ export default function FrmUsuario({token = ""}){
     const url = (token ? `http://localhost:8080/usuarios/meusdados` : `http://localhost:8080/auth/cadastro`);
     const metodo = (token ? "PATCH" : "POST")
     const [niveisAcesso, setNiveisAcesso] = useState([]);
-    const [dadosUsuario, setDadosUsuario] = useState({CPF:"", prenome:"", sobrenome:"", nascimento:"", celular:"", email:"", idNivelAcesso:0, senha:""});
+    const [dadosUsuario, setDadosUsuario] = useState({CPF:"", prenome:"", sobrenome:"", nascimento:"", celular:"", email:"", senha:""});
     const [status, setStatus] = useState(null);
 
     useEffect(() => {
@@ -107,10 +107,6 @@ export default function FrmUsuario({token = ""}){
                     <label htmlFor="">Senha</label>
                     <input type="password" id="senha" onChange={handlerChange} required={!token}/>
                 </div>}
-                <div>
-                    <label htmlFor="">Nível de acesso</label>
-                    <Select opcoes={niveisAcesso} chaveValor="idNivelAcesso" chaveTexto="nome" textoOptionPadrao="Selecione..." id="idNivelAcesso" value={dadosUsuario.idNivelAcesso} onChange={handlerChange}></Select>
-                </div>
                 <button>Salvar</button>
             </form>
         </div>
