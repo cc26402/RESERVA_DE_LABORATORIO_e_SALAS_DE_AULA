@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 export default function Login() {
 
   const [status, setStatus] = useState("");
+  const [token, setToken] = useState("");
   const router = useRouter();
   
   useEffect(() => {
@@ -27,7 +28,7 @@ export default function Login() {
         }
       })
     }
-  }, [router])
+  }, [router, token])
   
   function submitHandler(evento) {
     evento.preventDefault();
@@ -47,10 +48,10 @@ export default function Login() {
           alert(dados.message);
           throw new Error(dados.message);
         }
-        console.log(dados)
         localStorage.setItem('loginToken', dados.token);
         localStorage.setItem('loginCPF', dados.dadosLogin.CPF);
         localStorage.setItem('loginUsername', dados.dadosLogin.username);
+        setToken(dados.token)
       })
       .catch(erro => setStatus(erro.message));
     }
@@ -90,7 +91,8 @@ export default function Login() {
         <input type="text" name="senha" id="senha" onBlur={onBlurHandler}/>
       </div>
       <button>Entrar</button>
-      <Link href="/usuarios/novo"></Link>
+      <Link href="/usuarios/novo">Cadastre-se</Link>
+
     </form>
   );
 }

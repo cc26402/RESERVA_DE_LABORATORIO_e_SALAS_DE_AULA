@@ -1,7 +1,15 @@
+'use client';
 import Link from "next/link";
 import style from "./Header.module.css";
+import { useRouter } from "next/navigation";
 
 export function Header() {
+  const router = useRouter();
+  function logoutHandler(){
+    localStorage.removeItem("loginToken");
+    router.replace('/')
+  }
+
   return (
     <header className={style.header}>
       <div className={style.titulo}>
@@ -27,7 +35,7 @@ export function Header() {
             <Link href="/ambientes">Ambientes</Link>
           </li>
           <li className={style.linkMenu}>
-            <Link href="/ambientes">Logout</Link>
+            <button onClick={logoutHandler} className={style.button}>Logout</button>
           </li>
         </ul>
       </nav>
