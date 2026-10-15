@@ -26,6 +26,9 @@ export function Header() {
           <li className={style.linkMenu}>
             <Link href="/ambientes">Ambientes</Link>
           </li>
+          <li className={style.linkMenu}>
+            <Link href="/ambientes">Logout</Link>
+          </li>
         </ul>
       </nav>
     </header>
