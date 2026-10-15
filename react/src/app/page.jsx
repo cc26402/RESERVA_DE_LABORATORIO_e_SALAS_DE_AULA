@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function Ambiente() {
+export default function Login() {
 
   const [status, setStatus] = useState("");
   const router = useRouter();
@@ -27,7 +27,7 @@ export default function Ambiente() {
         }
       })
     }
-  }, [])
+  }, [router])
   
   function submitHandler(evento) {
     evento.preventDefault();

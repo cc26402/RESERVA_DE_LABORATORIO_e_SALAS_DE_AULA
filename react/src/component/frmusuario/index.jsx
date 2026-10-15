@@ -24,7 +24,7 @@ export default function FrmUsuario({token = ""}){
 
         if (token) {
             fetch(url, {
-                method: 'POST',
+                method: 'GET',
                 headers: {
                   'Content-Type': 'application/json',
                   'Authorization': `Bearer ${token}`
@@ -55,7 +55,10 @@ export default function FrmUsuario({token = ""}){
         evento.preventDefault();
         fetch(url,{
             method: metodo,
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify(dadosUsuario)
         })
         .then(result => {
@@ -63,7 +66,7 @@ export default function FrmUsuario({token = ""}){
                 throw new Error(metodo=="POST" ? "Erro ao cadastrar usuário" : "Erro ao atualizar dados do usuário");
             }
             setStatus(metodo=="POST" ? "Usuário cadastrado com sucesso" : "Usuário alterado com sucesso")
-            alert(status)
+            alert(metodo=="POST" ? "Usuário cadastrado com sucesso" : "Usuário alterado com sucesso")
         })
         .catch(erro => {
             setStatus(erro.message);
