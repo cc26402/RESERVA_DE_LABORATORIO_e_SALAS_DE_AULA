@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 export default function Login() {
 
   const [status, setStatus] = useState("");
+  const [token, setToken] = useState("");
   const router = useRouter();
   
   useEffect(() => {
@@ -27,7 +28,7 @@ export default function Login() {
         }
       })
     }
-  }, [router])
+  }, [router, token])
   
   function submitHandler(evento) {
     evento.preventDefault();
@@ -51,6 +52,7 @@ export default function Login() {
         localStorage.setItem('loginToken', dados.token);
         localStorage.setItem('loginCPF', dados.dadosLogin.CPF);
         localStorage.setItem('loginUsername', dados.dadosLogin.username);
+        setToken(dados.token)
       })
       .catch(erro => setStatus(erro.message));
     }
