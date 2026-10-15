@@ -21,10 +21,13 @@ export function Header() {
             <Link href="/reservas">Minhas reservas</Link>
           </li>
           <li className={style.linkMenu}>
-            <Link href="/usuarios">Usuários</Link>
+            <Link href="/usuarios/meusdados">Meus dados</Link>
           </li>
           <li className={style.linkMenu}>
             <Link href="/ambientes">Ambientes</Link>
+          </li>
+          <li className={style.linkMenu}>
+            <Link href="/ambientes">Logout</Link>
           </li>
         </ul>
       </nav>
