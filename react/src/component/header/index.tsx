@@ -35,7 +35,7 @@ export function Header() {
             <Link href="/ambientes">Ambientes</Link>
           </li>
           <li className={style.linkMenu}>
-            <button onClick={logoutHandler}>Logout</button>
+            <button onClick={logoutHandler} className={style.button}>Logout</button>
           </li>
         </ul>
       </nav>

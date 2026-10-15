@@ -48,7 +48,6 @@ export default function Login() {
           alert(dados.message);
           throw new Error(dados.message);
         }
-        console.log(dados)
         localStorage.setItem('loginToken', dados.token);
         localStorage.setItem('loginCPF', dados.dadosLogin.CPF);
         localStorage.setItem('loginUsername', dados.dadosLogin.username);
