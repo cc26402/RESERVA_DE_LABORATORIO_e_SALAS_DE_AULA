@@ -51,7 +51,7 @@ class Usuario {
         try {
             const conexao = await conectaBD();
             const result = await conexao.query(`INSERT into resSalaLab.Usuario (CPF, prenome, sobrenome, nascimento, celular, email, idNivelAcesso) VALUES ('${CPF}', '${prenome}', '${sobrenome}', '${nascimento}', '${celular}', '${email}', '${idNivelAcesso}')`);
-            Login.criarLogin(LoginNovo);
+            await Login.criarLogin(LoginNovo);
             return result;
         }
         catch (error) {
