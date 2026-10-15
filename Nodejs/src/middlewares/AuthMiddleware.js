@@ -19,9 +19,8 @@ export default function AuthMiddleware(req, res, next) {
 
     try {
         const tokenDecodificado = jwt.verify(token, secret);
-        req.params.id = tokenDecodificado.CPF;
-        req.usuarioCPF = tokenDecodificado.CPF;
-        req.loginUsername = tokenDecodificado.username;
+        req.CPF = tokenDecodificado.CPF;
+        req.username = tokenDecodificado.username;
         return next();
     } catch (erro) {
         return res.status(401).json({message: "Token inválido ou expirado"});
