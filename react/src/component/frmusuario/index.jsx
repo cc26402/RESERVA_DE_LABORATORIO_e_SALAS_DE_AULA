@@ -4,7 +4,7 @@ import { Select } from "../select";
 import style from "./Frmusuario.module.css"
 
 export default function FrmUsuario({cpf= ""}){
-    const url = (cpf ? `http://localhost:8080/usuarios/${cpf}` : `http://localhost:8080/usuarios`);
+    const url = (cpf ? `http://localhost:8080/usuarios/meusdados` : `http://localhost:8080/auth/cadastro`);
     const metodo = (cpf ? "PATCH" : "POST")
     const [niveisAcesso, setNiveisAcesso] = useState([]);
     const [dadosUsuario, setDadosUsuario] = useState({CPF:"", prenome:"", sobrenome:"", nascimento:"", celular:"", email:"", idNivelAcesso:0, senha:""});

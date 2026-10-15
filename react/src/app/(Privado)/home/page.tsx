@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import style from "./page.module.css"
-import { Select } from "../component/select";
+import style from "./page.module.css";
 
 type DadosDosAmbientes = {
   idAmbiente: number;
