@@ -1,29 +1,33 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function Ambiente() {
 
   const [status, setStatus] = useState("");
-  const [token, setToken] = useState(localStorage.getItem('loginToken'));
-
+  const router = useRouter();
+  
   useEffect(() => {
-    if (token) {
-      fetch("http://localhost:8080/auth/validatoken",{
+    const loginToken = localStorage.getItem("loginToken");
+    if (loginToken) {
+      fetch("http://localhost:8080/auth/valida", {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(dadosLogin)
+          'Authorization': `Bearer ${loginToken}`
+        }
       })
       .then(async result => {
-        if (result.ok) {
-
+        if (!result.ok) {
+          localStorage.removeItem('loginToken');
+        }
+        else {
+          router.replace("/home")
         }
       })
     }
-  }, [token])
+  }, [])
   
   function submitHandler(evento) {
     evento.preventDefault();
@@ -43,10 +47,10 @@ export default function Ambiente() {
           alert(dados.message);
           throw new Error(dados.message);
         }
+        console.log(dados)
         localStorage.setItem('loginToken', dados.token);
         localStorage.setItem('loginCPF', dados.dadosLogin.CPF);
         localStorage.setItem('loginUsername', dados.dadosLogin.username);
-        setToken(dados.token)
       })
       .catch(erro => setStatus(erro.message));
     }

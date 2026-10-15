@@ -1,10 +1,16 @@
+'use client';
 import FrmUsuario from "@/src/component/frmusuario";
+import { useEffect, useState } from "react";
 
-export default async function Page(){
+export default function Page(){
 
-    
+    const [token, setToken] = useState("");
+
+    useEffect(() => {
+        setToken(localStorage.getItem("loginToken"));
+    },[])
 
     return (
-        <FrmUsuario cpf={cpf}></FrmUsuario>
+        <FrmUsuario token={token}></FrmUsuario>
     )
 }

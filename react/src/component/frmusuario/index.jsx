@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { Select } from "../select";
 import style from "./Frmusuario.module.css"
 
-export default function FrmUsuario({cpf= ""}){
-    const url = (cpf ? `http://localhost:8080/usuarios/meusdados` : `http://localhost:8080/auth/cadastro`);
-    const metodo = (cpf ? "PATCH" : "POST")
+export default function FrmUsuario({token = ""}){
+    const url = (token ? `http://localhost:8080/usuarios/meusdados` : `http://localhost:8080/auth/cadastro`);
+    const metodo = (token ? "PATCH" : "POST")
     const [niveisAcesso, setNiveisAcesso] = useState([]);
     const [dadosUsuario, setDadosUsuario] = useState({CPF:"", prenome:"", sobrenome:"", nascimento:"", celular:"", email:"", idNivelAcesso:0, senha:""});
     const [status, setStatus] = useState(null);
@@ -22,11 +22,18 @@ export default function FrmUsuario({cpf= ""}){
             })
             .catch(erro => setStatus(erro.message));
 
-        if (cpf) {
-            fetch(url)
+        if (token) {
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+                }
+            })
             .then(async result => {
                 const dados = await result.json();
                 if (!result.ok){
+                    console.log(result)
                     alert("Erro ao buscar dados do usuário.");
                     throw new Error("Erro ao buscar dados do usuário.");
                 }
@@ -36,7 +43,7 @@ export default function FrmUsuario({cpf= ""}){
             })
             .catch(erro => setStatus(erro.message));
         }
-    },[cpf, url]);
+    },[token, url]);
 
     function handlerChange(evento){
         const targetId = evento.target.id;
@@ -60,7 +67,7 @@ export default function FrmUsuario({cpf= ""}){
         })
         .catch(erro => {
             setStatus(erro.message);
-            alert(status);
+            alert(erro.message);
         })
     }
     
@@ -92,9 +99,9 @@ export default function FrmUsuario({cpf= ""}){
                     <label htmlFor="">E-mail</label>
                     <input type="text" id="email" value={dadosUsuario.email} onChange={handlerChange} required/>
                 </div>
-                {!cpf && <div>
+                {!token && <div>
                     <label htmlFor="">Senha</label>
-                    <input type="password" id="senha" onChange={handlerChange} required={!cpf}/>
+                    <input type="password" id="senha" onChange={handlerChange} required={!token}/>
                 </div>}
                 <div>
                     <label htmlFor="">Nível de acesso</label>
