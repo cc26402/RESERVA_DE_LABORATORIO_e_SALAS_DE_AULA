@@ -91,7 +91,8 @@ export default function Login() {
         <input type="text" name="senha" id="senha" onBlur={onBlurHandler}/>
       </div>
       <button>Entrar</button>
-      <Link href="/usuarios/novo"></Link>
+      <Link href="/usuarios/novo">Cadastre-se</Link>
+
     </form>
   );
 }
