@@ -18,7 +18,7 @@ export function Header() {
             <Link href="/">Home</Link>
           </li>
           <li className={style.linkMenu}>
-            <Link href="/reservas">Minhas reservas</Link>
+            <Link href="/reservas">Reservas</Link>
           </li>
           <li className={style.linkMenu}>
             <Link href="/usuarios">Usuários</Link>

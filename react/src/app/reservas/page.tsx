@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from "react";
 import style from "./reservas.module.css";
-import Tabela from "../../component/tabela";
+import { Tabela } from "../../component/tabela";
 
 type Reserva = {
     idReserva: number;
@@ -14,13 +14,15 @@ type Reserva = {
     horarioFinal: string
 };
 
-type Form = {
-
+type EstadoTabela = {
+    modo: "Todas" | "User";
+    dados?: Reserva;
 };
 
-export default function reservas(){
-    const [reserva, setReserva] = useState<Reserva[]>;
-    const [form, setForm] = useState<>
+export default function Reservas(){
+    const [reserva, setReserva] = useState<Reserva[]>([]);
+    const [tabela, setTabela] = useState<EstadoTabela>();
+    const [formatadas, setFormatadas] = useState<Reserva[]>([]);
 
     useEffect(() => {
         async function listarReservasDoUsuario() {
@@ -33,13 +35,68 @@ export default function reservas(){
                 throw new Error("falha ao conectar ao BD " + erro);
             }
         }
+        listarReservasDoUsuario();
     }, [])
+
+    async function excluir(idReserva: number | string){
+        try{
+            const response = await fetch("http://localhost:8080/reservas/"+ idReserva, {
+            method : "DELETE"
+            });
+            if (response.ok){
+                setReserva(reserva.filter(res => res.idReserva !== idReserva));
+            }
+            else{
+                console.error("Erro ao excluir ambiente:", response.status);
+            }
+        }
+        catch (erro){
+            console.error("Erro ao excluir ambiente:", erro);
+        }
+    }
+
+    useEffect(() => {
+        setTabela({modo: "User"})
+    }, [])
+    
+    useEffect(() => {
+        setFormatadas(reserva.map(r => ({ ...r, dataInicial: formatarData(r.dataInicial),
+                                                dataFinal: formatarData(r.dataFinal),
+                                                horarioInicial: r.horarioInicial.slice(11, 16),
+                                                horarioFinal: r.horarioFinal.slice(11, 16), })));
+    }, [reserva]);
+
+    function formatarData(data: string) {
+        const [ano, mes, dia] = data.slice(0, 10).split("-");
+        return `${dia}/${mes}/${ano}`;
+    }
 
     return(
         <div>
-            <header></header>
+            <header>
+                <button onClick={() => setTabela({modo: "Todas"})}>Mostrar Todas</button>
+                <button onClick={() => setTabela({modo: "User"})}>Minhas Reservas</button>
+            </header>
             <main>
-                <Tabela titulos={["idReserva", "idAmbiente", "Status", "Data Inicial", "Data Final", "Horário Inicial", "Horario Final"]} listaOrdemChaveDados={["idReserva", "idAmbiente", "idStatus", "dataInicial", "dataFinal", "horarioInicial", "horarioFinal", "link", "botao"]} chavePrimaria={"idReserva"} dados={reserva} botoes={[{textoBotao: "Excluir", onClick: excluir}]} links={[{textoLink: "Editar", href: "/reservas", rotaDinamica: true}]}></Tabela>
+                {tabela?.modo == "User" && (
+                    <Tabela titulos={["idReserva", "idAmbiente", "Status", "Data Inicial", "Data Final", "Horário Inicial", "Horario Final", " ", " "]} 
+                        listaOrdemChaveDados={["idReserva", "idAmbiente", "idStatus", "dataInicial", "dataFinal", "horarioInicial", "horarioFinal", "link", "botao"]} 
+                        chavePrimaria={"idReserva"} 
+                        dados={formatadas} 
+                        botoes={[{textoBotao: "Excluir", onClick: excluir}]} 
+                        links={[{textoLink: "Editar", href: "/reservas", rotaDinamica: true}]}>
+                    </Tabela>
+                    )
+                }
+                {
+                    tabela?.modo == "Todas" && (
+                        <Tabela titulos={["idReserva", "idAmbiente", "Status", "Data Inicial", "Data Final", "Horário Inicial", "Horario Final"]} 
+                        listaOrdemChaveDados={["idReserva", "idAmbiente", "idStatus", "dataInicial", "dataFinal", "horarioInicial", "horarioFinal"]} 
+                        chavePrimaria="idReserva" 
+                        dados={formatadas}>
+                        </Tabela>
+                    )
+                }
             </main>
         </div>
     );
