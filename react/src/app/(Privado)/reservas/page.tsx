@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from "react";
 import style from "./reservas.module.css";
-import { Tabela } from "../../component/tabela";
+import { Tabela } from "../../../component/tabela";
 import Link from "next/link";
 
 type Reserva = {
