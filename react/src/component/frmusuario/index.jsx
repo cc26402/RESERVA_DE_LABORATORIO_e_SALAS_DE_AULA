@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 import { Select } from "../select";
 import style from "./Frmusuario.module.css"
 
-export default function FrmUsuario({cpf= ""}){
-    const url = (cpf ? `http://localhost:8080/usuarios/${cpf}` : `http://localhost:8080/usuarios`);
-    const metodo = (cpf ? "PATCH" : "POST")
+export default function FrmUsuario({token = ""}){
+    const url = (token ? `http://localhost:8080/usuarios/meusdados` : `http://localhost:8080/auth/cadastro`);
+    const metodo = (token ? "PATCH" : "POST")
     const [niveisAcesso, setNiveisAcesso] = useState([]);
-    const [dadosUsuario, setDadosUsuario] = useState({CPF:"", prenome:"", sobrenome:"", nascimento:"", celular:"", email:"", idNivelAcesso:0, senha:""});
+    const [dadosUsuario, setDadosUsuario] = useState({CPF:"", prenome:"", sobrenome:"", nascimento:"", celular:"", email:"", senha:""});
     const [status, setStatus] = useState(null);
 
     useEffect(() => {
@@ -22,11 +22,18 @@ export default function FrmUsuario({cpf= ""}){
             })
             .catch(erro => setStatus(erro.message));
 
-        if (cpf) {
-            fetch(url)
+        if (token) {
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+                }
+            })
             .then(async result => {
                 const dados = await result.json();
                 if (!result.ok){
+                    console.log(result)
                     alert("Erro ao buscar dados do usuário.");
                     throw new Error("Erro ao buscar dados do usuário.");
                 }
@@ -36,7 +43,7 @@ export default function FrmUsuario({cpf= ""}){
             })
             .catch(erro => setStatus(erro.message));
         }
-    },[cpf, url]);
+    },[token, url]);
 
     function handlerChange(evento){
         const targetId = evento.target.id;
@@ -48,7 +55,10 @@ export default function FrmUsuario({cpf= ""}){
         evento.preventDefault();
         fetch(url,{
             method: metodo,
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify(dadosUsuario)
         })
         .then(result => {
@@ -56,17 +66,18 @@ export default function FrmUsuario({cpf= ""}){
                 throw new Error(metodo=="POST" ? "Erro ao cadastrar usuário" : "Erro ao atualizar dados do usuário");
             }
             setStatus(metodo=="POST" ? "Usuário cadastrado com sucesso" : "Usuário alterado com sucesso")
-            alert(status)
+            alert(metodo=="POST" ? "Usuário cadastrado com sucesso" : "Usuário alterado com sucesso")
         })
         .catch(erro => {
             setStatus(erro.message);
-            alert(status);
+            alert(erro.message);
         })
     }
     
 
     return (
         <div className={style.div_form}>
+            {!token && <h1>Preencha os campos abaixo para realizar seu cadastro</h1>}
             <form onSubmit={handlerSubmit}>
                 <div>
                     <label htmlFor="">CPF</label>
@@ -92,14 +103,10 @@ export default function FrmUsuario({cpf= ""}){
                     <label htmlFor="">E-mail</label>
                     <input type="text" id="email" value={dadosUsuario.email} onChange={handlerChange} required/>
                 </div>
-                {!cpf && <div>
+                {!token && <div>
                     <label htmlFor="">Senha</label>
-                    <input type="password" id="senha" onChange={handlerChange} required={!cpf}/>
+                    <input type="password" id="senha" onChange={handlerChange} required={!token}/>
                 </div>}
-                <div>
-                    <label htmlFor="">Nível de acesso</label>
-                    <Select opcoes={niveisAcesso} chaveValor="idNivelAcesso" chaveTexto="nome" textoOptionPadrao="Selecione..." id="idNivelAcesso" value={dadosUsuario.idNivelAcesso} onChange={handlerChange}></Select>
-                </div>
                 <button>Salvar</button>
             </form>
         </div>

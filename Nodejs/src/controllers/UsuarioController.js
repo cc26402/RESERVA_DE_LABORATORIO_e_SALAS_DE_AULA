@@ -13,7 +13,7 @@ class UsuarioController{
     }
 
     static async listarUsuariosPorId(req, res){
-        const CPFProcurado = req.params.id;
+        const CPFProcurado = (req.params.id ? req.params.id : req.CPF);
         try{
             const listarUsuarios = await Usuario.buscarUsuarioPorCPF(CPFProcurado);
             res.status(200).json(listarUsuarios);
@@ -24,7 +24,7 @@ class UsuarioController{
     }
 
     static async removerUsuario(req,res){
-        const idProcurado = req.params.id;
+        const idProcurado = (req.params.id ? req.params.id : req.CPF);
         try{
             const listarUsuarios = await Usuario.removerUsuario(idProcurado);
             res.status(200).json({message: "Removido com sucesso"});
@@ -46,10 +46,10 @@ class UsuarioController{
     }
 
     static async alterarUsuario(req, res){
-        const CPF = req.params.id;
-        const { prenome, sobrenome, nascimento, celular, email, idNivelAcesso } = req.body;
+        const CPF = (req.params.id ? req.params.id : req.CPF);
+        const dadosNovos = req.body
         try{
-            const result = await Usuario.alterarUsuario({CPF: CPF, prenome: prenome, sobrenome: sobrenome, nascimento: nascimento, celular: celular, email: email, idNivelAcesso: idNivelAcesso});
+            const result = await Usuario.alterarUsuario({...dadosNovos, "CPF" : CPF});
             res.status(200).json({message: "Alterado com sucesso"});
         }
         catch(error){
