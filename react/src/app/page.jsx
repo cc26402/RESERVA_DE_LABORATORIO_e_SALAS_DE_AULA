@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Login() {
-
-  const [status, setStatus] = useState("");
   const [token, setToken] = useState("");
   const router = useRouter();
   
@@ -45,7 +43,6 @@ export default function Login() {
       .then(async result => {
         const dados = await result.json();
         if (!result.ok) {
-          alert(dados.message);
           throw new Error(dados.message);
         }
         localStorage.setItem('loginToken', dados.token);
@@ -53,7 +50,7 @@ export default function Login() {
         localStorage.setItem('loginUsername', dados.dadosLogin.username);
         setToken(dados.token)
       })
-      .catch(erro => setStatus(erro.message));
+      .catch(erro => alert(erro.message));
     }
   }
   
