@@ -30,8 +30,6 @@ export default function Ambiente() {
           throw new Error("Erro ao trazer os dados do BD");
         }
         const resultados: DadosDosAmbientes[] = await response.json();
-        console.log("Dados vindo do JSON da API");
-        console.log(resultados);
         setDados(resultados);
       } catch (erro) {
         console.error("Erro do processamento", erro);
@@ -48,8 +46,6 @@ export default function Ambiente() {
           throw new Error("Erro ao trazer os dados do BD");
         }
         const resultados: DadosDosPredios[] = await response.json();
-        console.log("Dados vindo do JSON da API");
-        console.log(resultados);
         setPredios(resultados);
       }
       catch (erro) {
