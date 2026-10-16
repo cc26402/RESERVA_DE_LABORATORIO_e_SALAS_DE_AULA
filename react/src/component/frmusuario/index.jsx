@@ -1,17 +1,19 @@
 'use client';
 import { useEffect, useState } from "react";
 import { Select } from "../select";
+import { useRouter } from "next/navigation";
 import style from "./Frmusuario.module.css"
 
 export default function FrmUsuario({token = ""}){
     const url = (token ? `http://localhost:8080/usuarios/meusdados` : `http://localhost:8080/auth/cadastro`);
     const metodo = (token ? "PATCH" : "POST")
-    const [niveisAcesso, setNiveisAcesso] = useState([]);
+    //const [niveisAcesso, setNiveisAcesso] = useState([]);
     const [dadosUsuario, setDadosUsuario] = useState({CPF:"", prenome:"", sobrenome:"", nascimento:"", celular:"", email:"", senha:""});
     const [status, setStatus] = useState(null);
+    const router = useRouter();
 
     useEffect(() => {
-        fetch("http://localhost:8080/niveis_acesso")
+        /*fetch("http://localhost:8080/niveis_acesso")
             .then(async result => {
                 const niveis = await result.json();
                 if (!result.ok) {
@@ -20,7 +22,8 @@ export default function FrmUsuario({token = ""}){
                 }
                 setNiveisAcesso(niveis);
             })
-            .catch(erro => setStatus(erro.message));
+            .catch(erro => setStatus(erro.message));*/
+
 
         if (token) {
             fetch(url, {
@@ -37,13 +40,19 @@ export default function FrmUsuario({token = ""}){
                     alert("Erro ao buscar dados do usuário.");
                     throw new Error("Erro ao buscar dados do usuário.");
                 }
-                console.log(dados)
                 const dadosComSenha = {...dados[0], senha:""}
                 setDadosUsuario(dadosComSenha);
             })
             .catch(erro => setStatus(erro.message));
         }
     },[token, url]);
+
+    useEffect(() => {
+        console.log(status);
+        if (status == "201") {
+            router.replace("/")
+        }
+    }, [status, router]);
 
     function handlerChange(evento){
         const targetId = evento.target.id;
@@ -61,12 +70,13 @@ export default function FrmUsuario({token = ""}){
             },
             body: JSON.stringify(dadosUsuario)
         })
-        .then(result => {
+        .then(async result => {
+            const dados = await result.json()
             if (!result.ok) {
-                throw new Error(metodo=="POST" ? "Erro ao cadastrar usuário" : "Erro ao atualizar dados do usuário");
+                throw new Error(dados.message);
             }
-            setStatus(metodo=="POST" ? "Usuário cadastrado com sucesso" : "Usuário alterado com sucesso")
-            alert(metodo=="POST" ? "Usuário cadastrado com sucesso" : "Usuário alterado com sucesso")
+            setStatus(result.status)
+            alert(dados.message)
         })
         .catch(erro => {
             setStatus(erro.message);

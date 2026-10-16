@@ -44,10 +44,10 @@ export default class AuthController {
     }
 
     static async cadastro(req, res) {
-        const { CPF, prenome, sobrenome, nascimento, celular, email, idNivelAcesso, senha } = req.body;
+        const { CPF, prenome, sobrenome, nascimento, celular, email, idNivelAcesso = 1, senha } = req.body;
 
         if (!CPF || !prenome || !sobrenome || !nascimento || !celular || !email || !idNivelAcesso || !senha) {
-            return req.status(400).json({message: "Não foram fornecidos todos os dados para cadastro."});
+            return res.status(400).json({message: "Não foram fornecidos todos os dados para cadastro."});
         }
 
         try {
@@ -57,7 +57,7 @@ export default class AuthController {
             }
 
             const loginJaCadastrado = await Login.buscarPorUsername(email);
-            if (loginJaCadastrado && loginJaCadastrado>0) {
+            if (loginJaCadastrado && loginJaCadastrado.length>0) {
                 return res.status(400).json({message: "E-mail já cadastrado no sistema."});
             }
 
