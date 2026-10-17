@@ -13,17 +13,19 @@ export function Header() {
   return (
     <header className={style.header}>
       <div className={style.titulo}>
-        <img
-          src="https://www.cotuca.unicamp.br/wp-content/uploads/sites/75/2015/08/cotuca_transparente_logo.png"
-          alt="Logo COTUCA Unicamp"
-          className={style.logoCotuca}
-        />
+        <Link href="/home">
+          <img
+            src="https://www.cotuca.unicamp.br/wp-content/uploads/sites/75/2015/08/cotuca_transparente_logo.png"
+            alt="Logo COTUCA Unicamp"
+            className={style.logoCotuca}
+          />
+        </Link>
         <h1>Reserva de Salas e Laboratórios</h1>
       </div>
       <nav>
         <ul className={style.menu}>
           <li className={style.linkMenu}>
-            <Link href="/">Home</Link>
+            <Link href="/home">Home</Link>
           </li>
           <li className={style.linkMenu}>
             <Link href="/reservas">Reservas</Link>

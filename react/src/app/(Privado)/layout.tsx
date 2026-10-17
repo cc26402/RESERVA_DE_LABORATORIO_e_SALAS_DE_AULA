@@ -8,8 +8,8 @@ export default function PrivadoLayout
 {
   return (
     <>
-    <Header/>
-    { children }
+      <Header/>
+      { children }
     </>
   );
 }
