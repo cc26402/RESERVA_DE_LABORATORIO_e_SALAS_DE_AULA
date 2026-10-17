@@ -1,9 +1,36 @@
-.form * {
+.div_form form * {
     border: 1px solid red;
 }
 
-.form {
-    border: 1px solid red;
+.div_form {
     height: 100vh;
     display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.div_form form {
+    padding: 20px;
+    height: 400px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    box-shadow: 0 0 3px 1px rgb(255, 255, 255);
+    border-radius: 10px;
+}
+
+.div_form div {
+    display: flex;
+    flex-direction: column;
+}
+
+.div_inputs {
+    justify-content: space-between;
+    height: 60px;
+}
+
+.div_buttons {
+    height: 65px;
+    justify-content: space-between;
 }
