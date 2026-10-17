@@ -1,5 +1,6 @@
 "use client"
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import style from "./ambientes.module.css";
 
 type Ambiente = {
@@ -33,6 +34,33 @@ export default function Ambientes() {
     const [capacidade, setCapacidade] = useState(1);
     const [andar, setAndar] = useState(0);
     const [idPredio, setIdPredio] = useState(0);
+    const [token, setToken] = useState("");
+    const router = useRouter();
+    
+    useEffect(() => {
+        const loginToken = localStorage.getItem("loginToken");
+        if (loginToken) {
+        fetch("http://localhost:8080/auth/valida", {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${loginToken}`
+            }
+        })
+        .then(async result => {
+            if (!result.ok) {
+            localStorage.removeItem('loginToken');
+            router.replace("/")
+            }
+            else {
+                setToken(localStorage.getItem("loginToken"));
+            }
+        })
+        }
+        else {
+            router.replace("/");
+        }
+    }, [router]);
 
     useEffect(() => {
         listarAmbientes();

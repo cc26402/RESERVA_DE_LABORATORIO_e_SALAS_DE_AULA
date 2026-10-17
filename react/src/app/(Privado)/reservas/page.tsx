@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import style from "./reservas.module.css";
 import { Tabela } from "../../../component/tabela";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type Reserva = {
     idReserva: number;
@@ -24,6 +25,33 @@ export default function Reservas(){
     const [reserva, setReserva] = useState<Reserva[]>([]);
     const [tabela, setTabela] = useState<EstadoTabela>();
     const [formatadas, setFormatadas] = useState<Reserva[]>([]);
+    const [token, setToken] = useState("");
+    const router = useRouter();
+    
+    useEffect(() => {
+        const loginToken = localStorage.getItem("loginToken");
+        if (loginToken) {
+        fetch("http://localhost:8080/auth/valida", {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${loginToken}`
+            }
+        })
+        .then(async result => {
+            if (!result.ok) {
+            localStorage.removeItem('loginToken');
+            router.replace("/")
+            }
+            else {
+                setToken(localStorage.getItem("loginToken"));
+            }
+        })
+        }
+        else {
+            router.replace("/");
+        }
+    }, [router]);
 
     useEffect(() => {
         async function listarReservasDoUsuario() {
