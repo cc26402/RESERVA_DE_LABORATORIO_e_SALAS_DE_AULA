@@ -44,7 +44,7 @@ export default function Reservas(){
             router.replace("/")
             }
             else {
-                setToken(localStorage.getItem("loginToken"));
+                setToken(loginToken);
             }
         })
         }
@@ -67,20 +67,43 @@ export default function Reservas(){
         listarReservasDoUsuario();
     }, [])
 
+    async function carregarReservas(modo: "Todas" | "User"){
+        try{
+            const url = modo === "User"
+                ? "http://localhost:8080/reservas/minhas"
+                : "http://localhost:8080/reservas";
+            const response = await fetch(url, {
+                headers: { "Authorization": `Bearer ${localStorage.getItem("loginToken")}` }
+            });
+            if (!response.ok) {
+                console.error("Erro ao buscar reservas:", response.status);
+                return;
+            }
+            setReserva(await response.json());
+            setTabela({modo});
+        }
+        catch(erro){
+            console.error("Falha ao conectar ao BD", erro);
+        }
+    }
+
     async function excluir(idReserva: number | string){
         try{
             const response = await fetch("http://localhost:8080/reservas/"+ idReserva, {
-            method : "DELETE"
+                method : "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${localStorage.getItem("loginToken")}`
+                }
             });
             if (response.ok){
                 setReserva(reserva.filter(res => res.idReserva !== idReserva));
             }
             else{
-                console.error("Erro ao excluir ambiente:", response.status);
+                console.error("Erro ao excluir reserva:", response.status);
             }
         }
         catch (erro){
-            console.error("Erro ao excluir ambiente:", erro);
+            console.error("Erro ao excluir reserva:", erro);
         }
     }
 
@@ -104,8 +127,8 @@ export default function Reservas(){
         <div>
             <header>
                 <div>
-                    <button onClick={() => setTabela({modo: "Todas"})}>Mostrar Todas</button>
-                    <button onClick={() => setTabela({modo: "User"})}>Minhas Reservas</button>
+                    <button onClick={() => carregarReservas("Todas")}>Mostrar Todas</button>
+                    <button onClick={() => carregarReservas("User")}>Minhas Reservas</button>
                 </div>
                 <div>
                     <Link href="/reservas/novaReserva">Nova Reserva</Link>

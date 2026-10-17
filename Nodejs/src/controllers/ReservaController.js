@@ -12,6 +12,16 @@ class ReservaController{
         }
     }
 
+    static async listarMinhasReservas(req, res){
+        try{
+            const reservas = await Reserva.buscarPorUsuario(req.username);
+            res.status(200).json(reservas);
+        }
+        catch(error){
+            res.status(500).json({message: `Erro na requisição: ${error.message}`});
+        }
+    }
+
     static async listarReservasPorId(req, res){
         const idProcurado = req.params.id;
         try{
@@ -84,6 +94,12 @@ class ReservaController{
     static async removerReserva(req,res){
         const idProcurado = req.params.id;
         try{
+            const [reserva] = await Reserva.buscarReservaPorId(idProcurado);
+            if (!reserva) return res.status(404).json({message: "Reserva não encontrada."});
+            if (reserva.username !== req.username) {
+                return res.status(403).json({message: "Você não pode remover a reserva de outro usuário."});
+            }
+
             const listarReservas = await Reserva.removerReserva(idProcurado);
             res.status(200).json({message: "Removido com sucesso"});
         }
@@ -93,7 +109,7 @@ class ReservaController{
     }
 
     static async inserirReserva(req,res){
-        const ReservaNova = req.body;
+        const ReservaNova = { ...req.body, username: req.username };
         try{
             const result = await Reserva.inserirReserva(ReservaNova);
             res.status(200).json({message: "Inserido com sucesso"});
@@ -105,15 +121,20 @@ class ReservaController{
 
     static async alterarReserva(req, res){
         const idReserva = req.params.id;
-        const { username, idAmbiente, idStatus, dataInicial, dataFinal, horarioInicial, horarioFinal } = req.body;
+        const { idAmbiente, idStatus, dataInicial, dataFinal, horarioInicial, horarioFinal } = req.body;
         try{
-            const result = await Reserva.alterarReserva({idReserva: idReserva, username: username, idAmbiente: idAmbiente, idStatus: idStatus, dataInicial: dataInicial, dataFinal: dataFinal, horarioInicial: horarioInicial, horarioFinal: horarioFinal });
+            const [reserva] = await Reserva.buscarReservaPorId(idReserva);
+            if (!reserva) return res.status(404).json({message: "Reserva não encontrada."});
+            if (reserva.username !== req.username) {
+                return res.status(403).json({message: "Você não pode alterar a reserva de outro usuário."});
+            }
+
+            const result = await Reserva.alterarReserva({idReserva: idReserva, username: req.username, idAmbiente: idAmbiente, idStatus: idStatus, dataInicial: dataInicial, dataFinal: dataFinal, horarioInicial: horarioInicial, horarioFinal: horarioFinal });
             res.status(200).json({message: "Alterado com sucesso"});
         }
         catch(error){
             res.status(500).json({message: `${error} - falha na requisição`})
-        }   
-
+        }
     }
 }
 export default ReservaController;

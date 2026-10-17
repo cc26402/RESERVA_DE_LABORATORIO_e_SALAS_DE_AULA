@@ -15,8 +15,16 @@ type Ambiente = {
     andar: number;
     capacidade: number;
     idTipo: number
-
 }
+
+type Reserva = {
+    idReserva: number;
+    idAmbiente: number;
+    dataInicial: string;
+    dataFinal: string;
+    horarioInicial: string;
+    horarioFinal: string;
+};
 
 export default function frmNovaReserva(){
     const router = useRouter();
@@ -64,7 +72,6 @@ export default function frmNovaReserva(){
         e.preventDefault();
         const dados = {
             idReserva: 0,
-            username: username,
             idAmbiente: idAmbiente,
             idStatus: 4,
             dataInicial: dataInicial,
@@ -73,9 +80,29 @@ export default function frmNovaReserva(){
             horarioFinal: horarioFinal
         }
         try{
+            const responseReservas = await fetch("http://localhost:8080/reservas");
+            const todasAsReservas: Reserva[] = await responseReservas.json();
+            let conflito = false;
+            todasAsReservas.map(reserva => {
+                if (reserva.idAmbiente == dados.idAmbiente){
+                    if (reserva.dataInicial.slice(0, 10) <= dados.dataFinal! && reserva.dataFinal.slice(0, 10) >= dados.dataInicial!){
+                        if (reserva.horarioInicial.slice(11, 16) < dados.horarioFinal! && reserva.horarioFinal.slice(11, 16) > dados.horarioInicial!){
+                            conflito = true;
+                        }
+                    }
+                }
+            })
+
+            if (conflito) {
+                alert("HORÁRIO INDISPONÍVEL");
+                return
+            }
             const response = await fetch("http://localhost:8080/reservas", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("loginToken")}`
+                },
                 body: JSON.stringify(dados),
             });
             if (response.ok) {
@@ -91,10 +118,6 @@ export default function frmNovaReserva(){
 
     return (
         <form  onSubmit={reservar}>
-            <div>
-                <label>Usuário:</label>
-                <input type="text" onChange={u => setUsername(u.target.value)} required></input>
-            </div>
             <div>
                 <label>Prédio:</label>
                 <select onChange={p => setIdPredio(Number(p.target.value))} required>
