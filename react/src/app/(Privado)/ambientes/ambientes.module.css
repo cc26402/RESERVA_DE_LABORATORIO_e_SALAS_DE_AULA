@@ -1,6 +1,6 @@
-.selectOperacao{
+/* .selectOperacao{
     color: black;
-}
+} */
 
 .divHeader{
     display: flex;
@@ -8,9 +8,9 @@
     width: 97vw;
 }
 
-.selectOperacao>select{
+/* .selectOperacao>select{
     background-color: white;
-}
+} */
 
 .listaDeAmbientes{
     display: flex;
@@ -25,10 +25,8 @@
     width: 100%;  
 }
 .main{
-    min-height: 100vh;
-    min-width: 100vw;
-    background-color: rgb(0, 0, 0);
-    color: white;
+    min-height: 100%;
+    min-width: 100%;
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -38,7 +36,6 @@
 .cardsAmbientes{
     margin: 10px;
     border-radius: 10px;
-    background-color: #171717;
     border: #9A2020 1px solid;
     min-width: 200px;
     display: flex;
@@ -66,9 +63,7 @@
 }
 
 .btnNovoAmbiente{
-    background-color: black;
     border-radius: 7px;
-    border: solid 1px gainsboro;
     padding: 5px;
     margin: 10px;
 }
@@ -86,19 +81,18 @@
 }
 
 .btnExcluir{
-    background-color: #171717;
+    /* background-color: #171717;
     border: 1px solid gray;
-    color: rgb(238, 238, 238);
+    color: rgb(238, 238, 238); */
 }
 
 .btnEditar{
-    background-color: #171717;
+    /* background-color: #171717;
     border: 1px solid gray;
-    color: rgb(255, 255, 255);
+    color: rgb(255, 255, 255); */
 }
 
 .formAmbiente{
-    background-color: #171717;
     border-radius: 7px;
     align-items: center;
     min-height: 200px;
@@ -121,16 +115,12 @@
 }
 
 .formAmbiente>div>input{
-    background-color: rgb(0, 0, 0);
     border: solid #9A2020 1px;
     border-radius: 8px;
-    color: white;
     text-align: center;
 }
 
 .formAmbiente>div>select{
-    background-color: rgb(0, 0, 0);;
-    color: white;
     border: solid #9A2020 1px;
     border-radius: 8px;
 }
@@ -144,25 +134,16 @@
 }
 
 .btnCancelar{
-    background-color: #171717;
-    border: 1px solid gainsboro;
-    color: rgb(238, 238, 238);
     padding: 5px;
     border-radius: 8px;
 }
 
 .btnAdicionar{
-    background-color: #171717;
-    border: 1px solid gainsboro;
-    color: white;
     padding: 5px;
     border-radius: 8px;
 }
 
 .btnAlterar{
-    background-color: #171717;
-    border: 1px solid gainsboro;
-    color: white;
     padding: 5px;
     border-radius: 8px;
 }

@@ -1,14 +1,12 @@
 .body{
-    background-color: rgb(0, 0, 0);
     padding: 10px;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 .submenu{
-    background-color: #171717;
     padding: 10px;
     border-radius: 8px;
-    border: gainsboro 1px solid;
+    border: rgb(0, 0, 0) 1px solid;
 }
 
 .submenu>h2{
@@ -28,8 +26,7 @@
 }
 
 .selectPredio{
-    background-color: #171717;
-    border: gainsboro 1px solid;
+    border: rgb(0, 0, 0) 1px solid;
     border-radius: 5px;
     margin-left: 5px;
 }
@@ -38,9 +35,7 @@
     display: flex;
     align-items: center;
     flex-direction: column;
-    background-color: #171717;
     margin: 10px;
-    color: white;
     border: #9A2020 1px solid;
     border-radius: 8px;
     height: 190px;
@@ -49,6 +44,7 @@
 
 .cardAmbiente>h1{
     background-color: #9A2020;
+    color: white;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     width: 300px;
@@ -67,8 +63,8 @@
 
 .cardAmbiente>button{
     background-color: #9A2020;
+    color: white;
     border-radius: 5px;
-    border: black solid 1px;
     padding: 3px;
     margin: 10px;
 }
