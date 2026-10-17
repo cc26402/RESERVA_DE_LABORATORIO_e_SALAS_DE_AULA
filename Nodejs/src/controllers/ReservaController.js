@@ -136,5 +136,14 @@ class ReservaController{
             res.status(500).json({message: `${error} - falha na requisição`})
         }
     }
+
+    static async horaAtual(req, res){
+        try{
+            res.status(200).json(await Reserva.horaAtual());
+        }
+        catch(error){
+            res.status(500).json({message: `${error} - falha na requisição`});
+        }
+    }
 }
 export default ReservaController;

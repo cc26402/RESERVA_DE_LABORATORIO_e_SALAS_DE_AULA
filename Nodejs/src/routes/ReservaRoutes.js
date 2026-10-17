@@ -5,6 +5,7 @@ import AuthMiddleware from '../middlewares/AuthMiddleware.js';
 const routes = express.Router();
 routes.get("/reservas", ReservaController.listarReservas);//
 routes.get("/reservas/minhas", AuthMiddleware.authMiddleware, ReservaController.listarMinhasReservas);
+routes.get("/reservas/hora", ReservaController.horaAtual);
 routes.get("/reservas/usuario/:username", ReservaController.listarReservasPorUsername);//
 routes.get("/reservas/ambiente/:idAmbiente", ReservaController.listarReservasPorIdAmbiente);//
 routes.get("/reservas/status/:idStatus", ReservaController.listarReservasPorIdStatus);//

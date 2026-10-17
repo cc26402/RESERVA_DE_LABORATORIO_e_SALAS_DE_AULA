@@ -38,6 +38,7 @@ export default function frmNovaReserva(){
     const [dataFinal, setDataFinal] = useState<string>();
     const [horarioInicial, setHorarioInicial] = useState<string>();
     const [horarioFinal, setHorarioFinal] = useState<string>();
+    const [dataHora, setDataHora] = useState<{ data: string; hora: string }>();
 
     useEffect(() => {
         async function listarPredios() {
@@ -97,6 +98,22 @@ export default function frmNovaReserva(){
                 alert("HORÁRIO INDISPONÍVEL");
                 return
             }
+            if (dados.dataInicial! < dataHora!.data) {
+                alert("Data inicial inválida");
+                return;
+            }
+            if (dados.dataInicial! === dataHora!.data && dados.horarioInicial! <= dataHora!.hora) {
+                alert("Horário inicial inválido");
+                return;
+            }
+            if (dados.dataFinal! < dados.dataInicial!) {
+                alert("Data final inválida");
+                return;
+            }
+            if (dados.horarioFinal! <= dados.horarioInicial!) {
+                alert("Horário final deve ser maior que o inicial");
+                return;
+            }
             const response = await fetch("http://localhost:8080/reservas", {
                 method: "POST",
                 headers: {
@@ -115,9 +132,26 @@ export default function frmNovaReserva(){
             alert("Erro ao adicionar reserva");
         }
     }
+    
+    useEffect(() => {
+        async function buscarHorario() {
+        try{
+            const response = await fetch("http://localhost:8080/reservas/hora");
+            if (!response.ok) {
+                console.error("Erro ao buscar hora:", response.status, await response.text());
+                return;
+            }
+            setDataHora(await response.json());
+        } catch (erro) {
+            console.error("Erro ao acessar Data e Hora do BD", erro);
+        }
+    }
+        buscarHorario();
+    }, [])
 
     return (
         <form  onSubmit={reservar}>
+            <h1>{dataHora ? `${dataHora.data.split("-").reverse().join("/")} ${dataHora.hora}` : ""}</h1>
             <div>
                 <label>Prédio:</label>
                 <select onChange={p => setIdPredio(Number(p.target.value))} required>

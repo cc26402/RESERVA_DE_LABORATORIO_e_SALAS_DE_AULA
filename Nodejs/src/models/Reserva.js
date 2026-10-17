@@ -120,5 +120,18 @@ class Reserva {
             throw new Error(`Erro na alteração ao BD: ${error}`);
         }
     }
+
+    static async horaAtual(){
+        try{
+            const conexao = await conectaBD();
+            const result = await conexao.query`
+                SELECT FORMAT(GETDATE(), 'yyyy-MM-dd') AS data,
+                    FORMAT(GETDATE(), 'HH:mm') AS hora`;
+            return result.recordset[0];
+        }
+        catch (error){
+            throw new Error(`Erro na consulta ao BD: ${error}`);
+        }
+    }
 }
 export default Reserva;
