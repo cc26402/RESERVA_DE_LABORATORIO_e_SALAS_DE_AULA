@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import style from './page.module.css';
 
 export default function Login() {
   const [token, setToken] = useState("");
@@ -77,7 +78,7 @@ export default function Login() {
   }
 
   return (
-    <form onSubmit={submitHandler}>
+    <form onSubmit={submitHandler} className={style.form}>
       <h1>Login</h1>
       <div>
         <label htmlFor="">E-mail</label>
