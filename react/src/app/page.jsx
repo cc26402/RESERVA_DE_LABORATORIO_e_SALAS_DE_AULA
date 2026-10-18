@@ -90,7 +90,7 @@ export default function Login() {
         </div>
         <div className={style.div_inputs}>
           <label htmlFor="">Senha</label>
-          <input type="text" name="senha" id="senha" onBlur={onBlurHandler}/>
+          <input type="password" name="senha" id="senha" onBlur={onBlurHandler}/>
         </div>
         <div className={style.div_buttons}>
           <button className={style.button_entrar}>Entrar</button>
