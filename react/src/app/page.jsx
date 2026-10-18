@@ -80,7 +80,10 @@ export default function Login() {
   return (
     <div className={style.div_form}>
       <form onSubmit={submitHandler}>
-        <h1>Login</h1>
+        <div className={style.div_titulo}>
+          <h1>Login</h1>
+          <h4>Sistema de reserva</h4>
+        </div>
         <div className={style.div_inputs}>
           <label htmlFor="">E-mail</label>
           <input type="text" name="email" id="email" onBlur={onBlurHandler}/>
@@ -90,8 +93,8 @@ export default function Login() {
           <input type="text" name="senha" id="senha" onBlur={onBlurHandler}/>
         </div>
         <div className={style.div_buttons}>
-          <button>Entrar</button>
-          <Link href="/usuarios/novo">Cadastre-se</Link>
+          <button className={style.button_entrar}>Entrar</button>
+          <Link href="/usuarios/novo"  className={style.button_cad}>Cadastre-se</Link>
         </div>
 
       </form>
