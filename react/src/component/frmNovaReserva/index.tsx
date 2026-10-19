@@ -28,7 +28,6 @@ type Reserva = {
 
 export default function frmNovaReserva(){
     const router = useRouter();
-    const [username, setUsername] = useState<string>();
     const [predios, setPredios] = useState<Predio[]>([]);
     const [idPredio, setIdPredio] = useState<number>();
     const [andar, setAndar] = useState<number>(0);
