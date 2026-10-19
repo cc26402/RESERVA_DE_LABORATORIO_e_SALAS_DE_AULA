@@ -78,19 +78,26 @@ export default function Login() {
   }
 
   return (
-    <form onSubmit={submitHandler} className={style.form}>
-      <h1>Login</h1>
-      <div>
-        <label htmlFor="">E-mail</label>
-        <input type="text" name="email" id="email" onBlur={onBlurHandler}/>
-      </div>
-      <div>
-        <label htmlFor="">Senha</label>
-        <input type="text" name="senha" id="senha" onBlur={onBlurHandler}/>
-      </div>
-      <button>Entrar</button>
-      <Link href="/usuarios/novo">Cadastre-se</Link>
+    <div className={style.div_form}>
+      <form onSubmit={submitHandler}>
+        <div className={style.div_titulo}>
+          <h1>Login</h1>
+          <h4>Sistema de reserva</h4>
+        </div>
+        <div className={style.div_inputs}>
+          <label htmlFor="">E-mail</label>
+          <input type="text" name="email" id="email" onBlur={onBlurHandler}/>
+        </div>
+        <div className={style.div_inputs}>
+          <label htmlFor="">Senha</label>
+          <input type="password" name="senha" id="senha" onBlur={onBlurHandler}/>
+        </div>
+        <div className={style.div_buttons}>
+          <button className={style.button_entrar}>Entrar</button>
+          <Link href="/usuarios/novo"  className={style.button_cad}>Cadastre-se</Link>
+        </div>
 
-    </form>
+      </form>
+    </div>
   );
 }

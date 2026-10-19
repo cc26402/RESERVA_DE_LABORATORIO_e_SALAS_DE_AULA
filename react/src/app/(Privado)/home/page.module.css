@@ -1,14 +1,12 @@
 .body{
-    background-color: rgb(0, 0, 0);
     padding: 10px;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 .submenu{
-    background-color: #171717;
     padding: 10px;
     border-radius: 8px;
-    border: gainsboro 1px solid;
+    box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.170);
 }
 
 .submenu>h2{
@@ -19,8 +17,6 @@
 .todosOsCards{
     display: flex;
     justify-content: center;
-    min-height: 100vh;
-    min-width: 100vw;
 }
 
 .divSelect{
@@ -28,19 +24,26 @@
 }
 
 .selectPredio{
-    background-color: #171717;
-    border: gainsboro 1px solid;
+    border: rgba(0, 0, 0, 0.3) 1px solid;
     border-radius: 5px;
     margin-left: 5px;
+    cursor: pointer;
+    transition: 0.2s;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+    
+    &:focus {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
 }
 
 .cardAmbiente{
     display: flex;
     align-items: center;
     flex-direction: column;
-    background-color: #171717;
     margin: 10px;
-    color: white;
     border: #9A2020 1px solid;
     border-radius: 8px;
     height: 190px;
@@ -49,6 +52,7 @@
 
 .cardAmbiente>h1{
     background-color: #9A2020;
+    color: white;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     width: 300px;
@@ -66,9 +70,16 @@
 }
 
 .cardAmbiente>button{
-    background-color: #9A2020;
+    border: 1px solid rgba(154, 32, 32, 1);
+    color: black;
     border-radius: 5px;
-    border: black solid 1px;
     padding: 3px;
     margin: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+    
+    &:hover {
+        background-color: rgba(154, 32, 32, 1);
+        color: white;
+    }
 }

@@ -120,11 +120,6 @@ export default function Ambiente() {
             </div>
           ))}
         </div>
-
-        {idPredioSelecionado === 0 && (
-          <p>Selecione um prédio para ver os ambientes.</p>
-        )}
-
         {idPredioSelecionado !== 0 && ambientesDoPredio.length === 0 && (
           <p>Nenhum ambiente encontrado.</p>
         )}
