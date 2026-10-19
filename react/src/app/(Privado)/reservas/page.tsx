@@ -41,7 +41,6 @@ type EstadoTabela = {
 
 type DataHora = { data: string; hora: string };
 
-// Funções puras: ficam fora do componente, então não entram nas dependências dos efeitos.
 const nomeStatus: Record<number, string> = {
     1: "Livre",
     2: "Ocupado",
@@ -75,7 +74,6 @@ export default function Reservas() {
     const [dataHora, setDataHora] = useState<DataHora>();
     const router = useRouter();
 
-    // Valida o token de login
     useEffect(() => {
         const loginToken = localStorage.getItem("loginToken");
         if (!loginToken) {
@@ -98,7 +96,6 @@ export default function Reservas() {
         });
     }, [router]);
 
-    // Ambientes
     useEffect(() => {
         async function listarAmbientes() {
             try {
@@ -116,7 +113,6 @@ export default function Reservas() {
         listarAmbientes();
     }, []);
 
-    // Data e hora do servidor
     useEffect(() => {
         async function buscarHorario() {
             try {
@@ -152,7 +148,6 @@ export default function Reservas() {
         }
     }, []);
 
-    // Carga inicial: só depois que o token foi validado
     useEffect(() => {
         if (token) carregarReservas("User");
     }, [token, carregarReservas]);
@@ -175,7 +170,6 @@ export default function Reservas() {
         }
     }
 
-    // Monta os dados da tabela (único efeito que escreve em dadosTabela)
     useEffect(() => {
         if (!dataHora) return;
 
