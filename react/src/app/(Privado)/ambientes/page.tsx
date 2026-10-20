@@ -50,14 +50,16 @@ export default function Ambientes() {
         .then(async result => {
             if (!result.ok) {
             localStorage.removeItem('loginToken');
-            router.replace("/")
+            alert("Necessário estar logado para acessar esse recurso");
+            router.replace("/");
             }
             else {
-                setToken(localStorage.getItem("loginToken"));
+                setToken(loginToken);
             }
         })
         }
         else {
+            alert("Necessário estar logado para acessar esse recurso");
             router.replace("/");
         }
     }, [router]);

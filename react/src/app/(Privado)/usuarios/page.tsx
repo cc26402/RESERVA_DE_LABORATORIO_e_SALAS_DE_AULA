@@ -1,6 +1,7 @@
 "use client";
-import { Tabela } from "@/src/component/tabela"
-import { useEffect, useState } from "react"
+import { Tabela } from "@/src/component/tabela";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import style from './page.module.css';
 
@@ -16,6 +17,35 @@ interface Usuario {
 export default function Usuarios() {
     const [usuarios, setUsuarios] = useState([]);
     const [erro, setErro] = useState("");
+    const [token, setToken] = useState("");
+    const router = useRouter();
+    
+    useEffect(() => {
+        const loginToken = localStorage.getItem("loginToken");
+        if (loginToken) {
+        fetch("http://localhost:8080/auth/valida", {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${loginToken}`
+            }
+        })
+        .then(async result => {
+            if (!result.ok) {
+            localStorage.removeItem('loginToken');
+            router.replace("/")
+            }
+            else {
+              alert("Necessário estar logado para acessar esse recurso");
+                setToken(loginToken);
+            }
+        })
+        }
+        else {
+          alert("Necessário estar logado para acessar esse recurso");
+            router.replace("/");
+        }
+    }, [router]);
 
     useEffect(() => {
         fetch("http://localhost:8080/usuarios")

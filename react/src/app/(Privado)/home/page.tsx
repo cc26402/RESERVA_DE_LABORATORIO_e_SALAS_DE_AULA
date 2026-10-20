@@ -41,11 +41,13 @@ export default function Ambiente() {
             router.replace("/")
             }
             else {
-                setToken(localStorage.getItem("loginToken"));
+              alert("Necessário estar logado para acessar esse recurso");
+                setToken(loginToken);
             }
         })
         }
         else {
+          alert("Necessário estar logado para acessar esse recurso");
             router.replace("/");
         }
     }, [router]);

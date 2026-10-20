@@ -77,6 +77,7 @@ export default function Reservas() {
     useEffect(() => {
         const loginToken = localStorage.getItem("loginToken");
         if (!loginToken) {
+            alert("Necessário estar logado para acessar esse recurso");
             router.replace("/");
             return;
         }
@@ -89,6 +90,7 @@ export default function Reservas() {
         }).then(result => {
             if (!result.ok) {
                 localStorage.removeItem("loginToken");
+                alert("Necessário estar logado para acessar esse recurso");
                 router.replace("/");
             } else {
                 setToken(loginToken);
