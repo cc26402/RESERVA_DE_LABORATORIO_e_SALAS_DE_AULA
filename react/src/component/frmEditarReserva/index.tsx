@@ -25,7 +25,7 @@ type Predio = {
     nome: string;
 };
 
-export function frmEditarReserva(id: number){
+export function frmEditarReserva({ idReserva }){
 
     const [reservas, setReservas] = useState<Reserva[]>([]);
     const [ambientes, setAmbientes] = useState<Ambiente[]>([]);
