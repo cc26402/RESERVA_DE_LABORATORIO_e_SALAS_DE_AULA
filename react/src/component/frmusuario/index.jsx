@@ -62,28 +62,45 @@ export default function FrmUsuario({token = ""}){
 
     async function handlerSubmit(evento){
         evento.preventDefault();
-        fetch(url,{
-            method: metodo,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(dadosUsuario)
-        })
-        .then(async result => {
-            const dados = await result.json()
-            if (!result.ok) {
-                throw new Error(dados.message);
-            }
-            setStatus(result.status)
-            alert(dados.message)
-        })
-        .catch(erro => {
-            setStatus(erro.message);
-            alert(erro.message);
-        })
+        if (camposOk()) {
+            fetch(url,{
+                method: metodo,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(dadosUsuario)
+            })
+            .then(async result => {
+                const dados = await result.json()
+                if (!result.ok) {
+                    throw new Error(dados.message);
+                }
+                setStatus(result.status)
+                alert(dados.message)
+            })
+            .catch(erro => {
+                setStatus(erro.message);
+                alert(erro.message);
+            })
+        }
     }
-    
+
+    function camposOk() {
+        const cpf = document.getElementById('CPF');
+        const prenome = document.getElementById('prenome');
+        const sobrenome = document.getElementById('sobrenome');
+        const nascimento = document.getElementById('nascimento');
+        const celular = document.getElementById('celular');
+        const email = document.getElementById('email');
+        const senha = document.getElementById('senha');
+
+        let tudoOk = true;
+
+        if (cpf.value || cpf.value.length < 11 || cpf.value.length > 14) {
+            cpf.style.border="1px solid red";
+        }
+    }
 
     return (
         <div className={style.div_form}>
@@ -91,7 +108,7 @@ export default function FrmUsuario({token = ""}){
             <form onSubmit={handlerSubmit}>
                 <div>
                     <label htmlFor="">CPF</label>
-                    <input type="number" id="CPF" value={dadosUsuario.CPF} onChange={handlerChange} required/>
+                    <input type="number" id="CPF" value={dadosUsuario.CPF} onChange={handlerChange} maxLength="14" required/>
                 </div>
                 <div>
                     <label htmlFor="">Nome</label>

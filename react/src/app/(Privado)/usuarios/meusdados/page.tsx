@@ -23,7 +23,7 @@ export default function Page(){
             router.replace("/")
             }
             else {
-                setToken(localStorage.getItem("loginToken"));
+                setToken(loginToken);
             }
         })
         }
