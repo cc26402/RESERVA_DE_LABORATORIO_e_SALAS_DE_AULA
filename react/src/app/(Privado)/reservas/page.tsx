@@ -1,74 +1,136 @@
 "use client"
-import { useState, useEffect } from "react";
-import style from "./reservas.module.css";
-import { Tabela } from "../../../component/tabela";
+import { useState, useEffect, useCallback } from "react";
+import { Tabela as TabelaReservas } from "../../../component/tabela";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 type Reserva = {
     idReserva: number;
     username: string;
-    idAmbiente: number; 
-    idStatus: number; 
+    idAmbiente: number;
+    idStatus: number;
     dataInicial: string;
     dataFinal: string;
     horarioInicial: string;
-    horarioFinal: string
+    horarioFinal: string;
+};
+
+type ReservaFormatada = {
+    idReserva: number;
+    username: string;
+    ambiente: string;
+    status: string;
+    dataInicial: string;
+    dataFinal: string;
+    horarioInicial: string;
+    horarioFinal: string;
+};
+
+type Ambiente = {
+    idAmbiente: number;
+    idPredio: number;
+    nome: string;
+    capacidade: number;
+    andar: number;
+    idTipo: number;
 };
 
 type EstadoTabela = {
     modo: "Todas" | "User";
-    dados?: Reserva;
 };
 
-export default function Reservas(){
+type DataHora = { data: string; hora: string };
+
+const nomeStatus: Record<number, string> = {
+    1: "Livre",
+    2: "Ocupado",
+    3: "Bloqueado",
+    4: "Reservado",
+};
+
+function formatarData(data: string) {
+    const [ano, mes, dia] = data.slice(0, 10).split("-");
+    return `${dia}/${mes}/${ano}`;
+}
+
+function calcularStatus(r: Reserva, agora: DataHora): number {
+    if (r.idStatus === 3) return 3;
+
+    const inicio = r.dataInicial.slice(0, 10) + " " + r.horarioInicial.slice(11, 16);
+    const fim = r.dataFinal.slice(0, 10) + " " + r.horarioFinal.slice(11, 16);
+    const agoraStr = agora.data.slice(0, 10) + " " + agora.hora.slice(0, 5);
+
+    if (fim < agoraStr) return 1;
+    if (inicio <= agoraStr) return 2;
+    return 4;
+}
+
+export default function Reservas() {
     const [reserva, setReserva] = useState<Reserva[]>([]);
-    const [tabela, setTabela] = useState<EstadoTabela>();
-    const [formatadas, setFormatadas] = useState<Reserva[]>([]);
+    const [ambiente, setAmbiente] = useState<Ambiente[]>([]);
+    const [tabela, setTabela] = useState<EstadoTabela>({ modo: "User" });
+    const [dadosTabela, setDadosTabela] = useState<ReservaFormatada[]>([]);
     const [token, setToken] = useState("");
+    const [dataHora, setDataHora] = useState<DataHora>();
     const router = useRouter();
-    
+
     useEffect(() => {
         const loginToken = localStorage.getItem("loginToken");
-        if (loginToken) {
+        if (!loginToken) {
+            router.replace("/");
+            return;
+        }
         fetch("http://localhost:8080/auth/valida", {
-            method: 'POST',
+            method: "POST",
             headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${loginToken}`
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${loginToken}`
             }
-        })
-        .then(async result => {
+        }).then(result => {
             if (!result.ok) {
-            localStorage.removeItem('loginToken');
-            router.replace("/")
-            }
-            else {
+                localStorage.removeItem("loginToken");
+                router.replace("/");
+            } else {
                 setToken(loginToken);
             }
-        })
-        }
-        else {
-            router.replace("/");
-        }
+        });
     }, [router]);
 
     useEffect(() => {
-        async function listarReservasDoUsuario() {
-            try{
-                const response = await fetch("http://localhost:8080/reservas");
-                const listaDeReservas = await response.json();
-                setReserva(listaDeReservas);
-            }
-            catch(erro){
-                throw new Error("falha ao conectar ao BD " + erro);
+        async function listarAmbientes() {
+            try {
+                const response = await fetch("http://localhost:8080/ambientes");
+                if (!response.ok) {
+                    console.error("Erro ao buscar ambientes:", response.status);
+                    return;
+                }
+                const listaDeAmbientes = await response.json();
+                if (Array.isArray(listaDeAmbientes)) setAmbiente(listaDeAmbientes);
+            } catch (erro) {
+                console.error("Falha ao conectar ao BD", erro);
             }
         }
-        listarReservasDoUsuario();
-    }, [])
+        listarAmbientes();
+    }, []);
 
-    async function carregarReservas(modo: "Todas" | "User"){
-        try{
+    useEffect(() => {
+        async function buscarHorario() {
+            try {
+                const response = await fetch("http://localhost:8080/reservas/hora");
+                if (!response.ok) {
+                    console.error("Erro ao buscar hora:", response.status, await response.text());
+                    return;
+                }
+                setDataHora(await response.json());
+            } catch (erro) {
+                console.error("Erro ao acessar Data e Hora do BD", erro);
+            }
+        }
+        buscarHorario();
+    }, []);
+
+    const carregarReservas = useCallback(async (modo: "Todas" | "User") => {
+        try {
             const url = modo === "User"
                 ? "http://localhost:8080/reservas/minhas"
                 : "http://localhost:8080/reservas";
@@ -80,50 +142,55 @@ export default function Reservas(){
                 return;
             }
             setReserva(await response.json());
-            setTabela({modo});
-        }
-        catch(erro){
+            setTabela({ modo });
+        } catch (erro) {
             console.error("Falha ao conectar ao BD", erro);
         }
-    }
+    }, []);
 
-    async function excluir(idReserva: number | string){
-        try{
-            const response = await fetch("http://localhost:8080/reservas/"+ idReserva, {
-                method : "DELETE",
+    useEffect(() => {
+        if (token) carregarReservas("User");
+    }, [token, carregarReservas]);
+
+    async function excluir(idReserva: number | string) {
+        try {
+            const response = await fetch("http://localhost:8080/reservas/" + idReserva, {
+                method: "DELETE",
                 headers: {
                     "Authorization": `Bearer ${localStorage.getItem("loginToken")}`
                 }
             });
-            if (response.ok){
-                setReserva(reserva.filter(res => res.idReserva !== idReserva));
-            }
-            else{
+            if (response.ok) {
+                setReserva(prev => prev.filter(res => res.idReserva !== Number(idReserva)));
+            } else {
                 console.error("Erro ao excluir reserva:", response.status);
             }
-        }
-        catch (erro){
+        } catch (erro) {
             console.error("Erro ao excluir reserva:", erro);
         }
     }
 
     useEffect(() => {
-        setTabela({modo: "User"})
-    }, [])
-    
-    useEffect(() => {
-        setFormatadas(reserva.map(r => ({ ...r, dataInicial: formatarData(r.dataInicial),
-                                                dataFinal: formatarData(r.dataFinal),
-                                                horarioInicial: r.horarioInicial.slice(11, 16),
-                                                horarioFinal: r.horarioFinal.slice(11, 16), })));
-    }, [reserva]);
+        if (!dataHora) return;
 
-    function formatarData(data: string) {
-        const [ano, mes, dia] = data.slice(0, 10).split("-");
-        return `${dia}/${mes}/${ano}`;
-    }
+        const formatadas: ReservaFormatada[] = reserva.map(r => {
+            const amb = ambiente.find(a => a.idAmbiente === r.idAmbiente);
+            return {
+                idReserva: r.idReserva,
+                username: r.username,
+                ambiente: amb ? amb.nome : "Desconhecido",
+                status: nomeStatus[calcularStatus(r, dataHora)],
+                dataInicial: formatarData(r.dataInicial),
+                dataFinal: formatarData(r.dataFinal),
+                horarioInicial: r.horarioInicial.slice(11, 16),
+                horarioFinal: r.horarioFinal.slice(11, 16),
+            };
+        });
 
-    return(
+        setDadosTabela(formatadas);
+    }, [reserva, ambiente, dataHora]);
+
+    return (
         <div>
             <header>
                 <div>
@@ -135,25 +202,24 @@ export default function Reservas(){
                 </div>
             </header>
             <main>
-                {tabela?.modo == "User" && (
-                    <Tabela titulos={["idReserva", "idAmbiente", "Status", "Data Inicial", "Data Final", "Horário Inicial", "Horario Final", " ", " "]} 
-                        listaOrdemChaveDados={["idReserva", "idAmbiente", "idStatus", "dataInicial", "dataFinal", "horarioInicial", "horarioFinal", "link", "botao"]} 
-                        chavePrimaria={"idReserva"} 
-                        dados={formatadas} 
-                        botoes={[{textoBotao: "Excluir", onClick: excluir}]} 
-                        links={[{textoLink: "Editar", href: "/reservas", rotaDinamica: true}]}>
-                    </Tabela>
-                    )
-                }
-                {
-                    tabela?.modo == "Todas" && (
-                        <Tabela titulos={["idReserva", "idAmbiente", "Status", "Data Inicial", "Data Final", "Horário Inicial", "Horario Final"]} 
-                        listaOrdemChaveDados={["idReserva", "idAmbiente", "idStatus", "dataInicial", "dataFinal", "horarioInicial", "horarioFinal"]} 
-                        chavePrimaria="idReserva" 
-                        dados={formatadas}>
-                        </Tabela>
-                    )
-                }
+                {tabela.modo === "User" && (
+                    <TabelaReservas
+                        titulos={["idReserva", "Ambiente", "Status", "Data Inicial", "Data Final", "Horário Inicial", "Horario Final", " ", " "]}
+                        listaOrdemChaveDados={["idReserva", "ambiente", "status", "dataInicial", "dataFinal", "horarioInicial", "horarioFinal", "link", "botao"]}
+                        chavePrimaria={"idReserva"}
+                        dados={dadosTabela}
+                        botoes={[{ textoBotao: "Excluir", onClick: excluir }]}
+                        links={[{ textoLink: "Editar", href: "/reservas", rotaDinamica: true }]}>
+                    </TabelaReservas>
+                )}
+                {tabela.modo === "Todas" && (
+                    <TabelaReservas
+                        titulos={["idReserva", "Ambiente", "Status", "Data Inicial", "Data Final", "Horário Inicial", "Horario Final"]}
+                        listaOrdemChaveDados={["idReserva", "ambiente", "status", "dataInicial", "dataFinal", "horarioInicial", "horarioFinal"]}
+                        chavePrimaria="idReserva"
+                        dados={dadosTabela}>
+                    </TabelaReservas>
+                )}
             </main>
         </div>
     );
