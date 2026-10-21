@@ -97,42 +97,85 @@ export default function FrmUsuario({token = ""}){
 
         let tudoOk = true;
 
-        if (cpf.value || cpf.value.length < 11 || cpf.value.length > 14) {
-            cpf.style.border="1px solid red";
+        if (!cpf.value || cpf.value.length < 11 || cpf.value.length > 13) {
+            tudoOk = false;
+            estilizaCampoInvalido(cpf);
+        } else {
+            const cpfLimpo = cpf.value.replace("-", "").replace(".","").replace("e", "");
+            setDadosUsuario({...dadosUsuario, "CPF" : cpfLimpo});
+        }
+        if (!prenome.value) {
+            tudoOk = false;
+            estilizaCampoInvalido(prenome);
+        } else {
+            const prenomeLimpo = prenome.value.trim();
+            setDadosUsuario({...dadosUsuario, "prenome" : prenomeLimpo});
+        }
+        if (!sobrenome.value) {
+            tudoOk = false;
+            estilizaCampoInvalido(sobrenome);
+        } else {
+            const sobrenomeLimpo = sobrenome.value.trim();
+            setDadosUsuario({...dadosUsuario, "sobrenome" : sobrenomeLimpo});
+        }
+        if (!nascimento.value) {
+            tudoOk = false;
+            estilizaCampoInvalido(nascimento);
+        }
+        if (!celular.value || celular.value.length != 11 ) {
+            tudoOk = false;
+            estilizaCampoInvalido(celular);
+        } else {
+            const celularLimpo = celular.value.replace("-", "").replace(".","").replace("e", "");
+            setDadosUsuario({...dadosUsuario, "celular" : celularLimpo});
+        }
+
+        return false;
+    }
+
+    useEffect(() => console.log(dadosUsuario), [dadosUsuario])
+
+    function estilizaCampoInvalido(input) {
+        input.style.border = "1px solid red";
+    }
+
+    function limpaCampo(evento) {
+        if (evento.target.matches('input')) {
+            evento.target.style.border = "";
         }
     }
 
     return (
         <div className={style.div_form}>
             {!token && <h1>Preencha os campos abaixo para realizar seu cadastro</h1>}
-            <form onSubmit={handlerSubmit}>
+            <form onSubmit={handlerSubmit} onBlur={limpaCampo}>
                 <div>
                     <label htmlFor="">CPF</label>
-                    <input type="number" id="CPF" value={dadosUsuario.CPF} onChange={handlerChange} maxLength="14" required/>
+                    <input type="number" id="CPF" value={dadosUsuario.CPF} onChange={handlerChange} />
                 </div>
                 <div>
                     <label htmlFor="">Nome</label>
-                    <input type="text" id="prenome" value={dadosUsuario.prenome} onChange={handlerChange} required/>
+                    <input type="text" id="prenome" value={dadosUsuario.prenome} onChange={handlerChange} />
                 </div>
                 <div>
                     <label htmlFor="">Sobrenome</label>
-                    <input type="text" id="sobrenome" value={dadosUsuario.sobrenome} onChange={handlerChange} required/>
+                    <input type="text" id="sobrenome" value={dadosUsuario.sobrenome} onChange={handlerChange} />
                 </div>
                 <div>
                     <label htmlFor="">Data de Nascimento</label>
-                    <input type="date" id="nascimento" value={(dadosUsuario.nascimento ? (dadosUsuario.nascimento.split("T"))[0] : dadosUsuario.nascimento)} onChange={handlerChange} required/>
+                    <input type="date" id="nascimento" value={(dadosUsuario.nascimento ? (dadosUsuario.nascimento.split("T"))[0] : dadosUsuario.nascimento)} onChange={handlerChange} />
                 </div>
                 <div>
                     <label htmlFor="">Celular</label>
-                    <input type="text" id="celular" value={dadosUsuario.celular} onChange={handlerChange} required/>
+                    <input type="number" id="celular" value={dadosUsuario.celular} onChange={handlerChange} />
                 </div>
                 <div>
                     <label htmlFor="">E-mail</label>
-                    <input type="text" id="email" value={dadosUsuario.email} onChange={handlerChange} required/>
+                    <input type="text" id="email" value={dadosUsuario.email} onChange={handlerChange} />
                 </div>
                 {!token && <div>
                     <label htmlFor="">Senha</label>
-                    <input type="password" id="senha" onChange={handlerChange} required={!token}/>
+                    <input type="password" id="senha" onChange={handlerChange} /*required={!token}*//>
                 </div>}
                 <button>Salvar</button>
             </form>
