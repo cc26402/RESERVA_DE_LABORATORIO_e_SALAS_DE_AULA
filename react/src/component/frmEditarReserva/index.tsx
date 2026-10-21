@@ -40,6 +40,7 @@ export function FrmEditarReserva({ idReserva }: { idReserva: string }){
     const [predios, setPredios] = useState<Predio[]>([]);
     const [predioSelect, setPredioSelect] = useState<number>();
     const [andarSelect, setAndarSelect] = useState<number>(0);
+    const [dataInicialInput, setDataInicialInput] = useState<string>()
     const [reservaEditada, setReservaEditada] = useState<Reserva>();
     const [dataHora, setDataHora] = useState<DataHora>();
 
@@ -122,8 +123,25 @@ export function FrmEditarReserva({ idReserva }: { idReserva: string }){
         setAndarSelect(Number(e.target.value));
     }
 
+    const handleDataInicial = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setDataInicialInput(String(e.target.value));
+    }
+
+    const handleSubmit = (e: React.ChangeEvent<SubmitEvent>) => {
+        e.preventDefault();
+        try{
+            const response = await fetch("http:/localhost:8080/reservas", {
+                method = 'PATCH',
+                headers = { 'Content-Type' : 'application/json' },
+                body: JSON.stringify(reservaEditada)
+            })
+        } catch(erro){
+
+        }
+    }
+
     return(
-        <form>
+        <form onSubmit={handleSubmit}>
             <h1>Editar Reserva</h1>
             <h2>{dataHora ? `${dataHora.data.split("-").reverse().join("/")} ${dataHora.hora}` : ""}</h2>
             <div>
@@ -159,7 +177,7 @@ export function FrmEditarReserva({ idReserva }: { idReserva: string }){
             </div>
             <div>
                 <label>Data Inicial</label>
-                <input type="date"></input>
+                <input type="date" onChange={}></input>
             </div>
             <div>
                 <label>Data Final</label>
