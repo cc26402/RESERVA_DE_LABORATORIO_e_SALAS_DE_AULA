@@ -131,8 +131,8 @@ export function FrmEditarReserva({ idReserva }: { idReserva: string }){
         e.preventDefault();
         try{
             const response = await fetch("http:/localhost:8080/reservas", {
-                method = 'PATCH',
-                headers = { 'Content-Type' : 'application/json' },
+                method : 'PATCH',
+                headers : { 'Content-Type' : 'application/json' },
                 body: JSON.stringify(reservaEditada)
             })
         } catch(erro){
@@ -150,7 +150,7 @@ export function FrmEditarReserva({ idReserva }: { idReserva: string }){
                     {
                         predios.map(p => {
                             return(
-                                <option value={p.idPredio}>{p.nome}</option>
+                                <option key={p.idPredio} value={p.idPredio}>{p.nome}</option>
                             )
                         })
                     }
