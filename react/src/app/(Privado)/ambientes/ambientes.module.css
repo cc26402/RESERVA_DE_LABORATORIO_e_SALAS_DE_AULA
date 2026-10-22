@@ -66,6 +66,13 @@
     border-radius: 7px;
     padding: 5px;
     margin: 10px;
+    border: 1px solid rgb(157, 38, 38);
+    transition: 0.2s;
+
+    &:hover {
+        background-color: rgb(157, 38, 38);
+        color: white;
+    }
 }
 
 .divBtnCards{
@@ -81,15 +88,24 @@
 }
 
 .btnExcluir{
-    /* background-color: #171717;
-    border: 1px solid gray;
-    color: rgb(238, 238, 238); */
+    border: 1px solid rgb(157, 38, 38);
+    transition: 0.2s;
+    
+    &:hover {
+        border: 1px solid #ec0909;
+        background-color: #ec0909;
+        color: white;
+    }
 }
 
 .btnEditar{
-    /* background-color: #171717;
-    border: 1px solid gray;
-    color: rgb(255, 255, 255); */
+    border: 1px solid rgb(157, 38, 38);
+    transition: 0.2s;
+    
+    &:hover {
+        background-color: rgb(157, 38, 38);
+        color: white;
+    }
 }
 
 .formAmbiente{
@@ -123,6 +139,16 @@
 .formAmbiente>div>select{
     border: solid #9A2020 1px;
     border-radius: 8px;
+}
+
+.formAmbiente button {
+    border: 1px solid rgb(157, 38, 38);
+    transition: 0.2s;
+    
+    &:hover {
+        background-color: rgb(157, 38, 38);
+        color: white;
+    }
 }
 
 .divBtn{
