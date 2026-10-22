@@ -62,60 +62,141 @@ export default function FrmUsuario({token = ""}){
 
     async function handlerSubmit(evento){
         evento.preventDefault();
-        fetch(url,{
-            method: metodo,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(dadosUsuario)
-        })
-        .then(async result => {
-            const dados = await result.json()
-            if (!result.ok) {
-                throw new Error(dados.message);
-            }
-            setStatus(result.status)
-            alert(dados.message)
-        })
-        .catch(erro => {
-            setStatus(erro.message);
-            alert(erro.message);
-        })
+        if (camposOk()) {
+            fetch(url,{
+                method: metodo,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(dadosUsuario)
+            })
+            .then(async result => {
+                const dados = await result.json()
+                if (!result.ok) {
+                    throw new Error(dados.message);
+                }
+                setStatus(result.status)
+                alert(dados.message)
+            })
+            .catch(erro => {
+                setStatus(erro.message);
+                alert(erro.message);
+            })
+        }
     }
+
+    function camposOk() {
+        const cpf = document.getElementById('CPF');
+        const prenome = document.getElementById('prenome');
+        const sobrenome = document.getElementById('sobrenome');
+        const nascimento = document.getElementById('nascimento');
+        const celular = document.getElementById('celular');
+        const email = document.getElementById('email');
+        const senha = document.getElementById('senha');
+
+        let tudoOk = true;
+
+        if (!cpf.value || cpf.value.length < 11 || cpf.value.length > 13) {
+            tudoOk = false;
+            estilizaCampoInvalido(cpf);
+        } else {
+            const cpfLimpo = cpf.value.replace("-", "").replace(".","").replace("e", "");
+            setDadosUsuario({...dadosUsuario, "CPF" : cpfLimpo});
+        }
+        if (!prenome.value) {
+            tudoOk = false;
+            estilizaCampoInvalido(prenome);
+        } else {
+            const prenomeLimpo = prenome.value.trim();
+            setDadosUsuario({...dadosUsuario, "prenome" : prenomeLimpo});
+        }
+        if (!sobrenome.value) {
+            tudoOk = false;
+            estilizaCampoInvalido(sobrenome);
+        } else {
+            const sobrenomeLimpo = sobrenome.value.trim();
+            setDadosUsuario({...dadosUsuario, "sobrenome" : sobrenomeLimpo});
+        }
+        if (!nascimento.value) {
+            tudoOk = false;
+            estilizaCampoInvalido(nascimento);
+        }
+        if (!celular.value || celular.value.length != 11 ) {
+            tudoOk = false;
+            estilizaCampoInvalido(celular);
+        } else {
+            const celularLimpo = celular.value.replace("-", "").replace(".","").replace("e", "");
+            setDadosUsuario({...dadosUsuario, "celular" : celularLimpo});
+        }
+        if (!email.value || !email.value.includes("@")) {
+            tudoOk = false;
+            estilizaCampoInvalido(email);
+        } else {
+            const emailLimpo = email.value.trim();
+            setDadosUsuario({...dadosUsuario, "email" : emailLimpo});
+        }
+        if (!token && !senha.value) {
+            tudoOk = false;
+            estilizaCampoInvalido(senha);
+        }
+        if (!token && senha.value && tudoOk) {
+            if (!(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(senha.value))) {
+                tudoOk = false;
+                estilizaCampoInvalido(senha);
+                alert("Senha deve conter ao menos 8 caracteres, 1 letra minúscula, 1 letra maiúscula, 1 número e 1 caractere especial");
     
+            } else {
+                setDadosUsuario({...dadosUsuario, senha : senha.value});
+            }
+        }
+
+        return tudoOk;
+    }
+
+    useEffect(() => console.log(dadosUsuario), [dadosUsuario])
+
+    function estilizaCampoInvalido(input) {
+        input.style.boxShadow = "0 0 3px 1px rgba(255, 0, 0, 1)";
+    }
+
+    function limpaCampo(evento) {
+        if (evento.target.matches('input')) {
+            evento.target.style.boxShadow = "";
+        }
+    }
 
     return (
         <div className={style.div_form}>
             {!token && <h1>Preencha os campos abaixo para realizar seu cadastro</h1>}
-            <form onSubmit={handlerSubmit}>
+            <form onSubmit={handlerSubmit} onBlur={limpaCampo} noValidate>
                 <div>
                     <label htmlFor="">CPF</label>
-                    <input type="number" id="CPF" value={dadosUsuario.CPF} onChange={handlerChange} required/>
+                    <input type="number" id="CPF" value={dadosUsuario.CPF} onChange={handlerChange} />
                 </div>
                 <div>
                     <label htmlFor="">Nome</label>
-                    <input type="text" id="prenome" value={dadosUsuario.prenome} onChange={handlerChange} required/>
+                    <input type="text" id="prenome" value={dadosUsuario.prenome} onChange={handlerChange} />
                 </div>
                 <div>
                     <label htmlFor="">Sobrenome</label>
-                    <input type="text" id="sobrenome" value={dadosUsuario.sobrenome} onChange={handlerChange} required/>
+                    <input type="text" id="sobrenome" value={dadosUsuario.sobrenome} onChange={handlerChange} />
                 </div>
                 <div>
                     <label htmlFor="">Data de Nascimento</label>
-                    <input type="date" id="nascimento" value={(dadosUsuario.nascimento ? (dadosUsuario.nascimento.split("T"))[0] : dadosUsuario.nascimento)} onChange={handlerChange} required/>
+                    <input type="date" id="nascimento" value={(dadosUsuario.nascimento ? (dadosUsuario.nascimento.split("T"))[0] : dadosUsuario.nascimento)} onChange={handlerChange} />
                 </div>
                 <div>
                     <label htmlFor="">Celular</label>
-                    <input type="text" id="celular" value={dadosUsuario.celular} onChange={handlerChange} required/>
+                    <input type="number" id="celular" value={dadosUsuario.celular} onChange={handlerChange} />
                 </div>
                 <div>
                     <label htmlFor="">E-mail</label>
-                    <input type="text" id="email" value={dadosUsuario.email} onChange={handlerChange} required/>
+                    <input type="text" id="email" value={dadosUsuario.email} onChange={handlerChange} />
                 </div>
                 {!token && <div>
                     <label htmlFor="">Senha</label>
-                    <input type="password" id="senha" onChange={handlerChange} required={!token}/>
+                    <input type="password" id="senha" onChange={handlerChange} /*required={!token}*/ />
                 </div>}
                 <button>Salvar</button>
             </form>
