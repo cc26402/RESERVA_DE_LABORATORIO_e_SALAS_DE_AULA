@@ -5,7 +5,7 @@ export default class Acesso{
     static async buscarTodos(){
         try{
             const conexao = await conectaBD();
-            const result = await conexao.query(`SELECT * FROM resSalaLab.Nivel_Acesso`);
+            const result = await conexao.query`SELECT * FROM resSalaLab.Nivel_Acesso`;
             return result.recordset
         }
         catch(error){

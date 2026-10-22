@@ -6,7 +6,7 @@ class Login{
     static async buscarTodos(){
         try{
             const conexao = await conectaBD();
-            const result = await conexao.query("SELECT * FROM resSalaLab.Login");
+            const result = await conexao.query`SELECT * FROM resSalaLab.Login`;
             return result.recordset;
         }
         catch(error){
