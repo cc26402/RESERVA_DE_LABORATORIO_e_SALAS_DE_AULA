@@ -71,7 +71,40 @@ export default function Reservas() {
     const [token, setToken] = useState("");
     const [dataHora, setDataHora] = useState<DataHora>();
     const [status, setStatus] = useState<Status[]>([]);
+
+    const [filtroDataInicial, setFiltroDataInicial] = useState("");
+    const [filtroDataFinal, setFiltroDataFinal] = useState("");
     const router = useRouter();
+
+    useEffect(() => {
+        if (!token || !filtroDataInicial || !filtroDataFinal) return;
+        if (filtroDataFinal < filtroDataInicial) return;
+
+        let cancelado = false;
+
+        async function buscarPorPeriodo() {
+            try {
+                const url = `http://localhost:8080/reservas/periodo/${filtroDataInicial}/${filtroDataFinal}/00:00:00/23:59:59.999`;
+                const response = await fetch(url);
+                if (!response.ok) {
+                    console.error("Erro ao buscar reservas por período:", response.status);
+                    return;
+                }
+                const dados = await response.json();
+                if (!cancelado && Array.isArray(dados)) {
+                    setReserva(dados);
+                    setTabela({ modo: "Todas" });
+                }
+            } catch (erro) {
+                console.error("Falha ao conectar ao BD", erro);
+            }
+        }
+        buscarPorPeriodo();
+
+        return () => {
+            cancelado = true;
+        };
+    }, [token, filtroDataInicial, filtroDataFinal]);
 
     useEffect(() => {
         async function buscarStatus() {
@@ -164,6 +197,12 @@ export default function Reservas() {
         }
     }, []);
 
+    function mostrar(modo: "Todas" | "User") {
+        setFiltroDataInicial("");
+        setFiltroDataFinal("");
+        carregarReservas(modo);
+    }
+
     useEffect(() => {
         if (token) carregarReservas("User");
     }, [token, carregarReservas]);
@@ -210,8 +249,13 @@ export default function Reservas() {
         <div>
             <header>
                 <div>
-                    <button onClick={() => carregarReservas("Todas")}>Mostrar Todas</button>
-                    <button onClick={() => carregarReservas("User")}>Minhas Reservas</button>
+                    <button onClick={() => mostrar("Todas")}>Mostrar Todas</button>
+                    <button onClick={() => mostrar("User")}>Minhas Reservas</button>
+                    <div>
+                        <label>De: <input type="date" value={filtroDataInicial} onChange={e => setFiltroDataInicial(e.target.value)} /></label>
+                        <label>Até: <input type="date" min={filtroDataInicial} value={filtroDataFinal} onChange={e => setFiltroDataFinal(e.target.value)} /></label>
+                        <button onClick={() => mostrar("User")}>Limpar filtro</button>
+                    </div>
                 </div>
                 <div>
                     <Link href="/reservas/novaReserva">Nova Reserva</Link>
