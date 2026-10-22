@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Tabela as TabelaReservas } from "../../../component/tabela";
 import Link from "next/link";
+import style from "./reservas.module.css";
 import { useRouter } from "next/navigation";
 
 type Reserva = {
@@ -248,8 +249,8 @@ export default function Reservas() {
     }, [reserva, ambiente, dataHora, status]);
 
     return (
-        <div>
-            <header>
+        <div className={style.body}>
+            <header className={style.header}>
                 <div>
                     <button onClick={() => mostrar("Todas")}>Mostrar Todas</button>
                     <button onClick={() => mostrar("User")}>Minhas Reservas</button>
@@ -260,7 +261,7 @@ export default function Reservas() {
                     </div>
                 </div>
                 <div>
-                    <Link href="/reservas/novaReserva">Nova Reserva</Link>
+                    <Link href="/reservas/novaReserva" className={style.button}>Nova Reserva</Link>
                 </div>
             </header>
             <main>

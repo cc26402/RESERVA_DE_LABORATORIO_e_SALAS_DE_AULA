@@ -20,11 +20,11 @@ export default function FormNovaReserva(){
         })
         .then(async result => {
             if (!result.ok) {
+                alert("Necessário estar logado para acessar esse recurso");
             localStorage.removeItem('loginToken');
             router.replace("/")
             }
             else {
-              alert("Necessário estar logado para acessar esse recurso");
                 setToken(loginToken);
             }
         })
