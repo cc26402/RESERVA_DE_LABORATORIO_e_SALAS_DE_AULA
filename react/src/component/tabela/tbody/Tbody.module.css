@@ -19,10 +19,10 @@
     padding: 7px;
     border-radius: 7px;
     transition: 0.2s;
+    color: white;
     
     &:hover {
         box-shadow: 0 0 3px 1px rgba(195, 26, 26, 1);
         background-color: rgb(195, 26, 26);
-        color: white;
     }
 }
