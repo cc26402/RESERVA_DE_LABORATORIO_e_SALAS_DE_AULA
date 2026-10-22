@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import Usuario from '../models/Usuario.js';
 import Login from '../models/Login.js';
+import Acesso from '../models/Acesso.js';
 
 export default class AuthController {
     static async login(req, res) {
@@ -23,6 +24,8 @@ export default class AuthController {
             if (!senhaValidada) {
                 return res.status(401).json({message: "E-mail ou senha inválidos."});
             }
+
+            Acesso.inserirRegistroDeAcesso({username});
 
             const dadosLogin = {username: loginEncontrado.username, CPF: loginEncontrado.CPF};
             const secret = process.env.JWT_SECRET;

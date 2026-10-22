@@ -38,10 +38,10 @@ export default function Ambiente() {
         .then(async result => {
             if (!result.ok) {
             localStorage.removeItem('loginToken');
+            alert("Necessário estar logado para acessar esse recurso");
             router.replace("/")
             }
             else {
-              alert("Necessário estar logado para acessar esse recurso");
                 setToken(loginToken);
             }
         })

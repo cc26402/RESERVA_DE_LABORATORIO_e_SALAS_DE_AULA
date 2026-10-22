@@ -129,26 +129,47 @@ export default function FrmUsuario({token = ""}){
             const celularLimpo = celular.value.replace("-", "").replace(".","").replace("e", "");
             setDadosUsuario({...dadosUsuario, "celular" : celularLimpo});
         }
+        if (!email.value || !email.value.includes("@")) {
+            tudoOk = false;
+            estilizaCampoInvalido(email);
+        } else {
+            const emailLimpo = email.value.trim();
+            setDadosUsuario({...dadosUsuario, "email" : emailLimpo});
+        }
+        if (!token && !senha.value) {
+            tudoOk = false;
+            estilizaCampoInvalido(senha);
+        }
+        if (!token && senha.value && tudoOk) {
+            if (!(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(senha.value))) {
+                tudoOk = false;
+                estilizaCampoInvalido(senha);
+                alert("Senha deve conter ao menos 8 caracteres, 1 letra minúscula, 1 letra maiúscula, 1 número e 1 caractere especial");
+    
+            } else {
+                setDadosUsuario({...dadosUsuario, senha : senha.value});
+            }
+        }
 
-        return false;
+        return tudoOk;
     }
 
     useEffect(() => console.log(dadosUsuario), [dadosUsuario])
 
     function estilizaCampoInvalido(input) {
-        input.style.border = "1px solid red";
+        input.style.boxShadow = "0 0 3px 1px rgba(255, 0, 0, 1)";
     }
 
     function limpaCampo(evento) {
         if (evento.target.matches('input')) {
-            evento.target.style.border = "";
+            evento.target.style.boxShadow = "";
         }
     }
 
     return (
         <div className={style.div_form}>
             {!token && <h1>Preencha os campos abaixo para realizar seu cadastro</h1>}
-            <form onSubmit={handlerSubmit} onBlur={limpaCampo}>
+            <form onSubmit={handlerSubmit} onBlur={limpaCampo} noValidate>
                 <div>
                     <label htmlFor="">CPF</label>
                     <input type="number" id="CPF" value={dadosUsuario.CPF} onChange={handlerChange} />
@@ -175,7 +196,7 @@ export default function FrmUsuario({token = ""}){
                 </div>
                 {!token && <div>
                     <label htmlFor="">Senha</label>
-                    <input type="password" id="senha" onChange={handlerChange} /*required={!token}*//>
+                    <input type="password" id="senha" onChange={handlerChange} /*required={!token}*/ />
                 </div>}
                 <button>Salvar</button>
             </form>
