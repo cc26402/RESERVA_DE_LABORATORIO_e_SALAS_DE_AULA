@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import style from "./frmEditarReserva.module.css"
 
 type Reserva = {
     idReserva: number;
@@ -250,53 +251,55 @@ function FormularioReserva({ reserva }: { reserva: Reserva }){
     }
 
     return(
-        <form onSubmit={handleSubmit}>
-            <h1>Editar Reserva</h1>
-            <h2>{dataHora ? `${dataHora.data.split("-").reverse().join("/")} ${dataHora.hora}` : ""}</h2>
-            <div>
-                <label>Prédio</label>
-                <select value={predioSelect ?? ""} onChange={handlePredio}>
-                    {
-                        predios.map(p => (
-                            <option key={p.idPredio} value={p.idPredio}>{p.nome}</option>
-                        ))
-                    }
-                </select>
-            </div>
-            <div>
-                <label>Andar</label>
-                <input type="number" max={3} min={-1} value={andarSelect} onChange={handleAndar} />
-            </div>
-            <div>
-                <label>Ambiente</label>
-                <select value={reservaEditada.idAmbiente} onChange={handleAmbiente}>
-                    {
-                        ambientesFiltrados.map(amb => (
-                            <option key={amb.idAmbiente} value={amb.idAmbiente}>{amb.nome}</option>
-                        ))
-                    }
-                </select>
-            </div>
-            <div>
-                <label>Data Inicial</label>
-                <input type="date" value={reservaEditada.dataInicial} onChange={handleDataInicial} />
-            </div>
-            <div>
-                <label>Data Final</label>
-                <input type="date" value={reservaEditada.dataFinal} onChange={handleDataFinal} />
-            </div>
-            <div>
-                <label>Horário Inicial</label>
-                <input type="time" value={reservaEditada.horarioInicial} onChange={handleHorarioInicial} />
-            </div>
-            <div>
-                <label>Horário Final</label>
-                <input type="time" value={reservaEditada.horarioFinal} onChange={handleHorarioFinal} />
-            </div>
-            <div>
-                <button type="submit" disabled={!ambienteValido}>Confirmar</button>
-                <Link href={"/reservas"}>Cancelar</Link>
-            </div>
-        </form>
+        <div className={style.body}>
+            <form onSubmit={handleSubmit} className={style.form}>
+                <h1>Editar Reserva</h1>
+                <h2>{dataHora ? `${dataHora.data.split("-").reverse().join("/")} ${dataHora.hora}` : ""}</h2>
+                <div>
+                    <label>Prédio</label>
+                    <select value={predioSelect ?? ""} onChange={handlePredio}>
+                        {
+                            predios.map(p => (
+                                <option key={p.idPredio} value={p.idPredio}>{p.nome}</option>
+                            ))
+                        }
+                    </select>
+                </div>
+                <div>
+                    <label>Andar</label>
+                    <input type="number" max={3} min={-1} value={andarSelect} onChange={handleAndar} />
+                </div>
+                <div>
+                    <label>Ambiente</label>
+                    <select value={reservaEditada.idAmbiente} onChange={handleAmbiente}>
+                        {
+                            ambientesFiltrados.map(amb => (
+                                <option key={amb.idAmbiente} value={amb.idAmbiente}>{amb.nome}</option>
+                            ))
+                        }
+                    </select>
+                </div>
+                <div>
+                    <label>Data Inicial</label>
+                    <input type="date" value={reservaEditada.dataInicial} onChange={handleDataInicial} />
+                </div>
+                <div>
+                    <label>Data Final</label>
+                    <input type="date" value={reservaEditada.dataFinal} onChange={handleDataFinal} />
+                </div>
+                <div>
+                    <label>Horário Inicial</label>
+                    <input type="time" value={reservaEditada.horarioInicial} onChange={handleHorarioInicial} />
+                </div>
+                <div>
+                    <label>Horário Final</label>
+                    <input type="time" value={reservaEditada.horarioFinal} onChange={handleHorarioFinal} />
+                </div>
+                <div className={style.divButton}>
+                    <button type="submit" disabled={!ambienteValido}>Confirmar</button>
+                    <Link href={"/reservas"}>Cancelar</Link>
+                </div>
+            </form>
+        </div>
     )
 }

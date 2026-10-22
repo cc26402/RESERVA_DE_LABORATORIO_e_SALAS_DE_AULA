@@ -1,0 +1,32 @@
+.body{
+    min-width: 99vw;
+    min-height: 90vh;
+    display: flex;
+    justify-content: center;
+}
+
+.form{
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    margin: auto;
+}
+
+.form>div{
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form>div>input{
+    border: 1px solid black;
+    width: 500px;
+    border-radius: 5px;   
+}
+
+.form>div>select{
+    border: 1px solid black;
+    border-radius: 5px;    
+}
+
+.divButton{
+    display: flex;
+}
