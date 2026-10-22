@@ -21,7 +21,7 @@ class Predio {
     static async buscarPredioPorId(idPredio) {
         try {
             const conexao = await conectaBD();
-            const result = await conexao.query`SELECT * from resSalaLab.Predio WHERE idPredio='${idPredio}'`;
+            const result = await conexao.query`SELECT * from resSalaLab.Predio WHERE idPredio=${idPredio}`;
             return result.recordset
         }
         catch (error) {
@@ -32,7 +32,7 @@ class Predio {
     static async removerPredio(idPredio) {
         try {
             const conexao = await conectaBD();
-            const result = await conexao.query`DELETE from resSalaLab.Predio WHERE idPredio='${idPredio}'`;
+            const result = await conexao.query`DELETE from resSalaLab.Predio WHERE idPredio=${idPredio}`;
         }
         catch (error) {
             throw new Error(`Erro na remoção ao BD: ${error}`);
@@ -43,7 +43,7 @@ class Predio {
         const { idPredio, nome } = Predio;
         try {
             const conexao = await conectaBD();
-            const result = await conexao.query`INSERT into resSalaLab.Predio (idPredio, nome) VALUES ('${idPredio}', '${nome}')`;
+            const result = await conexao.query`INSERT into resSalaLab.Predio (idPredio, nome) VALUES (${idPredio}, ${nome})`;
             return result;
         }
         catch (error) {
@@ -55,7 +55,7 @@ class Predio {
         const { idPredio, nome } = Predio;
         try {
             const conexao = await conectaBD();
-            const result = await conexao.query`UPDATE resSalaLab.Predio SET nome='${nome}' WHERE idPredio='${idPredio}'`;
+            const result = await conexao.query`UPDATE resSalaLab.Predio SET nome=${nome} WHERE idPredio=${idPredio}`;
             return result;
         }
         catch (error) {
