@@ -31,10 +31,10 @@ export function Header() {
             <Link href="/reservas">Reservas</Link>
           </li>
           <li className={style.linkMenu}>
-            <Link href="/usuarios/meusdados">Meus dados</Link>
+            <Link href="/ambientes">Ambientes</Link>
           </li>
           <li className={style.linkMenu}>
-            <Link href="/ambientes">Ambientes</Link>
+            <Link href="/usuarios/meusdados">Meus dados</Link>
           </li>
           <li className={style.linkMenu}>
             <button onClick={logoutHandler} className={style.button}>Logout</button>
