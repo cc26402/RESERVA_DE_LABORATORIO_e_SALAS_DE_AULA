@@ -1,6 +1,7 @@
 "use client"
 import Link from "next/link";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 type Reserva = {
     idReserva: number;
@@ -34,40 +35,61 @@ type DataHora = {
 
 export function FrmEditarReserva({ idReserva }: { idReserva: string }){
 
-    const [reservaSelecionada, setReservaSelecionada] = useState<Reserva>();
+    const [reserva, setReserva] = useState<Reserva>();
+    const [erro, setErro] = useState<string>();
+
+    useEffect(() => {
+        async function buscarReserva() {
+            try{
+                const response = await fetch("http://localhost:8080/reservas/" + idReserva, {
+                    headers: { "Authorization": `Bearer ${localStorage.getItem("loginToken")}` }
+                });
+                if (!response.ok) throw new Error("Falha ao buscar a reserva");
+                const lista: Reserva[] = await response.json();
+                const dados = lista[0];
+                if (!dados) throw new Error("Reserva não encontrada");
+                setReserva({
+                    ...dados,
+                    dataInicial: dados.dataInicial.slice(0, 10),
+                    dataFinal: dados.dataFinal.slice(0, 10),
+                    horarioInicial: dados.horarioInicial.slice(11, 16),
+                    horarioFinal: dados.horarioFinal.slice(11, 16),
+                });
+            } catch(e){
+                console.error(e);
+                setErro("Não foi possível carregar a reserva.");
+            }
+        }
+        buscarReserva();
+    }, [idReserva])
+
+    if (erro) return <p>{erro}</p>;
+    if (!reserva) return <p>Carregando...</p>;
+    return <FormularioReserva reserva={reserva} />;
+}
+
+function FormularioReserva({ reserva }: { reserva: Reserva }){
+
+    const router = useRouter();
     const [reservas, setReservas] = useState<Reserva[]>([]);
     const [ambientes, setAmbientes] = useState<Ambiente[]>([]);
     const [predios, setPredios] = useState<Predio[]>([]);
     const [predioSelect, setPredioSelect] = useState<number>();
     const [andarSelect, setAndarSelect] = useState<number>(0);
-    const [dataInicialInput, setDataInicialInput] = useState<string>()
-    const [reservaEditada, setReservaEditada] = useState<Reserva>();
+    const [reservaEditada, setReservaEditada] = useState<Reserva>(reserva);
     const [dataHora, setDataHora] = useState<DataHora>();
 
     useEffect(() => {
-        async function buscarReservaPorId() {
-            try{
-                const response = await fetch("http://localhost:8080/reservas/" + idReserva);
-                const dados: Reserva = await response.json();
-                if (!response.ok) throw new Error("Falha ao buscar dados do BD");
-                setReservaSelecionada(dados);
-                setReservaEditada(dados);
-            } catch(erro){
-                throw new Error("Falha ao buscar dados do BD," + erro);
-            }
-        }
-        buscarReservaPorId();
-    }, [])
-    
-    useEffect(() => {
         async function buscarReservas() {
             try{
-                const response = await fetch("http://localhost:8080/reservas");
+                const response = await fetch("http://localhost:8080/reservas", {
+                    headers: { "Authorization": `Bearer ${localStorage.getItem("loginToken")}` }
+                });
+                if (!response.ok) throw new Error("Falha ao buscar reservas");
                 const dados: Reserva[] = await response.json();
-                if (!response.ok) throw new Error("Falha ao buscar dados do BD");
                 setReservas(dados);
             } catch(erro){
-                throw new Error("Falha ao buscar dados do BD," + erro);
+                console.error(erro);
             }
         }
         buscarReservas();
@@ -77,12 +99,11 @@ export function FrmEditarReserva({ idReserva }: { idReserva: string }){
         async function buscarPredios() {
             try{
                 const response = await fetch("http://localhost:8080/predios");
+                if (!response.ok) throw new Error("Falha ao buscar prédios");
                 const dados: Predio[] = await response.json();
-                if (!response.ok) throw new Error("Falha ao buscar dados do BD");
                 setPredios(dados);
-                setPredioSelect(Number(dados[0].idPredio));
             } catch(erro){
-                throw new Error("Falha ao buscar dados do BD," + erro)
+                console.error(erro);
             }
         }
         buscarPredios();
@@ -92,11 +113,11 @@ export function FrmEditarReserva({ idReserva }: { idReserva: string }){
         async function buscarAmbientes() {
             try{
                 const response = await fetch("http://localhost:8080/ambientes");
+                if (!response.ok) throw new Error("Falha ao buscar ambientes");
                 const dados: Ambiente[] = await response.json();
-                if (!response.ok) throw new Error("Falha ao buscar dados do BD");
                 setAmbientes(dados);
             } catch(erro){
-                throw new Error("Falha ao buscar dados do BD," + erro)
+                console.error(erro);
             }
         }
         buscarAmbientes();
@@ -106,37 +127,125 @@ export function FrmEditarReserva({ idReserva }: { idReserva: string }){
         async function buscarDataHora() {
             try{
                 const response = await fetch("http://localhost:8080/reservas/hora");
+                if (!response.ok) throw new Error("Falha ao buscar data e hora");
                 const dados: DataHora = await response.json();
                 setDataHora(dados);
             } catch(erro){
-                throw new Error("Falha ao buscar dados do BD," + erro)
+                console.error(erro);
             }
         }
-        buscarDataHora(); 
+        buscarDataHora();
     }, [])
 
+    useEffect(() => {
+        const ambienteAtual = ambientes.find(amb => amb.idAmbiente === reserva.idAmbiente);
+        if (ambienteAtual) {
+            setPredioSelect(ambienteAtual.idPredio);
+            setAndarSelect(ambienteAtual.andar);
+        }
+    }, [ambientes, reserva.idAmbiente])
+
+    function haReservaComConflito(): boolean {
+        const novoInicio = reservaEditada.dataInicial + " " + reservaEditada.horarioInicial;
+        const novoFim = reservaEditada.dataFinal + " " + reservaEditada.horarioFinal;
+
+        return reservas.some(r => {
+            if (r.idReserva === reserva.idReserva) return false;
+            if (r.idAmbiente !== reservaEditada.idAmbiente) return false;
+            const inicio = r.dataInicial.slice(0, 10) + " " + r.horarioInicial.slice(11, 16);
+            const fim = r.dataFinal.slice(0, 10) + " " + r.horarioFinal.slice(11, 16);
+            return novoInicio < fim && novoFim > inicio;
+        });
+    }
+
+    const ambientesFiltrados = ambientes.filter(
+        amb => amb.idPredio === predioSelect && amb.andar === andarSelect
+    );
+
+    const ambienteValido = ambientesFiltrados.some(
+        amb => amb.idAmbiente === reservaEditada.idAmbiente
+    );
+
+    function selecionarPrimeiroAmbiente(idPredio: number | undefined, andar: number) {
+        const primeiro = ambientes.find(amb => amb.idPredio === idPredio && amb.andar === andar);
+        if (primeiro) {
+            setReservaEditada(res => ({ ...res, idAmbiente: primeiro.idAmbiente }));
+        }
+    }
+
     const handlePredio = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setPredioSelect(Number(e.target.value));
+        const novoPredio = Number(e.target.value);
+        setPredioSelect(novoPredio);
+        selecionarPrimeiroAmbiente(novoPredio, andarSelect);
     }
 
     const handleAndar = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setAndarSelect(Number(e.target.value));
+        const novoAndar = Number(e.target.value);
+        setAndarSelect(novoAndar);
+        selecionarPrimeiroAmbiente(predioSelect, novoAndar);
+    }
+
+    const handleAmbiente = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setReservaEditada(res => ({ ...res, idAmbiente: Number(e.target.value) }));
     }
 
     const handleDataInicial = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setDataInicialInput(String(e.target.value));
+        setReservaEditada(res => ({ ...res, dataInicial: e.target.value }));
     }
 
-    const handleSubmit = (e: React.ChangeEvent<SubmitEvent>) => {
+    const handleDataFinal = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setReservaEditada(res => ({ ...res, dataFinal: e.target.value }));
+    }
+
+    const handleHorarioInicial = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setReservaEditada(res => ({ ...res, horarioInicial: e.target.value }));
+    }
+
+    const handleHorarioFinal = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setReservaEditada(res => ({ ...res, horarioFinal: e.target.value }));
+    }
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (!dataHora) return;
+
+        const hoje = dataHora.data.slice(0, 10);
+        const agora = dataHora.hora.slice(0, 5);
+        const novoInicio = reservaEditada.dataInicial + " " + reservaEditada.horarioInicial;
+        const novoFim = reservaEditada.dataFinal + " " + reservaEditada.horarioFinal;
+
+        if (reservaEditada.dataInicial < hoje) {
+            alert("DATA INICIAL INVÁLIDA");
+            return;
+        }
+        if (reservaEditada.dataInicial === hoje && reservaEditada.horarioInicial < agora) {
+            alert("HORÁRIO INICIAL INVÁLIDO");
+            return;
+        }
+        if (novoFim <= novoInicio) {
+            alert("O FIM DEVE SER DEPOIS DO INÍCIO");
+            return;
+        }
+        if (haReservaComConflito()) {
+            alert("PERÍODO INDISPONÍVEL");
+            return;
+        }
+
         try{
-            const response = await fetch("http:/localhost:8080/reservas", {
+            const response = await fetch("http://localhost:8080/reservas/" + reserva.idReserva, {
                 method : 'PATCH',
-                headers : { 'Content-Type' : 'application/json' },
+                headers : {
+                    'Content-Type' : 'application/json',
+                    'Authorization' : `Bearer ${localStorage.getItem("loginToken")}`
+                },
                 body: JSON.stringify(reservaEditada)
             })
+            if (!response.ok){
+                throw new Error("Falha ao atualizar a reserva");
+            }
+            router.push("/reservas");
         } catch(erro){
-
+            console.error(erro);
         }
     }
 
@@ -146,53 +255,46 @@ export function FrmEditarReserva({ idReserva }: { idReserva: string }){
             <h2>{dataHora ? `${dataHora.data.split("-").reverse().join("/")} ${dataHora.hora}` : ""}</h2>
             <div>
                 <label>Prédio</label>
-                <select onChange={handlePredio}>
+                <select value={predioSelect ?? ""} onChange={handlePredio}>
                     {
-                        predios.map(p => {
-                            return(
-                                <option key={p.idPredio} value={p.idPredio}>{p.nome}</option>
-                            )
-                        })
+                        predios.map(p => (
+                            <option key={p.idPredio} value={p.idPredio}>{p.nome}</option>
+                        ))
                     }
                 </select>
             </div>
             <div>
                 <label>Andar</label>
-                <input type="number" max={3} min={-1} defaultValue={0} onChange={handleAndar}></input>
+                <input type="number" max={3} min={-1} value={andarSelect} onChange={handleAndar} />
             </div>
             <div>
                 <label>Ambiente</label>
-                <select>
+                <select value={reservaEditada.idAmbiente} onChange={handleAmbiente}>
                     {
-                        ambientes.map(amb => {
-                            if (amb.idPredio == predioSelect && amb.andar == andarSelect){
-                                return (
-                                    <option value={amb.idPredio}>{amb.nome}</option>
-                                )
-                            }
-                        })
-                        
+                        ambientesFiltrados.map(amb => (
+                            <option key={amb.idAmbiente} value={amb.idAmbiente}>{amb.nome}</option>
+                        ))
                     }
                 </select>
             </div>
             <div>
                 <label>Data Inicial</label>
-                <input type="date" onChange={}></input>
+                <input type="date" value={reservaEditada.dataInicial} onChange={handleDataInicial} />
             </div>
             <div>
                 <label>Data Final</label>
-                <input type="date"></input>
+                <input type="date" value={reservaEditada.dataFinal} onChange={handleDataFinal} />
             </div>
             <div>
                 <label>Horário Inicial</label>
-                <input type="time"></input>
+                <input type="time" value={reservaEditada.horarioInicial} onChange={handleHorarioInicial} />
             </div>
             <div>
                 <label>Horário Final</label>
-                <input type="time"></input>
+                <input type="time" value={reservaEditada.horarioFinal} onChange={handleHorarioFinal} />
             </div>
             <div>
-                <button>Confirmar</button>
+                <button type="submit" disabled={!ambienteValido}>Confirmar</button>
                 <Link href={"/reservas"}>Cancelar</Link>
             </div>
         </form>
