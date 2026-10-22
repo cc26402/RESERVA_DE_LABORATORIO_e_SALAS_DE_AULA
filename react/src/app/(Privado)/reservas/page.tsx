@@ -41,11 +41,9 @@ type EstadoTabela = {
 
 type DataHora = { data: string; hora: string };
 
-const nomeStatus: Record<number, string> = {
-    1: "Livre",
-    2: "Ocupado",
-    3: "Bloqueado",
-    4: "Reservado",
+type Status = {
+    idStatus: number;
+    nome: string;
 };
 
 function formatarData(data: string) {
@@ -72,7 +70,25 @@ export default function Reservas() {
     const [dadosTabela, setDadosTabela] = useState<ReservaFormatada[]>([]);
     const [token, setToken] = useState("");
     const [dataHora, setDataHora] = useState<DataHora>();
+    const [status, setStatus] = useState<Status[]>([]);
     const router = useRouter();
+
+    useEffect(() => {
+        async function buscarStatus() {
+            try {
+                const response = await fetch("http://localhost:8080/status");
+                if (!response.ok) {
+                    console.error("Erro ao buscar Status:", response.status);
+                    return;
+                }
+                const dados = await response.json();
+                if (Array.isArray(dados)) setStatus(dados);
+            } catch (erro) {
+                console.error("Falha ao conectar ao BD", erro);
+            }
+        }
+        buscarStatus();
+    }, []);
 
     useEffect(() => {
         const loginToken = localStorage.getItem("loginToken");
@@ -173,7 +189,7 @@ export default function Reservas() {
     }
 
     useEffect(() => {
-        if (!dataHora) return;
+        if (!dataHora || status.length === 0) return;
 
         const formatadas: ReservaFormatada[] = reserva.map(r => {
             const amb = ambiente.find(a => a.idAmbiente === r.idAmbiente);
@@ -181,7 +197,7 @@ export default function Reservas() {
                 idReserva: r.idReserva,
                 username: r.username,
                 ambiente: amb ? amb.nome : "Desconhecido",
-                status: nomeStatus[calcularStatus(r, dataHora)],
+                status: status.find(s => s.idStatus === calcularStatus(r, dataHora))?.nome ?? "Desconhecido",
                 dataInicial: formatarData(r.dataInicial),
                 dataFinal: formatarData(r.dataFinal),
                 horarioInicial: r.horarioInicial.slice(11, 16),
@@ -190,7 +206,7 @@ export default function Reservas() {
         });
 
         setDadosTabela(formatadas);
-    }, [reserva, ambiente, dataHora]);
+    }, [reserva, ambiente, dataHora, status]);
 
     return (
         <div>
