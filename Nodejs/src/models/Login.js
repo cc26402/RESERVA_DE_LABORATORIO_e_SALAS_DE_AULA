@@ -6,7 +6,7 @@ class Login{
     static async buscarTodos(){
         try{
             const conexao = await conectaBD();
-            const result = await conexao.query(`SELECT * FROM resSalaLab.Login`);
+            const result = await conexao.query("SELECT * FROM resSalaLab.Login");
             return result.recordset;
         }
         catch(error){
@@ -17,7 +17,7 @@ class Login{
     static async buscarPorUsername(username){
         try{
             const conexao = await conectaBD();
-            const result = await conexao.query(`SELECT * FROM resSalaLab.Login WHERE username = ${username}`);
+            const result = await conexao.query`SELECT * FROM resSalaLab.Login WHERE username = ${username}`;
             return result.recordset;
         }
         catch(error){
@@ -28,7 +28,7 @@ class Login{
     static async buscarPorCpf(CPF){
         try{
             const conexao = await conectaBD();
-            const result = await conexao.query(`SELECT * FROM resSalaLab.Login WHERE CPF = ${CPF}`);
+            const result = await conexao.query`SELECT * FROM resSalaLab.Login WHERE CPF = ${CPF}`;
             return result.recordset;
         }
         catch(error){
@@ -39,7 +39,7 @@ class Login{
     static async buscarPorDataCadastro(dataCadastro){
         try{
             const conexao = await conectaBD();
-            const result = await conexao.query(`SELECT * FROM resSalaLab.Login WHERE dataCadastro = ${dataCadastro}`);
+            const result = await conexao.query`SELECT * FROM resSalaLab.Login WHERE dataCadastro = ${dataCadastro}`;
             return result.recordset;
         }
         catch(error){
@@ -53,7 +53,7 @@ class Login{
         const senhaHash = await bcrypt.hash(senha, salt);
         try{
             const conexao = await conectaBD();
-            const result = await conexao.query(`INSERT INTO resSalaLab.Login (username, senha, CPF) VALUES (${username}, ${senhaHash}, ${CPF})`);
+            const result = await conexao.query`INSERT INTO resSalaLab.Login (username, senha, CPF) VALUES (${username}, ${senhaHash}, ${CPF})`;
             return result;
         }
         catch(error){
@@ -68,17 +68,17 @@ class Login{
             if (username == undefined){
                 const salt = await bcrypt.genSalt(10);
                 const senhaHash = await bcrypt.hash(senha, salt);
-                const result = await conexao.query(`UPDATE resSalaLab.Login SET senha = ${senhaHash} WHERE CPF = ${CPF}`);
+                const result = await conexao.query`UPDATE resSalaLab.Login SET senha = ${senhaHash} WHERE CPF = ${CPF}`;
                 return result;
             }
             else if (senha == undefined){
-                const result = await conexao.query(`UPDATE resSalaLab.Login SET username = ${username} WHERE CPF = ${CPF}`);
+                const result = await conexao.query`UPDATE resSalaLab.Login SET username = ${username} WHERE CPF = ${CPF}`;
                 return result;
             }
             else {
                 const salt = await bcrypt.genSalt(10);
                 const senhaHash = await bcrypt.hash(senha, salt);
-                const result = await conexao.query(`UPDATE resSalaLab.Login SET username = ${username}, senha = ${senhaHash} WHERE CPF = ${CPF}`);
+                const result = await conexao.query`UPDATE resSalaLab.Login SET username = ${username}, senha = ${senhaHash} WHERE CPF = ${CPF}`;
                 return result;
             }
         }

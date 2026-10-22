@@ -13,7 +13,7 @@ class Ambiente{
     static async buscarTodos(){
         try {
             const conexao = await conectaBD();
-            const result = await conexao.query(`SELECT * from resSalaLab.Ambiente`);
+            const result = await conexao.query("SELECT * from resSalaLab.Ambiente");
             return result.recordset
         }
         catch (error) {
@@ -38,7 +38,7 @@ class Ambiente{
             const result = await conexao.query(`DELETE from resSalaLab.Ambiente WHERE idAmbiente=${idAmbiente}`);
         }
         catch (error) {
-            throw new Error`Erro na remoção ao BD: ${error}`;
+            throw new Error(`Erro na remoção ao BD: ${error}`);
         }
     }
 
