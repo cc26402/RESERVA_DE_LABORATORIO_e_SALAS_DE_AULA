@@ -254,6 +254,8 @@ export default function Reservas() {
                 <div>
                     <button onClick={() => mostrar("Todas")}>Mostrar Todas</button>
                     <button onClick={() => mostrar("User")}>Minhas Reservas</button>
+                </div>
+                <div>
                     <div>
                         <label>De: <input type="date" value={filtroDataInicial} onChange={e => setFiltroDataInicial(e.target.value)} /></label>
                         <label>Até: <input type="date" min={filtroDataInicial} value={filtroDataFinal} onChange={e => setFiltroDataFinal(e.target.value)} /></label>
