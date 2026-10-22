@@ -16,7 +16,7 @@ class Acesso{
     static async buscaPorId(idAcesso){
         try{
             const conexao = await conectaBD();
-            const result = await conexao.query`SELECT * FROM resSalaLab.Acesso WHERE idAcesso = ${idAcesso}`;
+            const result = await conexao.query(`SELECT * FROM resSalaLab.Acesso WHERE idAcesso = ${idAcesso}`);
             return result.recordset
         }
         catch(error){
@@ -27,7 +27,7 @@ class Acesso{
     static async buscaPorUsername(username){
         try{
             const conexao = await conectaBD();
-            const result = await conexao.query`SELECT * FROM resSalaLab.Acesso WHERE username = ${username}`;
+            const result = await conexao.query(`SELECT * FROM resSalaLab.Acesso WHERE username = ${username}`);
             return result.recordset;
         }
         catch(error){
@@ -41,11 +41,11 @@ class Acesso{
             const inicioDataHora = `${dataInicio} ${horaInicio}`;
             const fimDataHora = `${dataFim} ${horaFim}`;
             if (username!=null){
-                const result = await conexao.query`SELECT * FROM resSalaLab.Acesso WHERE username = ${username} AND dataHoraAcesso >= ${inicioDataHora} AND dataHoraAcesso<=${fimDataHora}`
+                const result = await conexao.query(`SELECT * FROM resSalaLab.Acesso WHERE username = ${username} AND dataHoraAcesso >= ${inicioDataHora} AND dataHoraAcesso<=${fimDataHora}`)
                 return result.recordset
             }
             else {
-                const result = await conexao.query`SELECT * FROM resSalaLab.Acesso WHERE dataHoraAcesso >= ${inicioDataHora} AND dataHoraAcesso<=${fimDataHora}`
+                const result = await conexao.query(`SELECT * FROM resSalaLab.Acesso WHERE dataHoraAcesso >= ${inicioDataHora} AND dataHoraAcesso<=${fimDataHora}`)
                 return result.recordset
             }
         }
@@ -58,7 +58,7 @@ class Acesso{
         const {username} = acesso
         try{
             const conexao = await conectaBD();
-            const result = await conexao.query`INSERT INTO resSalaLab.Acesso (username) values (${username})`;
+            const result = await conexao.query(`INSERT INTO resSalaLab.Acesso (username) values (${username})`);
             return result;
         }
         catch(error){
