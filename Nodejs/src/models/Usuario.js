@@ -27,7 +27,7 @@ class Usuario {
     static async buscarUsuarioPorCPF(CPF) {
         try {
             const conexao = await conectaBD();
-            const result = await conexao.query`SELECT * from resSalaLab.Usuario WHERE CPF=${CPF}`;
+            const result = await conexao.query(`SELECT * from resSalaLab.Usuario WHERE CPF='${CPF}'`);
             return result.recordset
         }
         catch (error) {
@@ -38,7 +38,7 @@ class Usuario {
     static async removerUsuario(CPF) {
         try {
             const conexao = await conectaBD();
-            const result = await conexao.query`DELETE from resSalaLab.Usuario WHERE CPF=${CPF}`;
+            const result = await conexao.query(`DELETE from resSalaLab.Usuario WHERE CPF='${CPF}'`);
         }
         catch (error) {
             throw new Error(`Erro na remoção ao BD: ${error}`);
@@ -50,7 +50,7 @@ class Usuario {
         const LoginNovo = {CPF: CPF, username: email, senha: senha}
         try {
             const conexao = await conectaBD();
-            const result = await conexao.query`INSERT into resSalaLab.Usuario (CPF, prenome, sobrenome, nascimento, celular, email, idNivelAcesso) VALUES (${CPF}, ${prenome}, ${sobrenome}, ${nascimento}, ${celular}, ${email}, '1')`;
+            const result = await conexao.query(`INSERT into resSalaLab.Usuario (CPF, prenome, sobrenome, nascimento, celular, email, idNivelAcesso) VALUES ('${CPF}', '${prenome}', '${sobrenome}', '${nascimento}', '${celular}', '${email}', '1')`);
             await Login.criarLogin(LoginNovo);
             return result;
         }
@@ -63,7 +63,7 @@ class Usuario {
         const { CPF, prenome, sobrenome, nascimento, celular, email } = Usuario;
         try {
             const conexao = await conectaBD();
-            const result = await conexao.query`UPDATE resSalaLab.Usuario SET prenome=${prenome}, sobrenome=${sobrenome}, nascimento=${nascimento}, celular=${celular}, email=${email}, idNivelAcesso='1' WHERE CPF=${CPF}`;
+            const result = await conexao.query(`UPDATE resSalaLab.Usuario SET prenome='${prenome}', sobrenome='${sobrenome}', nascimento='${nascimento}', celular='${celular}', email='${email}', idNivelAcesso='1' WHERE CPF='${CPF}'`);
             Login.editarLogin({CPF, novosDados: {username: email}});
             return result;
         }
