@@ -68,6 +68,9 @@ class Login{
             if (username == undefined){
                 
                 const resultado = await conexao.query`SELECT * FROM resSalaLab.Login WHERE CPF = ${CPF}`;
+                if (!resultado.recordset || resultado.recordset.length === 0) {
+                    throw new Error ("Login inválido");
+                }
                 const senhaAtualRegistrada = resultado.recordset[0].senha;
                 const senhaValidada = await bcrypt.compare(senhaAtual, senhaAtualRegistrada);
 

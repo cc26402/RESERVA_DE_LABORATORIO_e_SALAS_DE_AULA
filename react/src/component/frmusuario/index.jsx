@@ -10,6 +10,7 @@ export default function FrmUsuario({token = ""}){
     //const [niveisAcesso, setNiveisAcesso] = useState([]);
     const [dadosUsuario, setDadosUsuario] = useState({CPF:"", prenome:"", sobrenome:"", nascimento:"", celular:"", email:"", senha:""});
     const [status, setStatus] = useState(null);
+    const [deveExibirFormAlterarSenha, setDeveExibirFormAlterarSenha] = useState(false);
     const router = useRouter();
 
     useEffect(() => {
@@ -53,6 +54,33 @@ export default function FrmUsuario({token = ""}){
             router.replace("/")
         }
     }, [status, router]);
+
+    function validaToken() {
+        const loginToken = localStorage.getItem("loginToken");
+        if (loginToken) {
+        fetch("http://localhost:8080/auth/valida", {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${loginToken}`
+            }
+        })
+        .then(async result => {
+            if (!result.ok) {
+            localStorage.removeItem('loginToken');
+            alert("Necessário estar logado para acessar esse recurso");
+            router.replace("/")
+            }
+            else {
+                setToken(loginToken);
+            }
+        })
+        }
+        else {
+            alert("Necessário estar logado para acessar esse recurso");
+            router.replace("/");
+        }
+    }
 
     function handlerChange(evento){
         const targetId = evento.target.id;
@@ -170,36 +198,60 @@ export default function FrmUsuario({token = ""}){
         <div className={style.div_form}>
             {!token && <h1>Preencha os campos abaixo para realizar seu cadastro</h1>}
             <form onSubmit={handlerSubmit} onBlur={limpaCampo} noValidate>
-                <div>
+                <div className={style.divs_inputs}>
                     <label htmlFor="">CPF</label>
                     <input type="number" id="CPF" value={dadosUsuario.CPF} onChange={handlerChange} />
                 </div>
-                <div>
+                <div className={style.divs_inputs}>
                     <label htmlFor="">Nome</label>
                     <input type="text" id="prenome" value={dadosUsuario.prenome} onChange={handlerChange} />
                 </div>
-                <div>
+                <div className={style.divs_inputs}>
                     <label htmlFor="">Sobrenome</label>
                     <input type="text" id="sobrenome" value={dadosUsuario.sobrenome} onChange={handlerChange} />
                 </div>
-                <div>
+                <div className={style.divs_inputs}>
                     <label htmlFor="">Data de Nascimento</label>
                     <input type="date" id="nascimento" value={(dadosUsuario.nascimento ? (dadosUsuario.nascimento.split("T"))[0] : dadosUsuario.nascimento)} onChange={handlerChange} />
                 </div>
-                <div>
+                <div className={style.divs_inputs}>
                     <label htmlFor="">Celular</label>
                     <input type="number" id="celular" value={dadosUsuario.celular} onChange={handlerChange} />
                 </div>
-                <div>
+                <div className={style.divs_inputs}>
                     <label htmlFor="">E-mail</label>
                     <input type="text" id="email" value={dadosUsuario.email} onChange={handlerChange} />
                 </div>
-                {!token && <div>
+                {!token && <div className={style.divs_inputs}>
                     <label htmlFor="">Senha</label>
                     <input type="password" id="senha" onChange={handlerChange} /*required={!token}*/ />
                 </div>}
-                <button>Salvar</button>
+                <div className={style.div_buttons}>
+                    <div>
+                        {/* {token && <button type="button"  className={style.btn_apagar_conta}>Apagar conta</button>} */}
+                        {token && <button type="button" className={style.btns} onClick={() => setDeveExibirFormAlterarSenha(true)}>Alterar senha</button>}
+                        <button className={style.btns}>Salvar</button>
+                    </div>
+                </div>
             </form>
+            {deveExibirFormAlterarSenha &&
+                <div className={style.div_form_altera_senha}>
+                    <form className={style.form_altera_senha}>
+                        <div className={style.divs_input}>
+                            <label htmlFor="">Senha Atual</label>
+                            <input type="password" id="senha_atual"/>
+                        </div>
+                        <div className={style.divs_input}>
+                            <label htmlFor="">Nova Senha</label>
+                            <input type="password" id="senha_atual"/>
+                        </div>
+                        <div className={style.div_buttons_senha}>
+                            <button className={style.btns} onClick={validaToken}>Alterar</button>
+                            <button type="button" className={style.btns} onClick={() => setDeveExibirFormAlterarSenha(false)}>Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            }
         </div>
     );
 }
