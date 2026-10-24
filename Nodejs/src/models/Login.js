@@ -77,6 +77,9 @@ class Login{
                     const result = await conexao.query`UPDATE resSalaLab.Login SET senha = ${senhaHash} WHERE CPF = ${CPF}`;
                     return result;
                 }
+                else {
+                    throw new Error("Senha atual inválida.");
+                }
             }
             else if (senha == undefined){
                 const result = await conexao.query`UPDATE resSalaLab.Login SET username = ${username} WHERE CPF = ${CPF}`;
@@ -90,7 +93,7 @@ class Login{
             }
         }
         catch(error){
-            throw new Error(`Falha na edição do login no BD: ${error.message}`);
+            throw new Error(`Falha na edição do login: ${error.message}`);
         }
     }
 }
