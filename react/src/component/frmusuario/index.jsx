@@ -119,6 +119,33 @@ export default function FrmUsuario({token = ""}){
     function handlerSenhaSubmit(evento) {
         evento.preventDefault();
         validaToken();
+        const url = `http://localhost:8080/logins/${dadosSenhaUsuario.senhaAtual}`;
+        if (novaSenhaOk()) {
+            fetch(url, {
+                    method: "PATCH",
+                    headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({senha: dadosSenhaUsuario.senha})
+                }
+            )
+            .then(async result => {
+                    const dados = await result.json();
+                    if (!result.ok) {
+                        throw new Error(dados.message);
+                    }
+                    setStatus(result.status);
+                    alert("Senha alterada com sucesso");
+                    setDeveExibirFormAlterarSenha(false);
+                }
+            )
+            .catch(erro => {
+                    setStatus(erro.message);
+                    alert(erro.message);
+                }
+            );
+        }
     }
 
     function camposOk() {
@@ -189,6 +216,16 @@ export default function FrmUsuario({token = ""}){
         return tudoOk;
     }
 
+    function novaSenhaOk() {
+        const novaSenha = document.getElementById('nova_senha');
+        if (!(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(novaSenha.value))) {
+            estilizaCampoInvalido(novaSenha);
+            alert("Nova senha deve conter ao menos 8 caracteres, 1 letra minúscula, 1 letra maiúscula, 1 número e 1 caractere especial");
+            return false;
+        }
+        else return true;
+    }
+
     useEffect(() => console.log(dadosUsuario), [dadosUsuario]);
     useEffect(() => console.log(dadosSenhaUsuario), [dadosSenhaUsuario]);
 
@@ -205,7 +242,7 @@ export default function FrmUsuario({token = ""}){
     return (
         <div className={style.div_form}>
             {!token && <h1>Preencha os campos abaixo para realizar seu cadastro</h1>}
-            <form onSubmit={handlerSubmit} onBlur={limpaCampo} noValidate>
+            <form onSubmit={handlerSubmit} onBlur={limpaCampo} className={style.form_principal} noValidate>
                 <div className={style.divs_inputs}>
                     <label htmlFor="">CPF</label>
                     <input type="number" id="CPF" value={dadosUsuario.CPF} onChange={handlerChange} />
@@ -235,16 +272,15 @@ export default function FrmUsuario({token = ""}){
                     <input type="password" id="senha" onChange={handlerChange} /*required={!token}*/ />
                 </div>}
                 <div className={style.div_buttons}>
-                    <div>
-                        {/* {token && <button type="button"  className={style.btn_apagar_conta}>Apagar conta</button>} */}
-                        {token && <button type="button" className={style.btns} onClick={() => setDeveExibirFormAlterarSenha(true)}>Alterar senha</button>}
-                        <button className={style.btns}>Salvar</button>
-                    </div>
+                    {/* {token && <button type="button"  className={style.btn_apagar_conta}>Apagar conta</button>} */}
+                    {token && <button type="button" className={style.btn_alternativo} onClick={() => setDeveExibirFormAlterarSenha(true)}>Alterar senha</button>}
+                    {!token && <button type="button" className={style.btn_alternativo} onClick={() => router.replace("/")}>Retornar para login</button>}
+                    <button className={style.btns}>Salvar</button>
                 </div>
             </form>
             {deveExibirFormAlterarSenha &&
                 <div className={style.div_form_altera_senha}>
-                    <form onSubmit={handlerSenhaSubmit} className={style.form_altera_senha}>
+                    <form onSubmit={handlerSenhaSubmit} onBlur={limpaCampo} className={style.form_altera_senha} noValidate>
                         <div className={style.divs_input}>
                             <label htmlFor="">Senha Atual</label>
                             <input type="password" id="senha_atual" onChange={handlerSenhaChange}/>

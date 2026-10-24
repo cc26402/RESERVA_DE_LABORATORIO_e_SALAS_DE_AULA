@@ -22,7 +22,7 @@
     justify-content: space-between;
 }
 
-.btns {
+.btns, .btn_alternativo {
     align-self: flex-end;
     border: 1px solid rgb(154, 32, 32);
     padding: 7px;
@@ -33,6 +33,10 @@
         background-color: rgb(154, 32, 32);
         color: white;
     }
+}
+
+.btn_alternativo {
+    margin-right: 15px;
 }
 
 .divs_inputs {
@@ -66,12 +70,6 @@
 .div_buttons {
     display: flex;
     justify-content: end;
-}
-
-.div_buttons div {
-    width: 37%;
-    display: flex;
-    justify-content: space-between;
 }
 
 .btn_apagar_conta {
