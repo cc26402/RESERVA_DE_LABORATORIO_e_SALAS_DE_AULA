@@ -61,15 +61,22 @@ class Login{
         }
     }
     
-    static async editarLogin({CPF, novosDados}){
+    static async editarLogin({CPF, novosDados, senhaAtual}){
         const {username, senha} = novosDados;
         try{
             const conexao = await conectaBD();
             if (username == undefined){
-                const salt = await bcrypt.genSalt(10);
-                const senhaHash = await bcrypt.hash(senha, salt);
-                const result = await conexao.query`UPDATE resSalaLab.Login SET senha = ${senhaHash} WHERE CPF = ${CPF}`;
-                return result;
+                
+                const resultado = await conexao.query`SELECT * FROM resSalaLab.Login WHERE CPF = ${CPF}`;
+                const senhaAtualRegistrada = resultado.recordset[0].senha;
+                const senhaValidada = await bcrypt.compare(senhaAtual, senhaAtualRegistrada);
+
+                if (senhaValidada) {
+                    const salt = await bcrypt.genSalt(10);
+                    const senhaHash = await bcrypt.hash(senha, salt);
+                    const result = await conexao.query`UPDATE resSalaLab.Login SET senha = ${senhaHash} WHERE CPF = ${CPF}`;
+                    return result;
+                }
             }
             else if (senha == undefined){
                 const result = await conexao.query`UPDATE resSalaLab.Login SET username = ${username} WHERE CPF = ${CPF}`;

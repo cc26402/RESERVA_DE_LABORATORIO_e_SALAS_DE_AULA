@@ -46,7 +46,7 @@ class LoginController{
     }
 
     static async alterarLogin(req, res){
-        const CPF = req.params.CPF;
+        const CPF = (req.params.CPF ? req.params.CPF : req.CPF);
         const senhaAtual = req.params.senhaAtual;
         const novosDados = req.body;
         try{

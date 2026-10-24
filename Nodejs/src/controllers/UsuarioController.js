@@ -46,10 +46,10 @@ class UsuarioController{
     }
 
     static async alterarUsuario(req, res){
-        const CPF = (req.params.id ? req.params.id : req.CPF);
+        const cpfUsuario = (req.params.id ? req.params.id : req.CPF);
         const dadosNovos = req.body
         try{
-            const result = await Usuario.alterarUsuario({...dadosNovos, "CPF" : CPF});
+            const result = await Usuario.alterarUsuario(dadosNovos, cpfUsuario);
             res.status(200).json({message: "Alterado com sucesso"});
         }
         catch(error){
