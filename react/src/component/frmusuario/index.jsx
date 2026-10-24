@@ -6,9 +6,10 @@ import style from "./Frmusuario.module.css"
 
 export default function FrmUsuario({token = ""}){
     const url = (token ? `http://localhost:8080/usuarios/meusdados` : `http://localhost:8080/auth/cadastro`);
-    const metodo = (token ? "PATCH" : "POST")
+    const metodo = (token ? "PATCH" : "POST");
     //const [niveisAcesso, setNiveisAcesso] = useState([]);
-    const [dadosUsuario, setDadosUsuario] = useState({CPF:"", prenome:"", sobrenome:"", nascimento:"", celular:"", email:"", senha:""});
+    const [dadosUsuario, setDadosUsuario] = useState({CPF: "", prenome: "", sobrenome: "", nascimento: "", celular: "", email: "", senha: ""});
+    const [dadosSenhaUsuario, setDadosSenhaUsuario] = useState({senhaAtual: "", senha: ""});
     const [status, setStatus] = useState(null);
     const [deveExibirFormAlterarSenha, setDeveExibirFormAlterarSenha] = useState(false);
     const router = useRouter();
@@ -48,21 +49,18 @@ export default function FrmUsuario({token = ""}){
         }
     },[token, url]);
 
-    useEffect(() => {
-        console.log(status);
+    useEffect(() => { //ao realizar cadastro com sucesso, redireciona para a tela de login
         if (status == "201") {
             router.replace("/")
         }
     }, [status, router]);
 
     function validaToken() {
-        const loginToken = localStorage.getItem("loginToken");
-        if (loginToken) {
         fetch("http://localhost:8080/auth/valida", {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${loginToken}`
+            'Authorization': `Bearer ${token}`
             }
         })
         .then(async result => {
@@ -71,21 +69,25 @@ export default function FrmUsuario({token = ""}){
             alert("Necessário estar logado para acessar esse recurso");
             router.replace("/")
             }
-            else {
-                setToken(loginToken);
-            }
+            console.log("Token validado com sucesso ao alterar senha");
         })
-        }
-        else {
-            alert("Necessário estar logado para acessar esse recurso");
-            router.replace("/");
-        }
     }
 
     function handlerChange(evento){
         const targetId = evento.target.id;
         const targetValue = evento.target.value;
         setDadosUsuario({...dadosUsuario, [targetId] : targetValue});
+    }
+
+    function handlerSenhaChange(evento) {
+        const targetId = evento.target.id;
+        const targetValue = evento.target.value;
+        if (targetId == "senha_atual") {
+            setDadosSenhaUsuario({...dadosSenhaUsuario, senhaAtual: targetValue});
+        }
+        else {
+            setDadosSenhaUsuario({...dadosSenhaUsuario, senha: targetValue});
+        }
     }
 
     async function handlerSubmit(evento){
@@ -104,14 +106,19 @@ export default function FrmUsuario({token = ""}){
                 if (!result.ok) {
                     throw new Error(dados.message);
                 }
-                setStatus(result.status)
-                alert(dados.message)
+                setStatus(result.status);
+                alert(dados.message);
             })
             .catch(erro => {
                 setStatus(erro.message);
                 alert(erro.message);
             })
         }
+    }
+
+    function handlerSenhaSubmit(evento) {
+        evento.preventDefault();
+        validaToken();
     }
 
     function camposOk() {
@@ -182,7 +189,8 @@ export default function FrmUsuario({token = ""}){
         return tudoOk;
     }
 
-    useEffect(() => console.log(dadosUsuario), [dadosUsuario])
+    useEffect(() => console.log(dadosUsuario), [dadosUsuario]);
+    useEffect(() => console.log(dadosSenhaUsuario), [dadosSenhaUsuario]);
 
     function estilizaCampoInvalido(input) {
         input.style.boxShadow = "0 0 3px 1px rgba(255, 0, 0, 1)";
@@ -236,14 +244,14 @@ export default function FrmUsuario({token = ""}){
             </form>
             {deveExibirFormAlterarSenha &&
                 <div className={style.div_form_altera_senha}>
-                    <form className={style.form_altera_senha}>
+                    <form onSubmit={handlerSenhaSubmit} className={style.form_altera_senha}>
                         <div className={style.divs_input}>
                             <label htmlFor="">Senha Atual</label>
-                            <input type="password" id="senha_atual"/>
+                            <input type="password" id="senha_atual" onChange={handlerSenhaChange}/>
                         </div>
                         <div className={style.divs_input}>
                             <label htmlFor="">Nova Senha</label>
-                            <input type="password" id="senha_atual"/>
+                            <input type="password" id="nova_senha" onChange={handlerSenhaChange}/>
                         </div>
                         <div className={style.div_buttons_senha}>
                             <button className={style.btns} onClick={validaToken}>Alterar</button>
