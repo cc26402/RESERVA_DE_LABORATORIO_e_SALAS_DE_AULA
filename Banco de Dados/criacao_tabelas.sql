@@ -82,7 +82,8 @@ alter table resSalaLab.Ambiente
 
 alter table resSalaLab.Login
     add foreign key (CPF)
-    references resSalaLab.Usuario (CPF);
+    references resSalaLab.Usuario (CPF)
+    ON UPDATE CASCADE;
 
 alter table resSalaLab.Reserva
     add foreign key (username)
@@ -133,3 +134,17 @@ INSERT INTO resSalaLab.Ambiente
     (idPredio, nome, capacidade, andar, idTipo)
 VALUES
     (1, 'Dinalva', 40, 1, 2);
+
+
+SELECT name 
+FROM sys.foreign_keys 
+WHERE parent_object_id = OBJECT_ID('resSalaLab.Login');
+
+ALTER TABLE resSalaLab.Login 
+DROP CONSTRAINT [FK__Login__CPF__6C6E1476];
+
+ALTER TABLE resSalaLab.Login 
+ADD CONSTRAINT [FK__Login__CPF__6C6E1476]
+FOREIGN KEY (CPF) 
+REFERENCES resSalaLab.Usuario (cpf)
+ON UPDATE CASCADE;
