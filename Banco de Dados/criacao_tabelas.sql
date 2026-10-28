@@ -35,7 +35,7 @@ create table resSalaLab.Usuario(
 
 create table resSalaLab.Login(
     username varchar(30) not null,
-    senha varchar(30) not null,
+    senha varchar(80) not null,
     CPF varchar(11) not null,
     dataCadastro date not null default getdate(),
     primary key(username)

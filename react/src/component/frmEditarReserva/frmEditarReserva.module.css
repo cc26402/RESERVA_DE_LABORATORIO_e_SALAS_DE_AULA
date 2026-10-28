@@ -1,34 +1,56 @@
-.body{
-    min-width: 99vw;
+.body {
+    width: 100%;
     min-height: 90vh;
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
-.form{
+.form {
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    margin: auto;
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
-.campos{
+.campos {
     margin-top: 15px;
     display: flex;
     flex-direction: column;
+    gap: 5px;
 }
 
-.form>div>input{
+.campos>label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.campos>input, .campos>select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px;
+    font-size: 15px;
     border: 1px solid black;
-    width: 500px;
-    border-radius: 5px;   
+    border-radius: 5px;
 }
 
-.form>div>select{
-    border: 1px solid black;
-    border-radius: 5px;   
-}
-
-.divButton{
+.divButton {
     display: flex;
     justify-content: space-around;
-    margin-top: 15px;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.divButton button {
+    padding: 8px 20px;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.divButton>button:hover {
+    background-color: #9A2020;
+    color: white;
 }

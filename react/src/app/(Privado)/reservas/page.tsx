@@ -75,6 +75,7 @@ export default function Reservas() {
 
     const [filtroDataInicial, setFiltroDataInicial] = useState("");
     const [filtroDataFinal, setFiltroDataFinal] = useState("");
+    const [filtroAmbiente, setFiltroAmbiente] = useState("");
     const router = useRouter();
 
     useEffect(() => {
@@ -203,6 +204,7 @@ export default function Reservas() {
     function mostrar(modo: "Todas" | "User") {
         setFiltroDataInicial("");
         setFiltroDataFinal("");
+        setFiltroAmbiente("");
         carregarReservas(modo);
     }
 
@@ -231,7 +233,11 @@ export default function Reservas() {
     useEffect(() => {
         if (!dataHora || status.length === 0) return;
 
-        const formatadas: ReservaFormatada[] = reserva.map(r => {
+        const reservasFiltradas = filtroAmbiente
+            ? reserva.filter(r => r.idAmbiente === Number(filtroAmbiente))
+            : reserva;
+
+        const formatadas: ReservaFormatada[] = reservasFiltradas.map(r => {
             const amb = ambiente.find(a => a.idAmbiente === r.idAmbiente);
             return {
                 idReserva: r.idReserva,
@@ -246,7 +252,7 @@ export default function Reservas() {
         });
 
         setDadosTabela(formatadas);
-    }, [reserva, ambiente, dataHora, status]);
+    }, [reserva, ambiente, dataHora, status, filtroAmbiente]);
 
     return (
         <div className={style.body}>
@@ -259,6 +265,14 @@ export default function Reservas() {
                     <div>
                         <label>De: <input type="date" value={filtroDataInicial} onChange={e => setFiltroDataInicial(e.target.value)} /></label>
                         <label>Até: <input type="date" min={filtroDataInicial} value={filtroDataFinal} onChange={e => setFiltroDataFinal(e.target.value)} /></label>
+                        <label>Ambiente:
+                            <select value={filtroAmbiente} onChange={e => setFiltroAmbiente(e.target.value)}>
+                                <option value="">Selecione...</option>
+                                {ambiente.map(a => (
+                                    <option key={a.idAmbiente} value={a.idAmbiente}>{a.nome}</option>
+                                ))}
+                            </select>
+                        </label>
                         <button onClick={() => mostrar("User")}>Limpar filtro</button>
                     </div>
                 </div>
