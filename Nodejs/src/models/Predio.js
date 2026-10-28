@@ -40,10 +40,10 @@ class Predio {
     }
 
     static async inserirPredio(Predio){
-        const { idPredio, nome } = Predio;
+        const { nome } = Predio;
         try {
             const conexao = await conectaBD();
-            const result = await conexao.query(`INSERT into resSalaLab.Predio (idPredio, nome) VALUES ('${idPredio}', '${nome}')`);
+            const result = await conexao.query(`INSERT into resSalaLab.Predio (nome) VALUES ('${nome}')`);
             return result;
         }
         catch (error) {
