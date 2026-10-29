@@ -57,7 +57,8 @@ class Ambiente{
     static async removerAmbiente(idAmbiente) {
         try {
             const conexao = await conectaBD();
-            const result = await conexao.query(`DELETE from resSalaLab.Ambiente WHERE idAmbiente=${idAmbiente}`);
+            //const result = await conexao.query(`DELETE from resSalaLab.Ambiente WHERE idAmbiente=${idAmbiente}`);
+            const result = await conexao.query(`UPDATE resSalaLab.Ambiente SET Ativo=0 WHERE idAmbiente=${idAmbiente}`);
         }
         catch (error) {
             throw new Error(`Erro na remoção ao BD: ${error}`);
