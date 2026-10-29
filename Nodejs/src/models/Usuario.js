@@ -59,12 +59,12 @@ class Usuario {
         }
     }
 
-    static async alterarUsuario(Usuario) {
-        const { CPF, prenome, sobrenome, nascimento, celular, email } = Usuario;
+    static async alterarUsuario(dadosNovos, cpfUsuario) {
+        const { CPF, prenome, sobrenome, nascimento, celular, email } = dadosNovos;
         try {
             const conexao = await conectaBD();
-            const result = await conexao.query(`UPDATE resSalaLab.Usuario SET prenome='${prenome}', sobrenome='${sobrenome}', nascimento='${nascimento}', celular='${celular}', email='${email}', idNivelAcesso='1' WHERE CPF='${CPF}'`);
-            Login.editarLogin({CPF, novosDados: {username: email}});
+            const result = await conexao.query(`UPDATE resSalaLab.Usuario SET CPF='${CPF}', prenome='${prenome}', sobrenome='${sobrenome}', nascimento='${nascimento}', celular='${celular}', email='${email}', idNivelAcesso='1' WHERE CPF='${cpfUsuario}'`);
+            Login.editarLogin({cpfUsuario, novosDados: {username: email}});
             return result;
         }
         catch (error) {

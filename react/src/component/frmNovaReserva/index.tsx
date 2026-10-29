@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import style from "./frmNovaReserva.module.css"
 
 type Predio = {
     idPredio: number;
@@ -149,49 +150,51 @@ export default function frmNovaReserva(){
     }, [])
 
     return (
-        <form  onSubmit={reservar}>
-            <h1>{dataHora ? `${dataHora.data.split("-").reverse().join("/")} ${dataHora.hora}` : ""}</h1>
-            <div>
-                <label>Prédio:</label>
-                <select onChange={p => setIdPredio(Number(p.target.value))} required>
-                    {predios.map(predio => {
-                        return <option key={predio.idPredio} value={predio.idPredio}>{predio.nome}</option>
-                    })}
-                </select>
-            </div>
-            <div>
-                <label>Andar:</label>
-                <input type="number" max={3} min={-1} defaultValue={0} onChange={a => setAndar(Number(a.target.value))} required></input>
-            </div>
-            <div>
-                <label>Ambiente:</label>
-                <select onChange={a => setIdAmbiente(Number(a.target.value))} required>
-                    <option value="">Selecione...</option>
-                    {ambientes.filter(a => a.idPredio === idPredio && a.andar === andar).map(a => (
-                        <option key={a.idAmbiente} value={a.idAmbiente}>{a.nome}</option>
-                    ))}
-                </select>
-            </div>
-            <div>
-                <label>Data Inicial:</label>
-                <input type="date" onChange={d => setDataInicial(d.target.value)} required></input>
-            </div>
-            <div>
-                <label>Data Final:</label>
-                <input type="date" onChange={d => setDataFinal(d.target.value)} required></input>
-            </div>
-            <div>
-                <label>Horário Inicial:</label>
-                <input type="time" onChange={h => setHorarioInicial(h.target.value)} required></input>
-            </div>
-            <div>
-                <label>Horário Final:</label>
-                <input type="time" onChange={h => setHorarioFinal(h.target.value)} required></input>
-            </div>
-            <div>
-                <button>Reservar</button>
-                <Link href="/reservas">Cancelar</Link>
-            </div>
-        </form>
+        <div className={style.body}>
+            <form  onSubmit={reservar} className={style.form}>
+                <h1>{dataHora ? `${dataHora.data.split("-").reverse().join("/")} ${dataHora.hora}` : ""}</h1>
+                <div className={style.campos}>
+                    <label>Prédio:</label>
+                    <select onChange={p => setIdPredio(Number(p.target.value))} required>
+                        {predios.map(predio => {
+                            return <option key={predio.idPredio} value={predio.idPredio}>{predio.nome}</option>
+                        })}
+                    </select>
+                </div>
+                <div className={style.campos}>
+                    <label>Andar:</label>
+                    <input type="number" max={3} min={-1} defaultValue={0} onChange={a => setAndar(Number(a.target.value))} required></input>
+                </div>
+                <div className={style.campos}>
+                    <label>Ambiente:</label>
+                    <select onChange={a => setIdAmbiente(Number(a.target.value))} required>
+                        <option value="">Selecione...</option>
+                        {ambientes.filter(a => a.idPredio === idPredio && a.andar === andar).map(a => (
+                            <option key={a.idAmbiente} value={a.idAmbiente}>{a.nome}</option>
+                        ))}
+                    </select>
+                </div>
+                <div className={style.campos}>
+                    <label>Data Inicial:</label>
+                    <input type="date" onChange={d => setDataInicial(d.target.value)} required></input>
+                </div>
+                <div className={style.campos}>
+                    <label>Data Final:</label>
+                    <input type="date" onChange={d => setDataFinal(d.target.value)} required></input>
+                </div>
+                <div className={style.campos}>
+                    <label>Horário Inicial:</label>
+                    <input type="time" onChange={h => setHorarioInicial(h.target.value)} required></input>
+                </div>
+                <div className={style.campos}>
+                    <label>Horário Final:</label>
+                    <input type="time" onChange={h => setHorarioFinal(h.target.value)} required></input>
+                </div>
+                <div className={style.divButton}>
+                    <button>Reservar</button>
+                    <Link href="/reservas">Cancelar</Link>
+                </div>
+            </form>
+        </div>
     )
 }
