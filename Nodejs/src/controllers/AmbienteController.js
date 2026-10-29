@@ -12,6 +12,26 @@ class AmbienteController{
         }
     }
 
+    static async listarAmbientesAtivos(req, res){
+        try{
+            const listarAmbientesAtivos = await Ambiente.buscarAtivos();  
+            res.status(200).json(listarAmbientesAtivos);
+        }
+        catch(error){
+            res.status(500).json({message: `${error} - falha na requisição`})
+        }
+    }
+
+    static async listarAmbientesInativos(req, res){
+        try{
+            const listarAmbientesInativos = await Ambiente.buscarInativos();  
+            res.status(200).json(listarAmbientesInativos);
+        }
+        catch(error){
+            res.status(500).json({message: `${error} - falha na requisição`})
+        }
+    }
+
     static async listarAmbientesPorId(req, res){
         const idProcurado = req.params.id;
         try{
