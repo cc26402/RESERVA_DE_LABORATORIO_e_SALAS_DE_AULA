@@ -44,6 +44,36 @@ type ConflitoInfo = {
 
 export function FrmEditarReserva({ idReserva }: { idReserva: string }){
 
+    const [token, setToken] = useState("");
+    const router = useRouter();
+    
+    useEffect(() => {
+        const loginToken = localStorage.getItem("loginToken");
+        if (loginToken) {
+        fetch("http://localhost:8080/auth/valida", {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${loginToken}`
+            }
+        })
+        .then(async result => {
+            if (!result.ok) {
+                alert("Necessário estar logado para acessar esse recurso");
+            localStorage.removeItem('loginToken');
+            router.replace("/")
+            }
+            else {
+                setToken(loginToken);
+            }
+        })
+        }
+        else {
+          alert("Necessário estar logado para acessar esse recurso");
+            router.replace("/");
+        }
+    }, [router]);
+
     const [reserva, setReserva] = useState<Reserva>();
     const [erro, setErro] = useState<string>();
 
