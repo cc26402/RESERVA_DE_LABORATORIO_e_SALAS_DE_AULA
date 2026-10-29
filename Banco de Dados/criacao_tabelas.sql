@@ -152,7 +152,3 @@ ON UPDATE CASCADE;
 
 ALTER TABLE resSalaLab.Ambiente
     ADD Ativo BIT NOT NULL DEFAULT(1) WITH VALUES;
-
-SELECT * FROM resSalaLab.Ambiente
-
-UPDATE resSalaLab.Ambiente SET Ativo = 0 WHERE idAmbiente = 1
