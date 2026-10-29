@@ -55,7 +55,7 @@ export default function Ambiente() {
   useEffect(() => {
     async function carregarDadosDosAmbientes() {
       try {
-        const response = await fetch("http://localhost:8080/ambientes");
+        const response = await fetch("http://localhost:8080/ambientes/ativos");
         if (!response.ok) {
           throw new Error("Erro ao trazer os dados do BD");
         }

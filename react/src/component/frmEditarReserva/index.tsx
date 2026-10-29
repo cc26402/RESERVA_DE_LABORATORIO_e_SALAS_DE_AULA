@@ -113,7 +113,7 @@ function FormularioReserva({ reserva }: { reserva: Reserva }){
     useEffect(() => {
         async function buscarAmbientes() {
             try{
-                const response = await fetch("http://localhost:8080/ambientes");
+                const response = await fetch("http://localhost:8080/ambientes/ativos");
                 if (!response.ok) throw new Error("Falha ao buscar ambientes");
                 const dados: Ambiente[] = await response.json();
                 setAmbientes(dados);
@@ -296,7 +296,7 @@ function FormularioReserva({ reserva }: { reserva: Reserva }){
                 </div>
                 <div className={style.divButton}>
                     <button type="submit" disabled={!ambienteValido}>Confirmar</button>
-                    <Link href={"/reservas"}>Cancelar</Link>
+                    <Link href={"/reservas"} className={style.button}>Cancelar</Link>
                 </div>
             </form>
         </div>

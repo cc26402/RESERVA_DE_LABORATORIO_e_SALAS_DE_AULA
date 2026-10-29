@@ -70,7 +70,7 @@ export default function frmNovaReserva(){
     useEffect(() => {
         async function listarAmbientes() {
             try{
-                const response = await fetch("http://localhost:8080/ambientes");
+                const response = await fetch("http://localhost:8080/ambientes/ativos");
                 const dados = await response.json();
                 setAmbientes(dados);
             }
@@ -243,7 +243,7 @@ export default function frmNovaReserva(){
                 </div>
                 <div className={style.divButton}>
                     <button>Reservar</button>
-                    <Link href="/reservas">Cancelar</Link>
+                    <Link href="/reservas" className={style.button}>Cancelar</Link>
                 </div>
             </form>
 

@@ -100,7 +100,7 @@ export default function Ambientes() {
 
     async function listarAmbientes() {
         try {
-            const response = await fetch("http://localhost:8080/ambientes");
+            const response = await fetch("http://localhost:8080/ambientes/ativos");
             setAmbientes(await response.json());
         } catch (erro) {
             console.error("Erro ao buscar ambientes:", erro);

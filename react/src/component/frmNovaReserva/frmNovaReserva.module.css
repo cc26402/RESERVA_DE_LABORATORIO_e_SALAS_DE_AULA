@@ -42,7 +42,7 @@
     margin-top: 20px;
 }
 
-.divButton button {
+.divButton button, .button {
     padding: 8px 20px;
     border: 1px solid black;
     border-radius: 5px;
@@ -50,7 +50,7 @@
     cursor: pointer;
 }
 
-.divButton>button:hover {
+.divButton>button:hover, .button:hover {
     background-color: #9A2020;
     color: white;
 }
