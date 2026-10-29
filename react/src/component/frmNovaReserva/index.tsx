@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import style from "./frmNovaReserva.module.css"
 
 type Predio = {
@@ -37,6 +37,9 @@ type ConflitoInfo = {
 
 export default function frmNovaReserva(){
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const idAmbienteParam = Number(searchParams.get("idAmbiente"));
+
     const [predios, setPredios] = useState<Predio[]>([]);
     const [idPredio, setIdPredio] = useState<number>();
     const [andar, setAndar] = useState<number>(0);
@@ -55,7 +58,7 @@ export default function frmNovaReserva(){
                 const response = await fetch("http://localhost:8080/predios");
                 const dados = await response.json();
                 setPredios(dados);
-                if (dados.length > 0) setIdPredio(dados[0].idPredio);
+                if (dados.length > 0) setIdPredio(atual => atual ?? dados[0].idPredio);
             }
             catch(error){
                 console.error("Erro ao acessar o BD", error);
@@ -77,6 +80,16 @@ export default function frmNovaReserva(){
         }
         listarAmbientes();
     }, [])
+
+    useEffect(() => {
+        if (!idAmbienteParam || ambientes.length === 0) return;
+        const amb = ambientes.find(a => a.idAmbiente === idAmbienteParam);
+        if (amb) {
+            setIdPredio(amb.idPredio);
+            setAndar(amb.andar);
+            setIdAmbiente(amb.idAmbiente);
+        }
+    }, [ambientes, idAmbienteParam]);
 
     async function reservar(e: React.FormEvent<HTMLFormElement>){
         e.preventDefault();
@@ -172,7 +185,14 @@ export default function frmNovaReserva(){
                 <h1>{dataHora ? `${dataHora.data.split("-").reverse().join("/")} ${dataHora.hora}` : ""}</h1>
                 <div className={style.campos}>
                     <label>Prédio:</label>
-                    <select onChange={p => setIdPredio(Number(p.target.value))} required>
+                    <select
+                        value={idPredio ?? ""}
+                        onChange={p => {
+                            setIdPredio(Number(p.target.value));
+                            setIdAmbiente(undefined);
+                        }}
+                        required
+                    >
                         {predios.map(predio => {
                             return <option key={predio.idPredio} value={predio.idPredio}>{predio.nome}</option>
                         })}
@@ -180,11 +200,25 @@ export default function frmNovaReserva(){
                 </div>
                 <div className={style.campos}>
                     <label>Andar:</label>
-                    <input type="number" max={3} min={-1} defaultValue={0} onChange={a => setAndar(Number(a.target.value))} required></input>
+                    <input
+                        type="number"
+                        max={3}
+                        min={-1}
+                        value={andar}
+                        onChange={a => {
+                            setAndar(Number(a.target.value));
+                            setIdAmbiente(undefined);
+                        }}
+                        required
+                    ></input>
                 </div>
                 <div className={style.campos}>
                     <label>Ambiente:</label>
-                    <select onChange={a => setIdAmbiente(Number(a.target.value))} required>
+                    <select
+                        value={idAmbiente ?? ""}
+                        onChange={a => setIdAmbiente(a.target.value ? Number(a.target.value) : undefined)}
+                        required
+                    >
                         <option value="">Selecione...</option>
                         {ambientes.filter(a => a.idPredio === idPredio && a.andar === andar).map(a => (
                             <option key={a.idAmbiente} value={a.idAmbiente}>{a.nome}</option>

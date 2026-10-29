@@ -118,7 +118,7 @@ export default function Ambiente() {
                 <h2>capacidade: {a.capacidade}</h2>
                 <hr></hr>
               </div>
-              <button>RESERVAR</button>
+              <button onClick={() => router.push(`/reservas/novaReserva?idAmbiente=${a.idAmbiente}`)}>RESERVAR</button>
             </div>
           ))}
         </div>

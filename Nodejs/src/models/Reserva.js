@@ -72,7 +72,7 @@ class Reserva {
         try{
             const conexao = await conectaBD();
             if (username != null){
-                const result = await conexao.query`SELECT * FROM resSalaLab.ReservaWHERE username = ${username} AND dataInicial <= ${dataFinal} AND dataFinal >= ${dataInicial} AND horarioInicial < ${horarioFinal} AND horarioFinal > ${horarioInicial}`;
+                const result = await conexao.query`SELECT * FROM resSalaLab.Reserva WHERE username = ${username} AND dataInicial <= ${dataFinal} AND dataFinal >= ${dataInicial} AND horarioInicial < ${horarioFinal} AND horarioFinal > ${horarioInicial}`;
                 return result.recordset;
             }
             else {
