@@ -21,6 +21,28 @@ class Ambiente{
         }
     }
 
+    static async buscarAtivos(){
+        try {
+            const conexao = await conectaBD();
+            const result = await conexao.query("SELECT * from resSalaLab.Ambiente WHERE ativo=1");
+            return result.recordset
+        }
+        catch (error) {
+            throw new Error(`Erro na consulta ao BD: ${error}`);
+        }
+    }
+
+    static async buscarInativos(){
+        try {
+            const conexao = await conectaBD();
+            const result = await conexao.query("SELECT * from resSalaLab.Ambiente WHERE ativo=0");
+            return result.recordset
+        }
+        catch (error) {
+            throw new Error(`Erro na consulta ao BD: ${error}`);
+        }
+    }
+
     static async buscarAmbientePorId(idAmbiente) {
         try {
             const conexao = await conectaBD();

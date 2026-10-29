@@ -13,6 +13,7 @@ create table resSalaLab.Ambiente(
     capacidade smallint not null,
     andar tinyint not null,
     idTipo tinyint not null,
+    ativo bit not null,
     primary key(idAmbiente)
 );
 
@@ -148,3 +149,10 @@ ADD CONSTRAINT [FK__Login__CPF__6C6E1476]
 FOREIGN KEY (CPF) 
 REFERENCES resSalaLab.Usuario (cpf)
 ON UPDATE CASCADE;
+
+ALTER TABLE resSalaLab.Ambiente
+    ADD Ativo BIT NOT NULL DEFAULT(1) WITH VALUES;
+
+SELECT * FROM resSalaLab.Ambiente
+
+UPDATE resSalaLab.Ambiente SET Ativo = 0 WHERE idAmbiente = 1
