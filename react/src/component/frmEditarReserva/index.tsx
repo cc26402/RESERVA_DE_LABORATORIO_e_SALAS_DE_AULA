@@ -34,6 +34,14 @@ type DataHora = {
     hora: string
 }
 
+type ConflitoInfo = {
+    ambiente: string;
+    dataInicial: string;
+    dataFinal: string;
+    horarioInicial: string;
+    horarioFinal: string;
+};
+
 export function FrmEditarReserva({ idReserva }: { idReserva: string }){
 
     const [reserva, setReserva] = useState<Reserva>();
@@ -79,6 +87,7 @@ function FormularioReserva({ reserva }: { reserva: Reserva }){
     const [andarSelect, setAndarSelect] = useState<number>(0);
     const [reservaEditada, setReservaEditada] = useState<Reserva>(reserva);
     const [dataHora, setDataHora] = useState<DataHora>();
+    const [conflitoInfo, setConflitoInfo] = useState<ConflitoInfo | null>(null);
 
     useEffect(() => {
         async function buscarReservas() {
@@ -146,11 +155,11 @@ function FormularioReserva({ reserva }: { reserva: Reserva }){
         }
     }, [ambientes, reserva.idAmbiente])
 
-    function haReservaComConflito(): boolean {
+    function buscarConflito(): Reserva | undefined {
         const novoInicio = reservaEditada.dataInicial + " " + reservaEditada.horarioInicial;
         const novoFim = reservaEditada.dataFinal + " " + reservaEditada.horarioFinal;
 
-        return reservas.some(r => {
+        return reservas.find(r => {
             if (r.idReserva === reserva.idReserva) return false;
             if (r.idAmbiente !== reservaEditada.idAmbiente) return false;
             const inicio = r.dataInicial.slice(0, 10) + " " + r.horarioInicial.slice(11, 16);
@@ -227,8 +236,16 @@ function FormularioReserva({ reserva }: { reserva: Reserva }){
             alert("O FIM DEVE SER DEPOIS DO INÍCIO");
             return;
         }
-        if (haReservaComConflito()) {
-            alert("PERÍODO INDISPONÍVEL");
+
+        const conflito = buscarConflito();
+        if (conflito) {
+            setConflitoInfo({
+                ambiente: ambientes.find(a => a.idAmbiente === conflito.idAmbiente)?.nome ?? "",
+                dataInicial: conflito.dataInicial.slice(0, 10),
+                dataFinal: conflito.dataFinal.slice(0, 10),
+                horarioInicial: conflito.horarioInicial.slice(11, 16),
+                horarioFinal: conflito.horarioFinal.slice(11, 16),
+            });
             return;
         }
 
@@ -299,6 +316,19 @@ function FormularioReserva({ reserva }: { reserva: Reserva }){
                     <Link href={"/reservas"} className={style.button}>Cancelar</Link>
                 </div>
             </form>
+
+            {conflitoInfo && (
+                <div className={style.divPopUp} onClick={() => setConflitoInfo(null)}>
+                    <div className={style.popUp} onClick={e => e.stopPropagation()}>
+                        <h2><strong>Já existe uma reserva para {conflitoInfo.ambiente} nesse período:</strong></h2>
+                        <p><strong>Data Inicial:</strong> {conflitoInfo.dataInicial.split("-").reverse().join("/")}</p>
+                        <p><strong>Data Final:</strong> {conflitoInfo.dataFinal.split("-").reverse().join("/")}</p>
+                        <p><strong>Horário Inicial:</strong> {conflitoInfo.horarioInicial}</p>
+                        <p><strong>Horário Final:</strong> {conflitoInfo.horarioFinal}</p>
+                        <button type="button" onClick={() => setConflitoInfo(null)} className={style.btnFechar}>Fechar</button>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
