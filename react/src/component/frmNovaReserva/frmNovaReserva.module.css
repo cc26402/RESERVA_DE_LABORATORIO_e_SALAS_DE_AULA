@@ -54,3 +54,41 @@
     background-color: #9A2020;
     color: white;
 }
+
+
+.divPopUp {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.popUp {
+    background: #fff;
+    padding: 24px 32px;
+    border-radius: 8px;
+    min-width: 300px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.popUp>h2 {
+    color: #c0392b;
+    margin-bottom: 16px;
+}
+
+.popUp>p {
+    margin: 6px 0;
+}
+
+.popUp>button {
+    margin-top: 16px;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.btnFechar:hover{
+    color: #9A2020;
+}

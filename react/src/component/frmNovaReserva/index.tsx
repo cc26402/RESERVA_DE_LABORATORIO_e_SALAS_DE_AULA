@@ -27,6 +27,14 @@ type Reserva = {
     horarioFinal: string;
 };
 
+type ConflitoInfo = {
+    ambiente: string;
+    dataInicial: string;
+    dataFinal: string;
+    horarioInicial: string;
+    horarioFinal: string;
+};
+
 export default function frmNovaReserva(){
     const router = useRouter();
     const [predios, setPredios] = useState<Predio[]>([]);
@@ -39,6 +47,7 @@ export default function frmNovaReserva(){
     const [horarioInicial, setHorarioInicial] = useState<string>();
     const [horarioFinal, setHorarioFinal] = useState<string>();
     const [dataHora, setDataHora] = useState<{ data: string; hora: string }>();
+    const [conflitoInfo, setConflitoInfo] = useState<ConflitoInfo | null>(null);
 
     useEffect(() => {
         async function listarPredios() {
@@ -84,19 +93,27 @@ export default function frmNovaReserva(){
             const responseReservas = await fetch("http://localhost:8080/reservas");
             const todasAsReservas: Reserva[] = await responseReservas.json();
             let conflito = false;
+            let resConflito: Reserva = todasAsReservas[0];
             todasAsReservas.map(reserva => {
                 if (reserva.idAmbiente == dados.idAmbiente){
                     if (reserva.dataInicial.slice(0, 10) <= dados.dataFinal! && reserva.dataFinal.slice(0, 10) >= dados.dataInicial!){
                         if (reserva.horarioInicial.slice(11, 16) < dados.horarioFinal! && reserva.horarioFinal.slice(11, 16) > dados.horarioInicial!){
                             conflito = true;
+                            resConflito = reserva;
                         }
                     }
                 }
             })
 
             if (conflito) {
-                alert("HORÁRIO INDISPONÍVEL");
-                return
+                setConflitoInfo({
+                    ambiente: ambientes.filter(res => res.idAmbiente == resConflito.idAmbiente)[0].nome,
+                    dataInicial: resConflito.dataInicial.slice(0, 10),
+                    dataFinal: resConflito.dataFinal.slice(0, 10),
+                    horarioInicial: resConflito.horarioInicial.slice(11, 16),
+                    horarioFinal: resConflito.horarioFinal.slice(11, 16),
+                });
+                return;
             }
             if (dados.dataInicial! < dataHora!.data) {
                 alert("Data inicial inválida");
@@ -195,6 +212,19 @@ export default function frmNovaReserva(){
                     <Link href="/reservas">Cancelar</Link>
                 </div>
             </form>
+
+            {conflitoInfo && (
+                <div className={style.divPopUp} onClick={() => setConflitoInfo(null)}>
+                    <div className={style.popUp} onClick={e => e.stopPropagation()}>
+                        <h2><strong>Já existe uma reserva para {conflitoInfo.ambiente} nesse período:</strong></h2>
+                        <p><strong>Data Inicial:</strong> {conflitoInfo.dataInicial.split("-").reverse().join("/")}</p>
+                        <p><strong>Data Final:</strong> {conflitoInfo.dataFinal.split("-").reverse().join("/")}</p>
+                        <p><strong>Horário Inicial:</strong> {conflitoInfo.horarioInicial}</p>
+                        <p><strong>Horário Final:</strong> {conflitoInfo.horarioFinal}</p>
+                        <button type="button" onClick={() => setConflitoInfo(null)} className={style.btnFechar}>Fechar</button>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
