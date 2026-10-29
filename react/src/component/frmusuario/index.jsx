@@ -218,6 +218,11 @@ export default function FrmUsuario({token = ""}){
 
     function novaSenhaOk() {
         const novaSenha = document.getElementById('nova_senha');
+        const senhaAtual = document.getElementById("senha_atual");
+        if (!senhaAtual.value) {
+            estilizaCampoInvalido(senhaAtual);
+            return false;
+        }
         if (!(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(novaSenha.value))) {
             estilizaCampoInvalido(novaSenha);
             alert("Nova senha deve conter ao menos 8 caracteres, 1 letra minúscula, 1 letra maiúscula, 1 número e 1 caractere especial");

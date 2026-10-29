@@ -36,7 +36,7 @@ export function Tbody({dados, listaOrdemChaveDados, chavePrimaria, botoes, links
                                     botaoAtual++
                                     return (
                                         <td key={i2+"td"} className={style.td}>
-                                            <button onClick={() => botao.onClick(dado[chavePrimaria])}>{botao.textoBotao}</button>
+                                            <button onClick={() => botao.onClick(dado[chavePrimaria])} className={style.button}>{botao.textoBotao}</button>
                                         </td>
                                     )
                                     
